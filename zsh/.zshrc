@@ -26,8 +26,8 @@ autoload -Uz vcs_info
 precmd_functions+=(vcs_info)
 
 # --- PATH ----------------------------------------------------------------
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.opencode/bin:$PATH"
+typeset -U path PATH  # de-dupe automatically, however many times we're sourced
+path=("$HOME/.local/bin" "$HOME/.opencode/bin" $path)
 
 # --- Editor / misc ---------------------------------------------------------
 export EDITOR="nvim"
