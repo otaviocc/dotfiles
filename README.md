@@ -9,36 +9,49 @@ One directory per tool ("package" in Stow terminology). Each mirrors the
 path it should end up at under `$HOME`:
 
 ```
-zsh/.zshrc                       git/.gitconfig                  nvim/.config/nvim/...
-zsh/.zshrc.linux                 git/.gitconfig.linux             tmux/.config/tmux/...
-zsh/.zshrc.macos                 git/.gitconfig.macos             ghostty/.config/ghostty/...
-zsh/.zsh_default-plus.zsh                                          lazygit/.config/lazygit/...
-                                                                    tig/.config/tig/...
-                                                                    herdr/.config/herdr/...
-                                                                    opencode/.config/opencode/...
+zsh/.zshrc                   git/.gitconfig                nvim/.config/nvim/...
+zsh/.zshrc.linux             git/.gitconfig.linux          tmux/.config/tmux/...
+zsh/.zshrc.macos             git/.gitconfig.macos          ghostty/.config/ghostty/...
+zsh/.zsh_default-plus.zsh                                  lazygit/.config/lazygit/...
+                                                            tig/.config/tig/...
+                                                            herdr/.config/herdr/...
+                                                            opencode/.config/opencode/...
 ```
 
-### Handling Fedora vs macOS differences
+## Handling Fedora vs macOS differences
 
-Most config is identical on both machines. Where it isn't, each package
-takes whichever approach fits the tool best, so nothing has to be edited
-by hand after cloning:
+Most config is identical on both machines. Where it isn't:
 
 - **zsh, tmux** — the shared file branches at *runtime* using
   `uname`/`if-shell`, and sources a tracked `*.linux` / `*.macos` sibling
   file. Zero setup required.
 - **git, Ghostty** — these config formats can't branch on their own, so
-  both OS variants are tracked (`git/.gitconfig.linux` /
-  `.gitconfig.macos`, `ghostty/.config/ghostty/config.linux` / `.macos`).
-  A tiny OS-specific overlay package (`git-macos`/`git-linux`,
-  `ghostty-macos`/`ghostty-linux`) carries a pre-committed relative
-  symlink — e.g. `git-macos/.gitconfig.local -> ../git/.gitconfig.macos`
-  — for the `.gitconfig.local` / `config.local` name each main config
-  already includes unconditionally. `install.sh` just stows whichever
-  overlay matches `uname`; Stow creates the actual `~/.gitconfig.local`
-  symlink, same as for any other package file.
+  both OS variants are tracked (`git/.gitconfig.linux` / `.gitconfig.macos`,
+  `ghostty/.config/ghostty/config.linux` / `.macos`). A tiny OS-specific
+  overlay package (`git-macos`/`git-linux`, `ghostty-macos`/`ghostty-linux`)
+  carries a pre-committed relative symlink — e.g.
+  `git-macos/.gitconfig.local -> ../git/.gitconfig.macos` — for the
+  `.gitconfig.local` / `config.local` name each main config already
+  includes unconditionally. `install.sh` stows whichever overlay matches
+  `uname`; you never create or edit these symlinks by hand.
 
-### The Default+ theme
+## Local machine overrides (untracked)
+
+Anything private or specific to a single machine (work email, an
+SSH-signing key path, an extra `PATH` entry, ...) does **not** go in this
+repo. Instead, create these files by hand on whichever machine needs them
+— both are optional and silently ignored by their parent config if absent:
+
+| File | Sourced by | Typical contents |
+|---|---|---|
+| `~/.zshrc.local` | `zsh/.zshrc`, always last | one-off env vars, aliases, PATH entries |
+| `~/.gitconfig.local.machine` | `git/.gitconfig.macos` / `.linux` | `user.email`, `gpg.ssh.program`, issue-tracker templates |
+
+Don't confuse `~/.gitconfig.local.machine` with `~/.gitconfig.local` —
+the latter is the OS-selection symlink described above and is managed by
+Stow, not created by hand.
+
+## The Default+ theme
 
 [`default-plus`](https://github.com/otaviocc/default-plus) is the
 canonical source for this color theme (it also covers Xcode and other
@@ -57,42 +70,17 @@ needs are **vendored directly** into the relevant package, so a fresh
 If the palette changes upstream in `default-plus`, re-copy the affected
 file(s) from that repo into the matching package here and commit.
 
-### Things intentionally *not* in this repo
+## Things intentionally not in this repo
 
 - Secrets: `~/.ssh`, `~/.gnupg`, `~/.config/gh` (has tokens), `~/.putty`.
-- Anything from the old `~/Developer/dot.config` repo that isn't listed
-  above (fish config, lsd, starship) — dropped since we standardized on
-  zsh; revive them here as their own package if you go back to fish.
-- `oh-my-zsh` itself — the framework is gone; `zsh/.zshrc` is a small
-  plain config now.
+- `oh-my-zsh` — removed; `zsh/.zshrc` is a small plain config.
 - herdr's log files, `session.json`, `release-notes.json`,
   `.plugins.lock` — runtime state, not config; only `config.toml` is
   tracked.
-
-### OpenCode skills
-
-`opencode/.config/opencode/skills/` tracks every skill that's genuinely
-mine and has no other repo backing it — media-organizing scripts
-(`organize-movies`, `organize-tv`, `organize-kids-shows`, `organize-music`,
-`flac-to-alac`, `add-episode-titles`, imported 2026-07-31 from the local
-`~/Developer/Skills` checkout) plus `brrr` and `stash-cli`. `flac-to-alac`'s
-and the others' `scripts/` are tracked; any local `.venv/` created at
-runtime is not.
-
-`immich-upload` was intentionally dropped (no longer used, and its script
-had a hardcoded Immich API key/instance URL — not something to commit even
-to a private repo).
-
-Third-party skills (e.g. `AvdLee/*-Agent-Skill` on GitHub) aren't vendored
-here — install/manage those separately (Claude Code plugins, manual clone,
-etc.) on whichever machine needs them. What matters for this repo is
-what's actually inside `opencode/.config/opencode/skills/`.
-
-`otaviocc/hometools` and the local `~/Developer/Skills` checkout are
-superseded by this package. Both local checkouts (`~/Developer/Scripts`,
-`~/Developer/Skills`) have been removed from the Fedora machine
-(2026-07-31); `otaviocc/hometools` can be archived on GitHub once the
-other machine(s) are confirmed to no longer need it.
+- Third-party OpenCode skills/plugins (e.g. `AvdLee/*-Agent-Skill`) —
+  install/manage those separately on whichever machine needs them.
+  `opencode/.config/opencode/skills/` only tracks skills genuinely
+  authored here with no other repo backing them.
 
 ## Usage
 
@@ -117,10 +105,10 @@ that isn't already a symlink target (new files need re-stowing).
 
 ## Adding a new machine
 
-1. Install Fedora/macOS packages you rely on (see below).
+1. Install the packages you rely on (see below).
 2. `git clone ... ~/.dotfiles && cd ~/.dotfiles && ./install.sh`
-3. Anything truly one-off for that machine (work email override, extra
-   PATH entry, etc.) goes in `~/.zshrc.local` — untracked, sourced last.
+3. Create `~/.zshrc.local` and/or `~/.gitconfig.local.machine` if this
+   machine needs anything from "Local machine overrides" above.
 
 ### Fedora packages used by this config
 
@@ -129,20 +117,3 @@ that isn't already a symlink target (new files need re-stowing).
 ### macOS packages used by this config (Homebrew)
 
 `zsh tmux ghostty neovim lazygit tig stow`
-
-## Migration notes (2026-07-31)
-
-- This repo replaces `otaviocc/dot.config` (macOS/fish-focused). Its
-  `ghostty`, `git`, `nvim`, and `tmux` content has been folded in here,
-  reconciled with the already-adapted Fedora versions. Once this repo is
-  pushed and verified on both machines, archive or delete
-  `otaviocc/dot.config` on GitHub and remove the local
-  `~/Developer/dot.config` checkout.
-- `otaviocc/hometools` (OpenCode skills/scripts) is superseded by
-  `opencode/.config/opencode/skills/` in this repo (see "OpenCode
-  skills" above) — the local `~/Developer/Scripts` checkout of it, and
-  the separate local-only `~/Developer/Skills` checkout, have both been
-  removed from the Fedora machine.
-- `~/.config/git/` (the old XDG-style git config) is redundant now that
-  `~/.gitconfig` exists and takes precedence — safe to delete after
-  `install.sh` runs.
