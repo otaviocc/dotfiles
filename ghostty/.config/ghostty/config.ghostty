@@ -10,8 +10,8 @@ theme = "Default+"
 bold-color = bright
 split-divider-color = #2EA85B
 
-# Font
-font-family = "Hack Nerd Font Mono"
+# Font (unset: use each OS's default monospace font)
+font-size = 13
 
 # Cursor
 cursor-style = block
@@ -19,8 +19,8 @@ cursor-style-blink = true
 
 # Window size
 maximize = false
-window-width = 120
-window-height = 36
+window-width = 140
+window-height = 40
 
 # Shell
 shell-integration = zsh
@@ -34,7 +34,7 @@ unfocused-split-opacity = 0.75
 copy-on-select = true
 mouse-hide-while-typing = true
 
-# OS-specific overrides (font-size, macos-option-as-alt, ...). Tracked as
+# OS-specific overrides (macos-option-as-alt, macos-icon, ...). Tracked as
 # config.linux / config.macos in this repo; the ghostty-linux/ghostty-macos
 # overlay package stows a pre-committed symlink so the right one ends up at
 # config.local for the machine it runs on. The "?" prefix makes this

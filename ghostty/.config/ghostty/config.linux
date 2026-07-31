@@ -1,2 +1,3 @@
 # Linux (Fedora)-only Ghostty overrides.
-font-size = 11
+# No overrides currently needed; font-size and window size now match
+# macOS via the shared config.ghostty.
