@@ -1,0 +1,11 @@
+# Linux-only (Fedora) zsh config. Sourced automatically by .zshrc.
+
+# GNU ls color support
+alias ls="ls --color=auto"
+
+# Clipboard helpers matching the tmux copy-mode bindings
+if command -v wl-copy >/dev/null 2>&1; then
+  alias clipcopy="wl-copy"
+elif command -v xclip >/dev/null 2>&1; then
+  alias clipcopy="xclip -selection clipboard"
+fi

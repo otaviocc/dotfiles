@@ -1,0 +1,3 @@
+# macOS-only Ghostty overrides.
+font-size = 13
+macos-option-as-alt = true

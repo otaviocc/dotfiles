@@ -1,0 +1,36 @@
+# Ghostty config — shared across Fedora and macOS.
+#
+# NOTE: this version of Ghostty expects the file at
+# $XDG_CONFIG_HOME/ghostty/config.ghostty (verify with `ghostty +show-config
+# --default --docs | grep xdg_config_home` if a future Ghostty release on
+# either machine expects plain `config` instead — rename/symlink as needed).
+
+# Theme (see ~/Developer/default-plus, copied in by install.sh)
+theme = "Default+"
+
+# Font
+font-family = "Hack Nerd Font Mono"
+
+# Cursor
+cursor-style = block
+cursor-style-blink = true
+
+# Window size
+window-width = 120
+window-height = 36
+
+# Shell
+shell-integration = zsh
+keybind = shift+enter=text:\n
+
+# background
+#background-opacity = 0.7
+#background-blur-radius = 20
+
+mouse-hide-while-typing = true
+
+# OS-specific overrides (font-size, macos-option-as-alt, ...). Tracked as
+# config.linux / config.macos in this repo; install.sh symlinks the right
+# one to config.local for the machine it runs on. The "?" prefix makes this
+# optional so Ghostty won't error before install.sh has run.
+config-file = ?config.local

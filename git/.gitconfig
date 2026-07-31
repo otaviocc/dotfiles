@@ -1,0 +1,35 @@
+[user]
+	name = Otavio Cordeiro
+	email = otaviocc@users.noreply.github.com
+
+[alias]
+	st = status -s
+	co = checkout
+	ci = commit
+	lg = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+	sync = "!f() { git fetch --all --prune && git rebase --rebase-merges --autostash $1; }; f"
+	set-upstream = !git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD)
+
+[core]
+	quotepath = false
+	excludesfile = ~/.gitignore_global
+
+[push]
+	default = current
+
+[pull]
+	rebase = true
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+# Machine-specific overrides (gpg program, difftool, etc). This file is
+# tracked in the dotfiles repo (git/.gitconfig.linux and
+# git/.gitconfig.macos) but only ONE of them is linked to
+# ~/.gitconfig.local by install.sh, based on the OS it runs on — git's
+# config format has no OS conditionals, so this indirection is required.
+[include]
+	path = ~/.gitconfig.local
