@@ -8,7 +8,7 @@
 
 # `ls` colors (macOS CLICOLOR + GNU-style LS_COLORS for tools that read it)
 export CLICOLOR=YES
-export LSCOLORS="CxDxGxFxBxEgEdAbAgAcAd"
+export LSCOLORS="ExDxGxFxBxEgEdAbAgAcAd"
 export LS_COLORS="di=1;38;2;53;176;216:ln=38;2;255;231;109:so=38;2;242;36;140:pi=38;2;242;36;140:ex=1;38;2;252;70;81:bd=38;2;53;176;216;48;2;30;30;30:cd=38;2;53;176;216;48;2;30;30;30:su=38;2;30;30;30;48;2;252;70;81:sg=38;2;30;30;30;48;2;255;231;109:tw=38;2;30;30;30;48;2;86;208;179:ow=38;2;30;30;30;48;2;255;231;109"
 
 # Completion list colors (uses LS_COLORS above)
