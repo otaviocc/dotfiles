@@ -1,5 +1,8 @@
 .DS_Store
 *.local
+__pycache__/
+*.pyc
+.venv/
 
 # Exceptions: these *.local files are pre-committed relative symlinks that
 # make up the OS-overlay packages (see README "Handling Fedora vs macOS

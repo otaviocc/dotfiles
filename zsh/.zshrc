@@ -157,9 +157,17 @@ git-change-author() {
     return 1
   fi
 
-  # Perform the rebase operation
+  # Perform the rebase operation. sed's in-place flag differs between BSD
+  # (macOS, needs an empty suffix arg) and GNU (Linux, no suffix arg).
+  local sed_inplace
+  if sed --version >/dev/null 2>&1; then
+    sed_inplace="sed -i"          # GNU sed
+  else
+    sed_inplace="sed -i ''"       # BSD sed (macOS)
+  fi
+
   {
-    GIT_SEQUENCE_EDITOR="sed -i '' \"s/^pick ${commit}/edit ${commit}/\"" git rebase -i ${commit}~1^^ && \
+    GIT_SEQUENCE_EDITOR="${sed_inplace} \"s/^pick ${commit}/edit ${commit}/\"" git rebase -i ${commit}~1^^ && \
     GIT_COMMITTER_NAME="${author_name}" GIT_COMMITTER_EMAIL="${author_email}" git commit --amend --no-edit --author="${author}" && \
     git rebase --continue
   } &> /dev/null

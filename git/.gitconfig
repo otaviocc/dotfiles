@@ -31,8 +31,9 @@
 
 # Machine-specific overrides (gpg program, difftool, etc). This file is
 # tracked in the dotfiles repo (git/.gitconfig.linux and
-# git/.gitconfig.macos) but only ONE of them is linked to
-# ~/.gitconfig.local by install.sh, based on the OS it runs on — git's
-# config format has no OS conditionals, so this indirection is required.
+# git/.gitconfig.macos); the git-linux/git-macos overlay package stows a
+# pre-committed symlink so only the one matching `uname` ends up at
+# ~/.gitconfig.local — git's config format has no OS conditionals, so
+# this indirection is required.
 [include]
 	path = ~/.gitconfig.local

@@ -71,19 +71,26 @@ file(s) from that repo into the matching package here and commit.
 
 ### OpenCode skills
 
-`opencode/.config/opencode/skills/` tracks the skills that are genuinely
-mine and have no other repo backing them: `brrr`, `stash-cli`,
-`flac-to-alac` (its `scripts/` are tracked; the local `.venv/` it creates
-at runtime is not).
+`opencode/.config/opencode/skills/` tracks every skill that's genuinely
+mine and has no other repo backing it — media-organizing scripts
+(`organize-movies`, `organize-tv`, `organize-kids-shows`, `organize-music`,
+`flac-to-alac`, `add-episode-titles`, imported 2026-07-31 from the local
+`~/Developer/Skills` checkout) plus `brrr` and `stash-cli`. `flac-to-alac`'s
+and the others' `scripts/` are tracked; any local `.venv/` created at
+runtime is not.
+
+`immich-upload` was intentionally dropped (no longer used, and its script
+had a hardcoded Immich API key/instance URL — not something to commit even
+to a private repo).
 
 Third-party skills (e.g. `AvdLee/*-Agent-Skill` on GitHub) aren't vendored
 here — install/manage those separately (Claude Code plugins, manual clone,
 etc.) on whichever machine needs them. What matters for this repo is
 what's actually inside `opencode/.config/opencode/skills/`.
 
-Media-management skills (`immich-upload`, `rename-movies`, `rename-tv`,
-`tidy-kids-shows`) live in the still-unfinished `otaviocc/hometools` repo
-and aren't tracked here yet.
+`otaviocc/hometools` and the local `~/Developer/Skills` checkout are now
+superseded by this package — safe to archive/remove once this is verified
+on both machines.
 
 ## Usage
 
