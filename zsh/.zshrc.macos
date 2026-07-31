@@ -5,13 +5,12 @@ if [ -x /opt/homebrew/bin/brew ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# BSD ls color support
+# BSD ls color support. This alone makes every `ls` call (including the
+# l/la/ll/lla aliases in the shared .zshrc) auto-color on a TTY, same as
+# GNU's --color=auto below, so no -G flags are needed on the aliases.
 export CLICOLOR=1
 alias clipcopy="pbcopy"
 alias clippaste="pbpaste"
-alias l='ls -lG'
-alias la='ls -aG'
-alias lla='ls -lhFG'
 
 # Homebrew behavior
 export HOMEBREW_NO_ENV_HINTS=1

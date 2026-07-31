@@ -43,8 +43,16 @@ export OPENCODE_DISABLE_EXTERNAL_SKILLS=1
 # --- Aliases ---------------------------------------------------------------
 alias vim="nvim"
 alias h="herdr"
-alias ll="ls -lah"
 alias g="git"
+alias ..="cd .."
+
+# ls family. Actual coloring mechanism (CLICOLOR vs --color=auto) is set up
+# per-OS in .zshrc.macos / .zshrc.linux since BSD and GNU ls disagree on it;
+# these flags (-l/-a/-h/-F) are portable across both.
+alias ll="ls -lah"
+alias l="ls -lh"
+alias la="ls -a"
+alias lla="ls -lhaF"
 
 # --- Directory navigation ---------------------------------------------------
 

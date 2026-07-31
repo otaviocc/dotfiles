@@ -6,6 +6,8 @@ alias ls="ls --color=auto"
 # Clipboard helpers matching the tmux copy-mode bindings
 if command -v wl-copy >/dev/null 2>&1; then
   alias clipcopy="wl-copy"
+  alias clippaste="wl-paste"
 elif command -v xclip >/dev/null 2>&1; then
   alias clipcopy="xclip -selection clipboard"
+  alias clippaste="xclip -selection clipboard -o"
 fi
