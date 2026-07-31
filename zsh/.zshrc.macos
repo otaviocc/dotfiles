@@ -9,3 +9,285 @@ fi
 export CLICOLOR=1
 alias clipcopy="pbcopy"
 alias clippaste="pbpaste"
+alias l='ls -lG'
+alias la='ls -aG'
+alias lla='ls -lhFG'
+
+# Homebrew behavior
+export HOMEBREW_NO_ENV_HINTS=1
+export HOMEBREW_NO_REQUIRE_TAP_TRUST=1
+export HOMEBREW_NO_ASK=1
+
+# Obsidian CLI helpers on PATH
+export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
+
+# Update, upgrade, and clean Homebrew
+brew-magic() {
+  if ! command -v brew &> /dev/null; then
+    echo "Error: Homebrew is not installed. Please install it first." >&2
+    return 1
+  fi
+
+  brew update && \
+  brew upgrade && \
+  brew cleanup
+}
+
+# --- iOS Development ---------------------------------------------------------
+
+# List all available iOS simulators
+iossims-list() {
+  echo "NAME|STATE|UDID" | column -t -s '|'
+  xcrun simctl list devices | grep -v -e '^==' -e '^--' | sed -E 's/^[[:space:]]+(.+) \(([A-F0-9-]+)\) \((.+)\)/\1|\3|\2/' | column -t -s '|'
+}
+
+# Interactive menu to boot or shut down an iOS simulator
+iossims-menu() {
+  if ! command -v fzf &> /dev/null; then
+    echo "Error: fzf is not installed. Please install it to use this function." >&2
+    return 1
+  fi
+
+  local selection=$(xcrun simctl list devices | grep -v -e '^==' -e '^--' | sed -E 's/^[[:space:]]+(.+) \(([A-F0-9-]+)\) \((.+)\)/\1 (\3) \2/' | fzf)
+
+  if [[ -n "${selection}" ]]; then
+    local udid=$(echo "${selection}" | grep -oE '[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}')
+    local state=$(echo "${selection}" | grep -oE '\((Booted|Shutdown)\)' | tr -d '()')
+
+    if [[ "${state}" == "Booted" ]]; then
+      echo "Shutting down simulator with UDID: ${udid}"
+      xcrun simctl shutdown "${udid}"
+    else
+      echo "Booting simulator with UDID: ${udid}"
+      xcrun simctl boot "${udid}"
+    fi
+  else
+    echo "No simulator selected."
+  fi
+}
+
+# Record the screen of a booted iOS simulator
+iossims-record() {
+  if ! command -v fzf &> /dev/null; then
+    echo "Error: fzf is not installed. Please install it to use this function." >&2
+    return 1
+  fi
+
+  local booted_sims=$(xcrun simctl list devices | grep '(Booted)' | sed -E 's/^[[:space:]]+(.+) \(([A-F0-9-]+)\) \((.+)\)/\1 \2/')
+
+  if [[ -z "${booted_sims}" ]]; then
+    echo "No booted simulators found."
+    return 1
+  fi
+
+  local sim_count=$(echo "${booted_sims}" | wc -l | tr -d ' ')
+
+  local udid=""
+  if [[ "${sim_count}" -eq 1 ]]; then
+    udid=$(echo "${booted_sims}" | awk '{print $NF}')
+  else
+    local selection=$(echo "${booted_sims}" | fzf --prompt="Select a simulator to record: ")
+    if [[ -n "${selection}" ]]; then
+      udid=$(echo "${selection}" | awk '{print $NF}')
+    else
+      echo "No simulator selected."
+      return 1
+    fi
+  fi
+
+  local filename="${HOME}/Screenshots/sim_record_$(date +%Y%m%d_%H%M%S).mp4"
+  echo "Starting recording for simulator with UDID: ${udid}"
+  echo "Saving to: ${filename}"
+  echo "Press Ctrl-C to stop recording."
+
+  xcrun simctl io "${udid}" recordVideo "${filename}"
+}
+
+# --- Xcode / SwiftPM / Carthage ----------------------------------------------
+
+# Format Swift package with SwiftLint and SwiftFormat
+format-package() {
+  # Check if path argument is provided
+  if [[ $# -eq 0 ]]; then
+    echo "Error: Source path required"
+    echo "Usage: format-package <path-to-sources>"
+    echo "Example: format-package AppPackages/Sources/Stories/DeviceIntelligence/"
+    return 1
+  fi
+
+  # Check if required tools are installed
+  if ! command -v swiftlint &> /dev/null; then
+    echo "Error: swiftlint is not installed. Please install it to use this function." >&2
+    return 1
+  fi
+
+  if ! command -v swiftformat &> /dev/null; then
+    echo "Error: swiftformat is not installed. Please install it to use this function." >&2
+    return 1
+  fi
+
+  local sources_path="$1"
+
+  # Remove trailing slash if present
+  sources_path="${sources_path%/}"
+
+  # Check if sources path exists
+  if [[ ! -d "${sources_path}" ]]; then
+    echo "Error: Sources path not found: ${sources_path}"
+    return 1
+  fi
+
+  # Build tests path by replacing /Sources/ with /Tests/ and appending Tests to the last directory
+  if [[ ! "${sources_path}" =~ "/Sources/" ]]; then
+    echo "Error: Sources path must contain '/Sources/' directory" >&2
+    return 1
+  fi
+
+  local tests_path="${sources_path/\/Sources\//\/Tests\/}"
+  # Extract the last directory component and append Tests to it
+  local last_dir="${tests_path##*/}"
+  local base_path="${tests_path%/*}"
+
+  # Handle case where base_path might be empty (single directory)
+  if [[ -n "${base_path}" ]]; then
+    tests_path="${base_path}/${last_dir}Tests"
+  else
+    tests_path="${last_dir}Tests"
+  fi
+
+  echo "Processing package:"
+  echo "Sources path: ${sources_path}"
+  echo "Tests path: ${tests_path}"
+  echo ""
+
+  # Process Sources directory
+  echo "=== Running SwiftLint on Sources ==="
+  swiftlint lint --fix "${sources_path}"
+
+  echo ""
+  echo "=== Running SwiftFormat on Sources ==="
+  swiftformat "${sources_path}"
+  echo ""
+
+  # Process Tests directory
+  if [[ -d "${tests_path}" ]]; then
+    echo "=== Running SwiftLint on Tests ==="
+    swiftlint lint --fix "${tests_path}"
+
+    echo ""
+    echo "=== Running SwiftFormat on Tests ==="
+    swiftformat "${tests_path}"
+    echo ""
+  else
+    echo "Warning: Tests directory not found at ${tests_path}"
+    echo ""
+  fi
+
+  echo "✅ Formatting complete"
+}
+
+# Format Git Staged Swift Files using SwiftFormat
+format-staged() {
+  local staged_files
+  staged_files=($(git diff --cached --name-only --diff-filter=ACM | grep '\.swift$'))
+
+  if [[ ${#staged_files[@]} -eq 0 ]]; then
+    echo "No staged Swift files to format"
+    return 0
+  fi
+
+  swiftformat "${staged_files[@]}"
+  git add "${staged_files[@]}"
+
+  echo "✓ Done"
+}
+
+# Clear Xcode DerivedData and saved state
+xcode-clear() {
+  local derived_data_path="${HOME}/Library/Developer/Xcode/DerivedData"
+  if [[ -d "${derived_data_path}" ]]; then
+    echo "Removing DerivedData..."
+    rm -rf "${derived_data_path}"
+  else
+    echo "DerivedData directory not found, skipping."
+  fi
+
+  local saved_state_path="${HOME}/Library/Saved Application State/com.apple.dt.Xcode.savedState"
+  if [[ -d "${saved_state_path}" ]]; then
+    echo "Removing saved application state..."
+    rm -rf "${saved_state_path}"
+  else
+    echo "Saved application state not found, skipping."
+  fi
+}
+
+# Deep clean Xcode caches
+deep-xcode-clean() {
+  echo "This will perform a deep clean of Xcode, removing derived data, module caches, and other temporary files."
+  echo -n "Are you sure? [y/N] "
+  read -r confirm
+
+  if [[ "${confirm}" == "y" || "${confirm}" == "Y" ]]; then
+    local paths_to_remove=(
+      "${HOME}/Library/Developer/Xcode/DerivedData"
+      "${HOME}/Library/Developer/Xcode/ModuleCache.noindex"
+      "${HOME}/Library/Caches/org.swift.swiftpm"
+      "${HOME}/Library/org.swift.swiftpm"
+      "${HOME}/Library/Saved Application State/com.apple.dt.Xcode.savedState"
+    )
+
+    for path in "${paths_to_remove[@]}"; do
+      if [[ -e "${path}" ]]; then
+        echo "Removing ${path}..."
+        rm -rf "${path}"
+      else
+        echo "Path not found, skipping: ${path}"
+      fi
+    done
+
+    echo "Xcode deep clean complete."
+  else
+    echo "Operation cancelled."
+  fi
+}
+
+# Reset SwiftPM caches
+swiftpm-reset() {
+  echo "This will remove the global SwiftPM cache (${HOME}/.swiftpm) and the local .swiftpm directory."
+  echo -n "Are you sure? [y/N] "
+  read -r confirm
+
+  if [[ "${confirm}" == "y" || "${confirm}" == "Y" ]]; then
+    if [[ -d "${HOME}/.swiftpm" ]]; then
+      echo "Removing global SwiftPM cache..."
+      rm -rf "${HOME}/.swiftpm"
+    else
+      echo "Global SwiftPM cache not found, skipping."
+    fi
+
+    if [[ -d "./.swiftpm" ]]; then
+      echo "Removing local SwiftPM cache..."
+      rm -rf "./.swiftpm"
+    else
+      echo "Local SwiftPM cache not found, skipping."
+    fi
+    echo "SwiftPM caches have been reset."
+  else
+    echo "Operation cancelled."
+  fi
+}
+
+# Clear Carthage cache
+carthage-clear() {
+  local carthage_cache_paths=(
+    "${HOME}/Library/Caches/org.carthage.CarthageKit"
+    "${HOME}/Library/Caches/carthage"
+  )
+
+  for path in "${carthage_cache_paths[@]}"; do
+    if [[ -d "${path}" ]]; then
+      echo "Removing ${path}"
+      rm -rf "${path}"
+    fi
+  done
+}

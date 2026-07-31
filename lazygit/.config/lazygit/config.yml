@@ -1,4 +1,9 @@
 gui:
+  screenMode: 'halt'
+  showCommandLog: false
+  showBottomLine: false
+  showListFooter: false
+  portraitMode: 'always'
   theme:
     activeBorderColor:
       - '#56D0B3'

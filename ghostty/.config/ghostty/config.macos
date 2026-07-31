@@ -1,3 +1,9 @@
 # macOS-only Ghostty overrides.
 font-size = 13
 macos-option-as-alt = true
+window-width = 140
+window-height = 40
+
+# Custom Default+ dock icon, vendored as Ghostty.icns alongside this file
+# (Ghostty's built-in default path for macos-custom-icon).
+macos-icon = custom

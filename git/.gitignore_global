@@ -1,2 +1,4 @@
 .DS_Store
 node_modules
+otaviocc-*.mdc
+**/.claude/settings.local.json

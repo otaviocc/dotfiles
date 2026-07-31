@@ -12,3 +12,9 @@
 
 [difftool]
 	prompt = false
+
+# Work-only overrides (issue-tracker templates, SSH-signing key path, etc).
+# Untracked, created by hand on machines that need it — silently skipped
+# by git if the file doesn't exist (e.g. the personal Mac).
+[include]
+	path = ~/.gitconfig.local.work

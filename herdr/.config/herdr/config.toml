@@ -6,9 +6,21 @@
 onboarding = false
 
 [theme]
+# Built-in themes: catppuccin, terminal, tokyo-night, dracula, nord,
+#                  gruvbox, one-dark, solarized, kanagawa, rose-pine,
+#                  vesper
 name = "terminal"
 auto_switch = false
 
+# Follow host terminal light/dark appearance and switch Herdr UI themes.
+# Existing manual behavior is unchanged unless this is true.
+# dark_name = "catppuccin"
+# light_name = "catppuccin-latte"
+
+# Default+ palette (matches ghostty/nvim/tig/lazygit/opencode/zsh):
+# bg #1E1E1E, panel #181818, fg #FFFFFF, muted #4D4D4D,
+# red #FC4651, green #2EA85B, yellow #FFE76D, blue #35B0D8,
+# magenta #F2248C, cyan #56D0B3
 [theme.custom]
 accent = "#56D0B3"
 panel_bg = "#181818"
@@ -103,7 +115,6 @@ detach = "prefix+d"
 # close_pane = "prefix+x"
 # zoom = "prefix+z"       # legacy alias: fullscreen
 # resize_mode = "prefix+r"
-
 toggle_sidebar = "prefix+b"
 
 # Navigate-mode movement. These local shortcuts win while navigate mode is open.
@@ -178,7 +189,7 @@ toggle_sidebar = "prefix+b"
 # pane_gaps = true
 
 # Show detected/reported agent labels in split pane borders when no manual pane name is set.
-# show_agent_labels_on_pane_borders = false
+show_agent_labels_on_pane_borders = true
 
 # Agent panel ordering: "spaces" (grouped by space) or "priority" (attention queue).
 # "workspaces" is accepted as an alias for "spaces".
@@ -189,7 +200,7 @@ toggle_sidebar = "prefix+b"
 # accent = "cyan"
 
 # Background notification popup delivery
-show_agent_labels_on_pane_borders = true
+agent_panel_sort = "priority"
 [ui.toast]
 # off = disable pop-up notifications
 # herdr = show in-app toasts
@@ -198,7 +209,7 @@ show_agent_labels_on_pane_borders = true
 # delivery = "off"
 # delay_seconds = 1
 
-delivery = "terminal"
+delivery = "herdr"
 [ui.toast.herdr]
 # position = "bottom-right"
 
@@ -219,6 +230,7 @@ delivery = "terminal"
 # [ui.sound.agents]
 # droid = "off"
 
+enabled = true
 [session]
 # Resume supported AI-agent panes into their native conversation sessions after
 # a Herdr server restart. Requires official integrations that report session refs.
@@ -262,6 +274,7 @@ pane_history = false
 # Values: block, steady_block (default), underline, steady_underline, bar, steady_bar.
 # cjk_ime_cursor_shape = "steady_block"
 
+switch_ascii_input_source_in_prefix = false
 [advanced]
 # Maximum scrollback buffer size in bytes retained per pane terminal.
 # Matches Ghostty's default scrollback-limit behavior.
