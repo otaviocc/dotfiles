@@ -1,2 +1,8 @@
 [commit]
 	gpgsign = false
+
+# Per-machine overrides (user.email, SSH-signing key path, issue-tracker
+# templates, etc). Untracked, created by hand on whichever machine needs
+# it — silently skipped by git if the file doesn't exist.
+[include]
+	path = ~/.gitconfig.local.machine
