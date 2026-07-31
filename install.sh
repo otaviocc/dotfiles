@@ -61,7 +61,16 @@ backup_conflicts() {
   while IFS= read -r -d '' src; do
     local rel="${src#"$pkg_dir"/}"
     local target="$HOME/$rel"
-    if [ -e "$target" ] && [ ! -L "$target" ]; then
+    [ -e "$target" ] || continue
+    # If an ancestor directory of $target is already a symlink (Stow folded
+    # this subtree into the package on a previous run), $target resolves
+    # straight back into $src even though the leaf itself isn't a symlink.
+    # That's not a real conflict -- skip it, or we'd "back up" (i.e. delete)
+    # the package's own source file out from under the repo.
+    if [ "$(readlink -f -- "$target" 2>/dev/null)" = "$(readlink -f -- "$src" 2>/dev/null)" ]; then
+      continue
+    fi
+    if [ ! -L "$target" ]; then
       mkdir -p "$BACKUP_DIR/$(dirname "$rel")"
       log "Backing up existing ~/$rel -> $BACKUP_DIR/$rel"
       mv "$target" "$BACKUP_DIR/$rel"
