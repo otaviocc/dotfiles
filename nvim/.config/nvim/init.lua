@@ -55,6 +55,7 @@ vim.api.nvim_create_autocmd("FileType", {
 local telescope = require('telescope')
 telescope.setup({
     defaults = {
+        hidden = true,
         file_ignore_patterns = {
             "node_modules/.*",
             "_site/.*", 
