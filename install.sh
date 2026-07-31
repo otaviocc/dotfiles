@@ -18,6 +18,10 @@
 #      "~/Library/Application Support/Code/User" separately, since that path
 #      is completely different from the Linux/XDG one and Stow only supports
 #      a single target directory per invocation.
+#   6. Re-links third-party OpenCode skills that live in Claude Code's
+#      plugin-managed ~/.agents/skills (see README) if present, so they show
+#      up under ~/.config/opencode/skills without being vendored into this
+#      repo. Silently skipped if the Claude Code plugins aren't installed.
 
 set -euo pipefail
 
@@ -102,6 +106,25 @@ setup_vscode_macos() {
   ln -sfn "$DOTFILES_DIR/vscode/.config/Code/User/settings.json" "$target_dir/settings.json"
 }
 
+# Skills installed via Claude Code plugins (AvdLee's Swift/Xcode agent-skill
+# repos) land in ~/.agents/skills, managed and updated by Claude Code itself.
+# We don't vendor copies of them here — just re-create the symlink into
+# ~/.config/opencode/skills on any machine that already has the plugin
+# installed. No-op (and no error) if a given skill isn't installed.
+PLUGIN_SKILLS=(swift-concurrency swift-testing-expert swiftui-expert-skill xcode-disk-cleanup)
+
+setup_opencode_plugin_skills() {
+  local agents_skills="$HOME/.agents/skills"
+  [ -d "$agents_skills" ] || return 0
+  mkdir -p "$HOME/.config/opencode/skills"
+  for skill in "${PLUGIN_SKILLS[@]}"; do
+    if [ -d "$agents_skills/$skill" ]; then
+      log "Linking ~/.config/opencode/skills/$skill -> ~/.agents/skills/$skill (Claude Code plugin)"
+      ln -sfn "$agents_skills/$skill" "$HOME/.config/opencode/skills/$skill"
+    fi
+  done
+}
+
 main() {
   ensure_stow
   mkdir -p "$HOME/.config"
@@ -119,6 +142,9 @@ main() {
   fi
   if printf '%s\n' "${PACKAGES[@]}" | grep -qx ghostty; then
     setup_ghostty_local_include
+  fi
+  if printf '%s\n' "${PACKAGES[@]}" | grep -qx opencode; then
+    setup_opencode_plugin_skills
   fi
 
   if [ -d "$BACKUP_DIR" ]; then

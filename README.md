@@ -70,6 +70,28 @@ file(s) from that repo into the matching package here and commit.
   `.plugins.lock` — runtime state, not config; only `config.toml` is
   tracked.
 
+### OpenCode skills
+
+`opencode/.config/opencode/skills/` tracks the skills that are genuinely
+mine and have no other repo backing them: `brrr`, `stash-cli`,
+`flac-to-alac` (its `scripts/` are tracked; the local `.venv/` it creates
+at runtime is not).
+
+Four other skills — `swift-concurrency`, `swift-testing-expert`,
+`swiftui-expert-skill`, `xcode-disk-cleanup` — are **not** vendored here.
+They're third-party (`AvdLee/*-Agent-Skill` on GitHub), installed and kept
+up to date via Claude Code's plugin/marketplace system into
+`~/.agents/skills/<name>`. `install.sh` re-creates the symlink from
+`~/.config/opencode/skills/<name>` to `~/.agents/skills/<name>` on any
+package install that includes `opencode`, but only if the plugin is
+already installed — install the Claude Code plugins first on a new
+machine, then run `./install.sh opencode` (or just re-run it) to pick
+them up.
+
+Media-management skills (`immich-upload`, `rename-movies`, `rename-tv`,
+`tidy-kids-shows`) live in the still-unfinished `otaviocc/hometools` repo
+and aren't tracked here yet.
+
 ## Usage
 
 ```bash

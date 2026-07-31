@@ -4,12 +4,6 @@
 [gpg]
 	program = /opt/homebrew/bin/gpg
 
-[diff]
-	tool = Kaleidoscope
-
-[difftool "Kaleidoscope"]
-	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
-
 [difftool]
 	prompt = false
 
