@@ -10,18 +10,14 @@
 #   1. Makes sure GNU Stow is installed (dnf on Fedora, brew on macOS).
 #   2. Backs up any real (non-symlink) files/dirs that would collide with a
 #      package, so `stow` can safely take over.
-#   3. Symlinks every requested package from this repo into $HOME.
-#   4. Wires up the OS-specific "local include" files that formats like git
-#      and Ghostty can't branch on internally (git/.gitconfig.local,
-#      ghostty config.local).
-#   5. On macOS, symlinks VS Code settings into
-#      "~/Library/Application Support/Code/User" separately, since that path
-#      is completely different from the Linux/XDG one and Stow only supports
-#      a single target directory per invocation.
-#   6. Re-links third-party OpenCode skills that live in Claude Code's
-#      plugin-managed ~/.agents/skills (see README) if present, so they show
-#      up under ~/.config/opencode/skills without being vendored into this
-#      repo. Silently skipped if the Claude Code plugins aren't installed.
+#   3. Symlinks every requested package from this repo into $HOME. If a
+#      package has an OS-specific overlay (e.g. `git-macos`, `git-linux`),
+#      that gets stowed right after it. Overlays only ever contain a
+#      pre-committed relative symlink (e.g. git-macos/.gitconfig.local ->
+#      ../git/.gitconfig.macos) for formats like git and Ghostty that can't
+#      branch on `uname` internally but do unconditionally include a
+#      "local" file. Stow creates the actual ~/.gitconfig.local symlink;
+#      this script never calls `ln` itself.
 
 set -euo pipefail
 
@@ -29,7 +25,13 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKUP_DIR="$HOME/.dotfiles-backup-$(date +%Y%m%d%H%M%S)"
 OS="$(uname -s)"
 
-ALL_PACKAGES=(zsh git nvim tmux ghostty lazygit tig herdr opencode vscode)
+case "$OS" in
+  Darwin) OS_SUFFIX="macos" ;;
+  Linux)  OS_SUFFIX="linux" ;;
+  *)      OS_SUFFIX="" ;;
+esac
+
+ALL_PACKAGES=(zsh git nvim tmux ghostty lazygit tig herdr opencode)
 PACKAGES=("${@:-${ALL_PACKAGES[@]}}")
 
 log() { printf '==> %s\n' "$1"; }
@@ -75,77 +77,17 @@ stow_package() {
   stow -d "$DOTFILES_DIR" -t "$HOME" -R "$package"
 }
 
-setup_git_local_include() {
-  local target
-  case "$OS" in
-    Darwin) target="$DOTFILES_DIR/git/.gitconfig.macos" ;;
-    Linux)  target="$DOTFILES_DIR/git/.gitconfig.linux" ;;
-    *) echo "Unsupported OS for git local include: $OS" >&2; return 0 ;;
-  esac
-  log "Linking ~/.gitconfig.local -> $target"
-  ln -sfn "$target" "$HOME/.gitconfig.local"
-}
-
-setup_ghostty_local_include() {
-  [ -d "$HOME/.config/ghostty" ] || return 0
-  local target
-  case "$OS" in
-    Darwin) target="$DOTFILES_DIR/ghostty/.config/ghostty/config.macos" ;;
-    Linux)  target="$DOTFILES_DIR/ghostty/.config/ghostty/config.linux" ;;
-    *) return 0 ;;
-  esac
-  log "Linking ~/.config/ghostty/config.local -> $target"
-  ln -sfn "$target" "$HOME/.config/ghostty/config.local"
-}
-
-setup_vscode_macos() {
-  [ "$OS" = "Darwin" ] || return 0
-  local target_dir="$HOME/Library/Application Support/Code/User"
-  mkdir -p "$target_dir"
-  log "Linking VS Code settings into $target_dir (macOS path differs from Linux)"
-  ln -sfn "$DOTFILES_DIR/vscode/.config/Code/User/settings.json" "$target_dir/settings.json"
-}
-
-# Skills installed via Claude Code plugins (AvdLee's Swift/Xcode agent-skill
-# repos) land in ~/.agents/skills, managed and updated by Claude Code itself.
-# We don't vendor copies of them here — just re-create the symlink into
-# ~/.config/opencode/skills on any machine that already has the plugin
-# installed. No-op (and no error) if a given skill isn't installed.
-PLUGIN_SKILLS=(swift-concurrency swift-testing-expert swiftui-expert-skill xcode-disk-cleanup)
-
-setup_opencode_plugin_skills() {
-  local agents_skills="$HOME/.agents/skills"
-  [ -d "$agents_skills" ] || return 0
-  mkdir -p "$HOME/.config/opencode/skills"
-  for skill in "${PLUGIN_SKILLS[@]}"; do
-    if [ -d "$agents_skills/$skill" ]; then
-      log "Linking ~/.config/opencode/skills/$skill -> ~/.agents/skills/$skill (Claude Code plugin)"
-      ln -sfn "$agents_skills/$skill" "$HOME/.config/opencode/skills/$skill"
-    fi
-  done
-}
-
 main() {
   ensure_stow
-  mkdir -p "$HOME/.config"
 
   for package in "${PACKAGES[@]}"; do
-    if [ "$package" = "vscode" ] && [ "$OS" = "Darwin" ]; then
-      setup_vscode_macos
-      continue
-    fi
     stow_package "$package"
-  done
 
-  if printf '%s\n' "${PACKAGES[@]}" | grep -qx git; then
-    setup_git_local_include
-  fi
-  if printf '%s\n' "${PACKAGES[@]}" | grep -qx ghostty; then
-    setup_ghostty_local_include
-  fi
-  if printf '%s\n' "${PACKAGES[@]}" | grep -qx opencode; then
-    setup_opencode_plugin_skills
-  fi
+    overlay="${package}-${OS_SUFFIX}"
+    if [ -n "$OS_SUFFIX" ] && [ -d "$DOTFILES_DIR/$overlay" ]; then
+      stow_package "$overlay"
+    fi
+  done
 
   if [ -d "$BACKUP_DIR" ]; then
     log "Existing files were backed up to $BACKUP_DIR"

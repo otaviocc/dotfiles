@@ -16,7 +16,6 @@ zsh/.zsh_default-plus.zsh                                          lazygit/.conf
                                                                     tig/.config/tig/...
                                                                     herdr/.config/herdr/...
                                                                     opencode/.config/opencode/...
-                                                                    vscode/.config/Code/User/...
 ```
 
 ### Handling Fedora vs macOS differences
@@ -30,14 +29,14 @@ by hand after cloning:
   file. Zero setup required.
 - **git, Ghostty** — these config formats can't branch on their own, so
   both OS variants are tracked (`git/.gitconfig.linux` /
-  `.gitconfig.macos`, `ghostty/.config/ghostty/config.linux` / `.macos`)
-  and `install.sh` symlinks the right one to `~/.gitconfig.local` /
-  `~/.config/ghostty/config.local` — a name each main config already
-  includes unconditionally.
-- **VS Code** — the settings path is completely different on macOS
-  (`~/Library/Application Support/Code/User/`) vs Linux
-  (`~/.config/Code/User/`). `install.sh` handles this as a special case
-  outside of Stow.
+  `.gitconfig.macos`, `ghostty/.config/ghostty/config.linux` / `.macos`).
+  A tiny OS-specific overlay package (`git-macos`/`git-linux`,
+  `ghostty-macos`/`ghostty-linux`) carries a pre-committed relative
+  symlink — e.g. `git-macos/.gitconfig.local -> ../git/.gitconfig.macos`
+  — for the `.gitconfig.local` / `config.local` name each main config
+  already includes unconditionally. `install.sh` just stows whichever
+  overlay matches `uname`; Stow creates the actual `~/.gitconfig.local`
+  symlink, same as for any other package file.
 
 ### The Default+ theme
 
@@ -77,16 +76,10 @@ mine and have no other repo backing them: `brrr`, `stash-cli`,
 `flac-to-alac` (its `scripts/` are tracked; the local `.venv/` it creates
 at runtime is not).
 
-Four other skills — `swift-concurrency`, `swift-testing-expert`,
-`swiftui-expert-skill`, `xcode-disk-cleanup` — are **not** vendored here.
-They're third-party (`AvdLee/*-Agent-Skill` on GitHub), installed and kept
-up to date via Claude Code's plugin/marketplace system into
-`~/.agents/skills/<name>`. `install.sh` re-creates the symlink from
-`~/.config/opencode/skills/<name>` to `~/.agents/skills/<name>` on any
-package install that includes `opencode`, but only if the plugin is
-already installed — install the Claude Code plugins first on a new
-machine, then run `./install.sh opencode` (or just re-run it) to pick
-them up.
+Third-party skills (e.g. `AvdLee/*-Agent-Skill` on GitHub) aren't vendored
+here — install/manage those separately (Claude Code plugins, manual clone,
+etc.) on whichever machine needs them. What matters for this repo is
+what's actually inside `opencode/.config/opencode/skills/`.
 
 Media-management skills (`immich-upload`, `rename-movies`, `rename-tv`,
 `tidy-kids-shows`) live in the still-unfinished `otaviocc/hometools` repo
@@ -105,8 +98,10 @@ cd ~/.dotfiles
 - install `stow` if it's missing (`dnf` / `brew`),
 - back up any real (non-symlink) files it would otherwise overwrite to
   `~/.dotfiles-backup-<timestamp>` before linking,
-- wire up the git/Ghostty local-include symlinks,
-- special-case VS Code on macOS.
+- stow each requested package, plus its OS-specific overlay package if one
+  exists (e.g. `git` + `git-macos`). Every symlink in `$HOME`, including
+  the local-include ones, is created by `stow` itself — `install.sh`
+  never calls `ln`.
 
 Re-run `./install.sh <package>` any time after editing a file in the repo
 that isn't already a symlink target (new files need re-stowing).

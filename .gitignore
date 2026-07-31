@@ -1,2 +1,10 @@
 .DS_Store
 *.local
+
+# Exceptions: these *.local files are pre-committed relative symlinks that
+# make up the OS-overlay packages (see README "Handling Fedora vs macOS
+# differences"), not machine-local runtime state.
+!/git-macos/.gitconfig.local
+!/git-linux/.gitconfig.local
+!/ghostty-macos/.config/ghostty/config.local
+!/ghostty-linux/.config/ghostty/config.local
