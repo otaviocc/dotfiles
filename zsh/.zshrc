@@ -20,6 +20,7 @@ setopt HIST_IGNORE_SPACE
 autoload -Uz compinit
 compinit
 zstyle ':completion:*' menu select
+setopt globdots  # include hidden files in TAB completion and globbing
 
 # --- Prompt / VCS info ---------------------------------------------------
 autoload -Uz vcs_info
