@@ -39,10 +39,9 @@ alias ll="ls -lah"
 alias g="git"
 
 # --- Default+ theme (colors, prompt, LS_COLORS) --------------------------
-# Lives in a separate repo: https://github.com/otaviocc/default-plus
-# `install.sh` clones it to ~/Developer/default-plus if missing.
-[ -f "$HOME/Developer/default-plus/zsh/default-plus.zsh" ] && \
-  source "$HOME/Developer/default-plus/zsh/default-plus.zsh"
+# Vendored from https://github.com/otaviocc/default-plus (see README for
+# how to re-sync if the palette changes upstream).
+[ -f "$HOME/.zsh_default-plus.zsh" ] && source "$HOME/.zsh_default-plus.zsh"
 
 # --- OS-specific config ---------------------------------------------------
 case "$(uname -s)" in

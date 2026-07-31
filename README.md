@@ -12,8 +12,9 @@ path it should end up at under `$HOME`:
 zsh/.zshrc                       git/.gitconfig                  nvim/.config/nvim/...
 zsh/.zshrc.linux                 git/.gitconfig.linux             tmux/.config/tmux/...
 zsh/.zshrc.macos                 git/.gitconfig.macos             ghostty/.config/ghostty/...
-                                                                    lazygit/.config/lazygit/...
+zsh/.zsh_default-plus.zsh                                          lazygit/.config/lazygit/...
                                                                     tig/.config/tig/...
+                                                                    herdr/.config/herdr/...
                                                                     opencode/.config/opencode/...
                                                                     vscode/.config/Code/User/...
 ```
@@ -38,17 +39,36 @@ by hand after cloning:
   (`~/.config/Code/User/`). `install.sh` handles this as a special case
   outside of Stow.
 
+### The Default+ theme
+
+[`default-plus`](https://github.com/otaviocc/default-plus) is the
+canonical source for this color theme (it also covers Xcode and other
+non-dotfile contexts, so it stays its own repo). The bits each tool here
+needs are **vendored directly** into the relevant package, so a fresh
+`./install.sh` run never has to reach out to another repo:
+
+| Tool | Vendored as |
+|---|---|
+| Ghostty | `ghostty/.config/ghostty/themes/Default+` |
+| Neovim | `nvim/.config/nvim/colors/default-plus.lua` |
+| zsh (prompt/colors/`LS_COLORS`) | `zsh/.zsh_default-plus.zsh` |
+| opencode | `opencode/.config/opencode/themes/default-plus.json` |
+| lazygit, tig, herdr | merged directly into their config files (no separate theme file needed) |
+
+If the palette changes upstream in `default-plus`, re-copy the affected
+file(s) from that repo into the matching package here and commit.
+
 ### Things intentionally *not* in this repo
 
 - Secrets: `~/.ssh`, `~/.gnupg`, `~/.config/gh` (has tokens), `~/.putty`.
-- The [`default-plus`](https://github.com/otaviocc/default-plus) color
-  theme — it's its own repo (also used by Xcode and other non-dotfile
-  contexts), consumed by `install.sh` rather than duplicated here.
 - Anything from the old `~/Developer/dot.config` repo that isn't listed
   above (fish config, lsd, starship) — dropped since we standardized on
   zsh; revive them here as their own package if you go back to fish.
 - `oh-my-zsh` itself — the framework is gone; `zsh/.zshrc` is a small
   plain config now.
+- herdr's log files, `session.json`, `release-notes.json`,
+  `.plugins.lock` — runtime state, not config; only `config.toml` is
+  tracked.
 
 ## Usage
 
@@ -64,8 +84,6 @@ cd ~/.dotfiles
 - back up any real (non-symlink) files it would otherwise overwrite to
   `~/.dotfiles-backup-<timestamp>` before linking,
 - wire up the git/Ghostty local-include symlinks,
-- clone `default-plus` into `~/Developer/default-plus` and copy its theme
-  files into place,
 - special-case VS Code on macOS.
 
 Re-run `./install.sh <package>` any time after editing a file in the repo

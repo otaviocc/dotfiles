@@ -14,11 +14,7 @@
 #   4. Wires up the OS-specific "local include" files that formats like git
 #      and Ghostty can't branch on internally (git/.gitconfig.local,
 #      ghostty config.local).
-#   5. Clones github.com/otaviocc/default-plus (theme repo, kept separate on
-#      purpose) into ~/Developer/default-plus if missing, and copies the
-#      theme files into the tools that expect a literal copy rather than a
-#      symlink (Ghostty theme, Neovim colorscheme) per that repo's own README.
-#   6. On macOS, symlinks VS Code settings into
+#   5. On macOS, symlinks VS Code settings into
 #      "~/Library/Application Support/Code/User" separately, since that path
 #      is completely different from the Linux/XDG one and Stow only supports
 #      a single target directory per invocation.
@@ -29,7 +25,7 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKUP_DIR="$HOME/.dotfiles-backup-$(date +%Y%m%d%H%M%S)"
 OS="$(uname -s)"
 
-ALL_PACKAGES=(zsh git nvim tmux ghostty lazygit tig opencode vscode)
+ALL_PACKAGES=(zsh git nvim tmux ghostty lazygit tig herdr opencode vscode)
 PACKAGES=("${@:-${ALL_PACKAGES[@]}}")
 
 log() { printf '==> %s\n' "$1"; }
@@ -98,23 +94,6 @@ setup_ghostty_local_include() {
   ln -sfn "$target" "$HOME/.config/ghostty/config.local"
 }
 
-setup_default_plus() {
-  local repo_dir="$HOME/Developer/default-plus"
-  if [ ! -d "$repo_dir" ]; then
-    log "Cloning default-plus theme repo into $repo_dir"
-    git clone git@github.com:otaviocc/default-plus.git "$repo_dir"
-  fi
-
-  if [ -d "$HOME/.config/ghostty" ]; then
-    mkdir -p "$HOME/.config/ghostty/themes"
-    cp "$repo_dir/ghostty/Default+" "$HOME/.config/ghostty/themes/Default+"
-  fi
-  if [ -d "$HOME/.config/nvim/lua" ]; then
-    mkdir -p "$HOME/.config/nvim/colors"
-    cp "$repo_dir/nvim/colors/default-plus.lua" "$HOME/.config/nvim/colors/default-plus.lua"
-  fi
-}
-
 setup_vscode_macos() {
   [ "$OS" = "Darwin" ] || return 0
   local target_dir="$HOME/Library/Application Support/Code/User"
@@ -140,7 +119,6 @@ main() {
   fi
   if printf '%s\n' "${PACKAGES[@]}" | grep -qx ghostty; then
     setup_ghostty_local_include
-    setup_default_plus
   fi
 
   if [ -d "$BACKUP_DIR" ]; then
