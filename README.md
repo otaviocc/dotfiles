@@ -88,9 +88,11 @@ here — install/manage those separately (Claude Code plugins, manual clone,
 etc.) on whichever machine needs them. What matters for this repo is
 what's actually inside `opencode/.config/opencode/skills/`.
 
-`otaviocc/hometools` and the local `~/Developer/Skills` checkout are now
-superseded by this package — safe to archive/remove once this is verified
-on both machines.
+`otaviocc/hometools` and the local `~/Developer/Skills` checkout are
+superseded by this package. Both local checkouts (`~/Developer/Scripts`,
+`~/Developer/Skills`) have been removed from the Fedora machine
+(2026-07-31); `otaviocc/hometools` can be archived on GitHub once the
+other machine(s) are confirmed to no longer need it.
 
 ## Usage
 
@@ -136,8 +138,11 @@ that isn't already a symlink target (new files need re-stowing).
   pushed and verified on both machines, archive or delete
   `otaviocc/dot.config` on GitHub and remove the local
   `~/Developer/dot.config` checkout.
-- `otaviocc/hometools` (OpenCode skills/scripts) stays a separate repo —
-  not dotfiles.
+- `otaviocc/hometools` (OpenCode skills/scripts) is superseded by
+  `opencode/.config/opencode/skills/` in this repo (see "OpenCode
+  skills" above) — the local `~/Developer/Scripts` checkout of it, and
+  the separate local-only `~/Developer/Skills` checkout, have both been
+  removed from the Fedora machine.
 - `~/.config/git/` (the old XDG-style git config) is redundant now that
   `~/.gitconfig` exists and takes precedence — safe to delete after
   `install.sh` runs.
