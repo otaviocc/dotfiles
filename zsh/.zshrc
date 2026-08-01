@@ -14,7 +14,30 @@ SAVEHIST=50000
 setopt APPEND_HISTORY
 setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS      # Remove older duplicate entries from history
 setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks from history items
+setopt INC_APPEND_HISTORY        # Save history entries as soon as they are entered
+
+# --- Options -------------------------------------------------------------
+
+# Directory navigation
+setopt AUTO_CD                   # Go to folder path without using cd
+setopt AUTO_PUSHD                # Push the old directory onto the stack on cd
+setopt PUSHD_IGNORE_DUPS         # Do not store duplicates in the stack
+setopt PUSHD_SILENT              # Do not print the directory stack after pushd or popd
+
+# Completion
+setopt COMPLETE_IN_WORD          # Complete from both ends of a word
+setopt ALWAYS_TO_END             # Move cursor to the end of a completed word
+setopt AUTO_MENU                 # Show completion menu on a successive tab press
+setopt AUTO_LIST                 # Automatically list choices on ambiguous completion
+unsetopt MENU_COMPLETE           # Don't auto-insert first completion
+setopt AUTO_PARAM_SLASH          # Add trailing slash for directory completions
+setopt LIST_PACKED               # Compact completion lists
+
+# Misc
+setopt INTERACTIVE_COMMENTS      # Allow comments in interactive mode
 
 # --- Completion ----------------------------------------------------------
 autoload -Uz compinit
@@ -189,6 +212,23 @@ git-change-author() {
   fi
 }
 
+# --- Key bindings --------------------------------------------------------
+
+bindkey -e
+
+# History search with arrow keys
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "^[[A" up-line-or-beginning-search
+bindkey "^[[B" down-line-or-beginning-search
+
+# Home / End / Delete
+bindkey '^[[H' beginning-of-line
+bindkey '^[[F' end-of-line
+bindkey '^[[3~' delete-char
+
 # --- Default+ theme (colors, prompt, LS_COLORS) --------------------------
 # Default+ palette: bg #1E1E1E, fg #FFFFFF, muted #4D4D4D, blue #35B0D8,
 # yellow #FFE76D, red #FC4651, magenta #F2248C, cyan #56D0B3, green #2EA85B.
@@ -209,6 +249,9 @@ zstyle ':vcs_info:git:*' formats '%F{#FFE76D}%b%f '
 
 setopt PROMPT_SUBST
 PROMPT=$'%F{#56D0B3}%~%f ${vcs_info_msg_0_}\n%F{#8E8E8E}$%f '
+
+# --- GPG -----------------------------------------------------------------
+export GPG_TTY=$(tty)
 
 # --- OS-specific config ---------------------------------------------------
 case "$(uname -s)" in

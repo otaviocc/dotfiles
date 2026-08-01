@@ -4,11 +4,31 @@
 
 [alias]
 	st = status -s
+	s = status -s
 	co = checkout
 	ci = commit
-	lg = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	ll = log --oneline
+	last = log -10 --pretty=format:"%h %an: %s"
+	br = branch --format="%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]" --sort=-committerdate
 	sync = "!f() { git fetch --all --prune && git rebase --rebase-merges --autostash $1; }; f"
 	set-upstream = !git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD)
+	sw = switch
+	swc = switch -c
+	bd = branch -d
+	bra = branch -a
+	cm = commit -m
+	amend = commit --amend --no-edit
+	amendedit = commit --amend
+	ac = !git add -A && git commit -m
+	unstage = reset HEAD --
+	discard = checkout --
+	undo = reset --soft HEAD^
+	nuke = reset --hard HEAD
+	fa = fetch --all
+	pr = pull --rebase
+	po = push origin
+	pushf = push --force-with-lease
 
 [core]
 	quotepath = false
