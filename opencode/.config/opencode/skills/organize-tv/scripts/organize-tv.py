@@ -272,6 +272,7 @@ def main():
     moves = []
     warnings = []
     old_dirs = []
+    _tv_canonical = {}  # case-insensitive show folder -> canonical title
 
     def plan_episode(src_path, ident, title, ss, ee, ee2, kind, ext):
         if MINIMAL:
@@ -311,6 +312,13 @@ def main():
         if ident is None:
             warnings.append(f"could not parse show folder (left as-is): {entry}")
             continue
+
+        # normalize title against previously seen identities (case-insensitive)
+        lower_key = show_folder_name(ident, True).lower()
+        if lower_key in _tv_canonical:
+            ident.title = _tv_canonical[lower_key]
+        else:
+            _tv_canonical[lower_key] = ident.title
 
         new_show_dir = os.path.join(root, show_folder_name(ident, True))
         old_dirs.append(full)
@@ -372,6 +380,12 @@ def main():
             ident2 = parse_show_identity(sub)
             if ident2 is None:
                 ident2 = ShowIdentity(fn.split(".")[0].replace(".", " ").replace("_", " ").strip(), 0)
+            # normalize title against previously seen identities (case-insensitive)
+            lower_key = show_folder_name(ident2, True).lower()
+            if lower_key in _tv_canonical:
+                ident2.title = _tv_canonical[lower_key]
+            else:
+                _tv_canonical[lower_key] = ident2.title
             plan_episode(os.path.join(root, fn), ident2, title, ss, ee, ee2, kind, ext)
 
     done = skipped = 0

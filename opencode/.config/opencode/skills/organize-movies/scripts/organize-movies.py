@@ -259,7 +259,9 @@ def main():
                 loose.append(entry)
 
     # group loose root-level files by movie identity
-    groups = {}
+    # use a case-insensitive key to avoid duplicate folders from casing differences
+    groups = {}          # canonical_key -> (ident, target_dir)
+    canonical = {}       # lower_key -> first_title_seen
     for fn in loose:
         kind, _ = media_kind(fn)
         stem = os.path.splitext(fn)[0]
@@ -267,6 +269,11 @@ def main():
         if ident is None:
             warnings.append(f"could not parse (file left as-is): {fn}")
             continue
+        lower_key = folder_name(ident, editions_on).lower()
+        if lower_key not in canonical:
+            canonical[lower_key] = ident.title
+        else:
+            ident.title = canonical[lower_key]
         key = folder_name(ident, editions_on)
         groups.setdefault(key, ident)
         new_dir = os.path.join(root, key)
