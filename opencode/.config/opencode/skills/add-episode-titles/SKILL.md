@@ -24,6 +24,8 @@ Operates only on files already in the organized `Show Name (year) - sNNeNN.ext` 
 
 ## Usage
 
+Paths below are relative to this skill's directory.
+
 ```bash
 python3 scripts/add-episode-titles.py --root /path/to/tv
 ```
@@ -54,6 +56,8 @@ python3 scripts/add-episode-titles.py --root /path/to/tv --apply
 ## Notes
 
 - The show is resolved against TVMaze by title; a nearby premiere year gives a matching bonus, and the title must clear `--threshold` (default 0.75). Unmatched shows and episodes are reported and skipped, never guessed.
+- When no match clears the threshold, the three closest TVMaze candidates are printed with their similarity scores, so you can tell the user whether lowering `--threshold` would help or whether the show is genuinely absent.
+- Episode titles come from a remote API and routinely contain characters that are not legal in a filename. `/`, `\` and `|` become `-`; `:`, `?`, `"`, `*`, `<`, `>` are dropped. `"Hide and Seek: Part 1/2"` becomes `Hide and Seek Part 1-2`, never a stray subdirectory.
+- Matching is done once per show, so a full library takes roughly 0.7s per show (two API calls, rate-limited). Network errors are retried before the show is given up on.
+- Existing filenames are never overwritten; conflicts are reported and skipped before anything is renamed.
 - Runs after `organize-tv` when `--minimal` was used, or whenever a source release lacked episode titles.
-- Matching is done once per show, so a full library takes roughly 0.7s per show (two API calls, rate-limited).
-- Existing filenames are never overwritten; conflicts are reported and skipped.

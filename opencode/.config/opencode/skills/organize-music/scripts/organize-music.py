@@ -23,6 +23,8 @@ USAGE
 OPTIONS
     --root PATH         Directory to scan (default: current directory).
     --apply             Execute the moves (default is dry run).
+    --albumartist       Prefer the albumartist tag over artist for the top-level
+                        folder, so compilations and featured tracks stay together.
 """
 
 import argparse
@@ -31,16 +33,27 @@ import re
 import shutil
 import sys
 
-import mutagen
+try:
+    import mutagen
+except ImportError:
+    print("Error: mutagen is required. Install with: pip install mutagen",
+          file=sys.stderr)
+    sys.exit(1)
 
-AUDIO_EXTENSIONS = {".mp3", ".flac", ".m4a", ".ogg", ".aac", ".wma"}
+AUDIO_EXTENSIONS = {".mp3", ".flac", ".m4a", ".ogg", ".aac", ".wma", ".opus", ".wav"}
 
-UNSAFE_CHARS = re.compile(r'[\\/:*?"<>|]')
+# Characters that are illegal or troublesome in a path component on the
+# filesystems a media library is typically served from (APFS, ext4, SMB/NTFS).
+UNSAFE_DASH_RE = re.compile(r"[/\\|]")
+UNSAFE_DROP_RE = re.compile(r'[:?"*<>\x00-\x1f]')
 
 
-def sanitize(name):
-    """Remove filesystem-unsafe characters from a string."""
-    return UNSAFE_CHARS.sub("_", name).strip(". ")
+def safe_component(name):
+    """Make a string safe to use as a single path component."""
+    name = UNSAFE_DASH_RE.sub("-", name)
+    name = UNSAFE_DROP_RE.sub("", name)
+    name = re.sub(r"\s+", " ", name).strip(" .")
+    return name or "_"
 
 
 def _first(tags, key, default=None):
@@ -54,12 +67,12 @@ def _parse_int_prefix(value, default):
     if not value:
         return default
     try:
-        return int(value.split("/")[0].strip())
+        return int(str(value).split("/")[0].strip())
     except (ValueError, AttributeError):
         return default
 
 
-def read_tags(filepath):
+def read_tags(filepath, prefer_albumartist):
     """Read audio tags from a file. Returns None if required tags are missing
     or unusable (missing artist/album, or malformed tag data)."""
     try:
@@ -76,6 +89,9 @@ def read_tags(filepath):
 
     try:
         artist = _first(tags, "artist")
+        album_artist = _first(tags, "albumartist")
+        if prefer_albumartist:
+            artist = album_artist or artist
         album = _first(tags, "album")
         title = _first(tags, "title")
 
@@ -89,19 +105,14 @@ def read_tags(filepath):
         disc_num = _parse_int_prefix(_first(tags, "discnumber", "1"), 1)
 
         return {
-            "artist": sanitize(artist),
-            "album": sanitize(album),
-            "title": sanitize(title),
+            "artist": safe_component(artist),
+            "album": safe_component(album),
+            "title": safe_component(title),
             "track_num": track_num,
             "disc_num": disc_num,
         }
     except Exception:
         return None
-
-
-def build_target_dir(root, tags):
-    """Build the target directory path: root/Artist/Album."""
-    return os.path.join(root, tags["artist"], tags["album"])
 
 
 def build_target_filename(tags, ext, max_track):
@@ -118,28 +129,30 @@ def build_target_filename(tags, ext, max_track):
 def scan_files(root):
     """Recursively scan for audio files."""
     files = []
-    for dirpath, _dirs, filenames in os.walk(root):
+    for dirpath, dirs, filenames in os.walk(root):
+        dirs[:] = [d for d in dirs if not d.startswith(".")]
         for fn in filenames:
+            if fn.startswith("._"):      # macOS AppleDouble sidecar
+                continue
             if os.path.splitext(fn)[1].lower() in AUDIO_EXTENSIONS:
                 files.append(os.path.join(dirpath, fn))
     return sorted(files)
 
 
-def collect_moves(root, files):
+def collect_moves(root, files, prefer_albumartist):
     """Plan moves for all files. Returns (moves, warnings)."""
     album_tracks = {}
     file_tags = {}
-
     moves = []
     warnings = []
-    claimed = {}  # abspath(target) -> source filepath that already claimed it
 
     for filepath in files:
-        tags = read_tags(filepath)
+        tags = read_tags(filepath, prefer_albumartist)
         if tags is None:
-            warnings.append(f"missing or unreadable tags: {os.path.relpath(filepath, root)}")
+            warnings.append(
+                f"missing or unreadable tags: {os.path.relpath(filepath, root)}"
+            )
             continue
-
         file_tags[filepath] = tags
         key = (tags["artist"], tags["album"])
         album_tracks.setdefault(key, []).append(tags["track_num"])
@@ -147,49 +160,120 @@ def collect_moves(root, files):
     for filepath, tags in file_tags.items():
         key = (tags["artist"], tags["album"])
         max_track = max(album_tracks[key])
-
-        target_dir = build_target_dir(root, tags)
-        filename = build_target_filename(tags, os.path.splitext(filepath)[1].lower(),
-                                         max_track)
-        target_path = os.path.join(target_dir, filename)
-        target_abs = os.path.abspath(target_path)
-
-        if os.path.exists(target_path) and target_abs != os.path.abspath(filepath):
-            warnings.append(f"target exists, skipping: {os.path.relpath(target_path, root)}")
-            continue
-
-        if os.path.abspath(filepath) == target_abs:
-            continue
-
-        if target_abs in claimed:
-            warnings.append(
-                f"duplicate target, skipping: {os.path.relpath(filepath, root)} "
-                f"and {os.path.relpath(claimed[target_abs], root)} both map to "
-                f"{os.path.relpath(target_path, root)}"
-            )
-            continue
-
-        claimed[target_abs] = filepath
-        moves.append((filepath, target_path))
+        target_dir = os.path.join(root, tags["artist"], tags["album"])
+        filename = build_target_filename(
+            tags, os.path.splitext(filepath)[1].lower(), max_track
+        )
+        moves.append((filepath, os.path.join(target_dir, filename)))
 
     return moves, warnings
 
 
-def remove_empty_dirs(root):
-    """Remove empty directories recursively under root. Returns count removed."""
-    count = 0
-    for dirpath in sorted(
-        (os.path.join(dp, d) for dp, dirs, files in os.walk(root, topdown=False)
-         for d in dirs),
-        reverse=True,
-    ):
+def execute_moves(moves, root, apply):
+    """Print, validate and optionally perform a list of (src, dst) moves.
+
+    Resolves destinations claimed by several sources in favour of the largest
+    file, refuses to overwrite anything already on disk, and defers a move whose
+    destination is still held by a file that is itself scheduled to move away.
+    Returns (done, skipped, errors).
+    """
+    def rel(path):
+        return os.path.relpath(path, root)
+
+    def rank(item):
+        """Best candidate first: largest file, then longest name."""
+        try:
+            size = os.path.getsize(item[0])
+        except OSError:
+            size = 0
+        return (-size, -len(os.path.basename(item[0])), item[0])
+
+    problems = []
+    skipped = 0
+
+    order, by_dst = [], {}
+    for src, dst in moves:
+        if os.path.abspath(src) == os.path.abspath(dst):
+            continue
+        key = os.path.abspath(dst)
+        if key not in by_dst:
+            by_dst[key] = []
+            order.append(key)
+        by_dst[key].append((src, dst))
+
+    winners = []
+    for key in order:
+        items = by_dst[key]
+        if len(items) > 1:
+            items = sorted(items, key=rank)
+            for src, dst in items[1:]:
+                problems.append(
+                    f"duplicate target: keeping {rel(items[0][0])}, skipping "
+                    f"{rel(src)} (both map to {rel(dst)})"
+                )
+                skipped += 1
+        winners.append(items[0])
+
+    sources = {os.path.abspath(src) for src, _ in winners}
+    queue = []
+    for src, dst in winners:
+        in_place = False
+        if os.path.exists(dst):
+            try:
+                in_place = os.path.samefile(src, dst)
+            except OSError:
+                in_place = False
+            if not in_place and os.path.abspath(dst) not in sources:
+                problems.append(f"target exists, skipping: {rel(dst)}")
+                skipped += 1
+                continue
+        queue.append((src, dst, in_place))
+
+    for src, dst, _ in queue:
+        print(f"{rel(src)}\n   -> {rel(dst)}")
+    for problem in problems:
+        print(f"  !! {problem}")
+
+    if not apply:
+        return len(queue), skipped, 0
+
+    done = errors = 0
+    remaining = queue
+    while remaining:
+        ready = [m for m in remaining if m[2] or not os.path.exists(m[1])]
+        blocked = [m for m in remaining if not (m[2] or not os.path.exists(m[1]))]
+        if not ready:
+            for _src, dst, _flag in blocked:
+                print(f"  !! blocked, target still occupied: {rel(dst)}",
+                      file=sys.stderr)
+                skipped += 1
+            break
+        for src, dst, _flag in ready:
+            try:
+                os.makedirs(os.path.dirname(dst), exist_ok=True)
+                shutil.move(src, dst)
+                done += 1
+            except OSError as exc:
+                print(f"  !! error moving {rel(src)}: {exc}", file=sys.stderr)
+                errors += 1
+        remaining = blocked
+    return done, skipped, errors
+
+
+def prune_empty_dirs(root):
+    """Remove empty directories under root. Returns count removed."""
+    removed = 0
+    root_abs = os.path.abspath(root)
+    for dirpath, _dirs, _files in os.walk(root, topdown=False):
+        if os.path.abspath(dirpath) == root_abs:
+            continue
         try:
             if not os.listdir(dirpath):
                 os.rmdir(dirpath)
-                count += 1
+                removed += 1
         except OSError:
             pass
-    return count
+    return removed
 
 
 def main():
@@ -197,6 +281,8 @@ def main():
     ap.add_argument("--root", default=".", help="Directory to scan (default: .)")
     ap.add_argument("--apply", action="store_true",
                     help="Execute the moves (default is dry run)")
+    ap.add_argument("--albumartist", action="store_true",
+                    help="Prefer the albumartist tag for the top-level folder")
     args = ap.parse_args()
 
     root = os.path.abspath(args.root)
@@ -206,42 +292,34 @@ def main():
         print(f"Error: '{root}' is not a directory", file=sys.stderr)
         sys.exit(1)
 
-    print(f"root={root}  mode={'APPLY' if apply else 'DRY RUN'}")
+    print(f"root={root}  mode={'APPLY' if apply else 'DRY RUN'}  "
+          f"artist-tag={'albumartist' if args.albumartist else 'artist'}")
     print("-" * 70)
 
     files = scan_files(root)
     if not files:
         print("No audio files found.")
-        sys.exit(0)
+        return
 
-    moves, warnings = collect_moves(root, files)
+    moves, warnings = collect_moves(root, files, args.albumartist)
+    done, skipped, errors = execute_moves(moves, root, apply)
 
-    for src, dst in moves:
-        print(f"{os.path.relpath(src, root)}\n   -> {os.path.relpath(dst, root)}")
+    removed = prune_empty_dirs(root) if apply else 0
 
     print("-" * 70)
     for w in warnings:
         print(f"  ?? {w}")
-    print(f"{'moved' if apply else 'planned'}: {len(moves)}   "
-          f"warnings: {len(warnings)}   "
-          f"({'APPLY' if apply else 'DRY RUN — re-run with --apply to execute'})")
-
-    if not moves:
-        sys.exit(0)
-
-    if apply:
-        moved = 0
-        for src, dst in moves:
-            try:
-                os.makedirs(os.path.dirname(dst), exist_ok=True)
-                shutil.move(src, dst)
-                moved += 1
-            except Exception as e:
-                print(f"  Error moving {os.path.relpath(src, root)}: {e}",
-                      file=sys.stderr)
-
-        removed = remove_empty_dirs(root)
-        print(f"Moved {moved} files. Removed {removed} empty directories.")
+    summary = (f"{'moved' if apply else 'planned'}: {done}   skipped: {skipped}   "
+               f"warnings: {len(warnings)}")
+    if errors:
+        summary += f"   errors: {errors}"
+    if apply and removed:
+        summary += f"   empty folders removed: {removed}"
+    if not apply:
+        summary += "   (DRY RUN — re-run with --apply to execute)"
+    print(summary)
+    if errors:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
