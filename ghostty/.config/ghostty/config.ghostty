@@ -11,7 +11,7 @@ bold-color = bright
 split-divider-color = #2EA85B
 
 # Font (unset: use each OS's default monospace font)
-font-size = 11
+font-size = 13
 
 # Cursor
 cursor-style = block
