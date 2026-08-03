@@ -348,18 +348,20 @@ def build_album_note(album_data, tag, artwork_vault_path):
         fm_lines.append("year:")
     fm_lines.append(f"tracks: {n_tracks}")
     fm_lines.append(f"discs: {n_discs_tag}")
+    if artwork_vault_path:
+        fm_lines.append(f"cover: \"[[{artwork_vault_path}]]\"")
+    else:
+        fm_lines.append("cover:")
     fm_lines.append("tags:")
     fm_lines.append(f"  - {tag}")
     fm_lines.append("  - music/album")
     fm_lines.append("---")
-    fm_lines.append("")
 
     # ----- body -----
     body_lines = []
 
-    # Embedded cover
+    # Embedded cover (no leading blank line — a blank line after --- renders visibly)
     if artwork_vault_path:
-        # Use wikilink embed syntax; path relative to vault root
         body_lines.append(f"![[{artwork_vault_path}]]")
         body_lines.append("")
 
@@ -401,8 +403,19 @@ properties:
     displayName: Tracks
   discs:
     displayName: Discs
+  cover:
+    displayName: Cover
 
 views:
+  - type: cards
+    name: Covers
+    image: cover
+    imageFit: cover
+    order:
+      - album_artist
+      - year
+      - album
+
   - type: table
     name: All Albums
     order:
@@ -422,14 +435,6 @@ views:
     groupBy:
       property: album_artist
       direction: ASC
-
-  - type: cards
-    name: Gallery
-    order:
-      - file.name
-      - album_artist
-      - year
-      - tracks
 """
 
 ARTISTS_BASE = """\
