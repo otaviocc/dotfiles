@@ -265,7 +265,7 @@ def print_dry_run(library, warnings, root, tag):
         print()
 
     total_notes = len(library)
-    print(f"{total_notes} note(s) would be created/updated in Bear.")
+    print(f"{total_notes} artist note(s) + 1 MOC note would be created/updated in Bear.")
     print("Re-run with --apply to execute.")
 
 
@@ -525,6 +525,40 @@ def apply_library(library, warnings, root, tag):
     )
     if errors:
         sys.exit(1)
+
+    apply_moc(library, tag)
+
+
+# ---------------------------------------------------------------------------
+# MOC note
+# ---------------------------------------------------------------------------
+
+def build_moc_content(library, tag):
+    """Build the content for the Music Collection index note."""
+    lines = ["# Music Collection", ""]
+    for artist in sorted(library.keys()):
+        lines.append(f"- [[{artist}]]")
+    lines.append("")
+    lines.append(f"#{tag}")
+    lines.append("#moc")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def apply_moc(library, tag):
+    """Create or overwrite the MOC note listing all artist notes."""
+    content = build_moc_content(library, tag)
+
+    raw     = bearcli(
+        "create", "Music Collection",
+        "--content", content,
+        "--if-not-exists",
+        "--format", "json",
+    )
+    note_id = json.loads(raw)["id"]
+
+    bearcli("overwrite", note_id, "--content", content, "--force")
+    print(f"\nMOC note updated: Music Collection ({len(library)} artist link(s))")
 
 
 # ---------------------------------------------------------------------------
