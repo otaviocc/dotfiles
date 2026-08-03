@@ -16,6 +16,8 @@ Personal OpenCode skills. Each skill is a folder here bundling a `SKILL.md`
 | `add-episode-titles` | `add-episode-titles/scripts/add-episode-titles.py` | Backfill episode titles into organized TV filenames via TVMaze |
 | `brrr` | none (curl only) | Send a push notification to the user's devices via the Brrr API |
 | `stash-cli` | none (drives the `stash` binary) | Save, search, tag, import/export bookmarks in the self-hosted Stash manager |
+| `music-library-to-bear` | `music-library-to-bear/scripts/music-library-to-bear.py` | Scan a ripped CD library and create one Bear note per artist via bearcli |
+| `music-library-to-obsidian` | `music-library-to-obsidian/scripts/music-library-to-obsidian.py` | Scan a ripped CD library and create one Obsidian note per album with frontmatter, embedded cover, and track list; writes Albums.base and Artists.base |
 
 These are symlinked into `~/.config/opencode/skills/` by `install.sh`
 (part of the `opencode` package) — nothing to set up by hand.
