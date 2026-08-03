@@ -33,8 +33,8 @@ the year-sorted order stays correct.
 
 ## Prerequisites
 
-- Python 3
-- `mutagen` (`pip install mutagen`)
+- Python 3 (stdlib only — no pip dependencies)
+- `ffprobe` — part of ffmpeg (`brew install ffmpeg`)
 - Bear 2.8 or later installed at `/Applications/Bear.app`
 
 ## Usage

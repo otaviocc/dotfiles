@@ -14,6 +14,10 @@ OPTIONS
     --root PATH     Music library root to scan (required).
     --tag TAG       Bear tag applied to every note (default: music/collection).
     --apply         Write notes to Bear (default is dry run).
+
+REQUIREMENTS
+    ffprobe (part of ffmpeg) must be on PATH.
+    Install with: brew install ffmpeg
 """
 
 import argparse
@@ -25,28 +29,32 @@ import sys
 import time
 from urllib.parse import unquote
 
-try:
-    import mutagen
-except ImportError:
-    print("Error: mutagen is required. Install with: pip install mutagen", file=sys.stderr)
-    sys.exit(1)
-
-BEARCLI = "/Applications/Bear.app/Contents/MacOS/bearcli"
+BEARCLI  = "/Applications/Bear.app/Contents/MacOS/bearcli"
+FFPROBE  = "ffprobe"
 
 AUDIO_EXTENSIONS = {".mp3", ".flac", ".m4a", ".ogg", ".aac", ".opus", ".wav", ".wma"}
-COVER_PREFERRED   = {"folder.jpg", "folder.jpeg"}
-IMAGE_EXTENSIONS  = {".jpg", ".jpeg"}
+COVER_PREFERRED  = {"folder.jpg", "folder.jpeg"}
+IMAGE_EXTENSIONS = {".jpg", ".jpeg"}
 
 # ---------------------------------------------------------------------------
-# Tag helpers
+# Tag helpers (ffprobe-based, no pip dependencies)
 # ---------------------------------------------------------------------------
 
-def _first(tags, key, default=None):
-    values = tags.get(key) or []
-    return str(values[0]).strip() if values else default
+def _check_ffprobe():
+    """Exit early with a clear message if ffprobe is not available."""
+    try:
+        subprocess.run(
+            [FFPROBE, "-version"],
+            capture_output=True,
+            check=True,
+        )
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        print("Error: ffprobe not found. Install with: brew install ffmpeg", file=sys.stderr)
+        sys.exit(1)
 
 
 def _parse_int_prefix(value, default):
+    """Parse the leading integer of a 'N' or 'N/M' tag value."""
     if not value:
         return default
     try:
@@ -56,9 +64,10 @@ def _parse_int_prefix(value, default):
 
 
 def _parse_year(tags):
-    """Return a 4-digit year string, or None."""
-    for key in ("date", "year", "originaldate", "originalyear"):
-        raw = _first(tags, key)
+    """Return a 4-digit year string from ffprobe tags, or None."""
+    for key in ("date", "year", "originaldate", "originalyear",
+                "TDRC", "TYER", "TDOR"):
+        raw = tags.get(key, "")
         if raw:
             m = re.match(r"(\d{4})", raw)
             if m:
@@ -68,45 +77,56 @@ def _parse_year(tags):
 
 def read_tags(filepath):
     """
-    Read audio tags from a file.
+    Read audio tags from a file using ffprobe.
     Returns a dict with keys: artist, album, year, track_num, disc_num, title.
     Returns None if the file can't be read or is missing required tags.
     """
     try:
-        audio = mutagen.File(filepath, easy=True)
+        result = subprocess.run(
+            [
+                FFPROBE,
+                "-v", "quiet",
+                "-print_format", "json",
+                "-show_format",
+                filepath,
+            ],
+            capture_output=True,
+            check=True,
+        )
+        data = json.loads(result.stdout)
     except Exception:
         return None
 
-    if audio is None or audio.tags is None:
+    tags = data.get("format", {}).get("tags", {})
+    if not tags:
         return None
 
-    tags = audio.tags
+    # ffprobe tag keys are case-sensitive and vary by format/tagger.
+    # Build a case-insensitive lookup covering common variants.
+    ci = {k.lower(): v for k, v in tags.items()}
 
-    try:
-        album_artist = _first(tags, "albumartist")
-        artist       = _first(tags, "artist")
-        effective_artist = album_artist or artist
+    album_artist = ci.get("album_artist") or ci.get("albumartist") or ""
+    artist       = ci.get("artist") or ""
+    effective_artist = (album_artist or artist).strip()
 
-        album = _first(tags, "album")
+    album = (ci.get("album") or "").strip()
 
-        if not effective_artist or not album:
-            return None
-
-        title     = _first(tags, "title") or os.path.splitext(os.path.basename(filepath))[0]
-        year      = _parse_year(tags)
-        track_num = _parse_int_prefix(_first(tags, "tracknumber", "0"), 0)
-        disc_num  = _parse_int_prefix(_first(tags, "discnumber", "1"), 1)
-
-        return {
-            "artist":    effective_artist,
-            "album":     album,
-            "year":      year,          # str "YYYY" or None
-            "track_num": track_num,
-            "disc_num":  disc_num,
-            "title":     title,
-        }
-    except Exception:
+    if not effective_artist or not album:
         return None
+
+    title     = (ci.get("title") or "").strip() or os.path.splitext(os.path.basename(filepath))[0]
+    year      = _parse_year(ci)
+    track_num = _parse_int_prefix(ci.get("track") or ci.get("tracknumber"), 0)
+    disc_num  = _parse_int_prefix(ci.get("disc") or ci.get("discnumber"), 1)
+
+    return {
+        "artist":    effective_artist,
+        "album":     album,
+        "year":      year,      # str "YYYY" or None
+        "track_num": track_num,
+        "disc_num":  disc_num,
+        "title":     title,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -521,6 +541,8 @@ def main():
     ap.add_argument("--apply", action="store_true",
                     help="Write to Bear (default is dry run)")
     args = ap.parse_args()
+
+    _check_ffprobe()
 
     root = os.path.abspath(args.root)
 
