@@ -412,9 +412,11 @@ views:
     image: cover
     imageFit: cover
     order:
-      - album_artist
       - year
       - album
+    groupBy:
+      property: album_artist
+      direction: ASC
 
   - type: table
     name: All Albums
