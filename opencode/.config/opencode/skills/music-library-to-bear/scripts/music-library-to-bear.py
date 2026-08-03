@@ -22,6 +22,8 @@ import os
 import re
 import subprocess
 import sys
+import time
+from urllib.parse import unquote
 
 try:
     import mutagen
@@ -279,7 +281,7 @@ def build_track_line(disc, track_num, title, max_track, is_multidisc):
     return f"{prefix}. {title}"
 
 
-def build_note_content_no_images(artist, albums_sorted, library):
+def build_note_content_no_images(artist, albums_sorted, library, tag):
     """
     Build markdown note content without any image links.
     `albums_sorted` is a list of album_keys in display order.
@@ -306,13 +308,17 @@ def build_note_content_no_images(artist, albums_sorted, library):
 
         lines.append("")
 
+    # Embed tag inline so overwrite preserves it
+    lines.append(f"#{tag}")
+    lines.append("")
+
     return "\n".join(lines)
 
 
-def build_note_content_with_images(artist, albums_sorted, library, cover_links):
+def build_note_content_with_images(artist, albums_sorted, library, cover_links, tag):
     """
     Build the final markdown with cover image links inserted after each album heading.
-    `cover_links` maps album_key -> markdown link string (or None).
+    `cover_links` maps album_key -> markdown image syntax string (or None).
     """
     lines = [f"# {artist}", ""]
 
@@ -341,6 +347,10 @@ def build_note_content_with_images(artist, albums_sorted, library, cover_links):
 
         lines.append("")
 
+    # Embed tag inline so overwrite preserves it
+    lines.append(f"#{tag}")
+    lines.append("")
+
     return "\n".join(lines)
 
 
@@ -352,14 +362,6 @@ def attachment_filename(year_str, album_name):
     safe = re.sub(r'[\\/:*?"<>|]', "-", album_name).strip()
     return f"{year_str} - {safe}.jpg"
 
-
-def extract_bear_links(note_content):
-    """
-    Return a list of Bear attachment markdown links from note content.
-    Bear attachment links look like: [filename](bear://path)
-    We collect every markdown link that contains 'bear://' in the URL.
-    """
-    return re.findall(r'\[([^\]]+)\]\(bear://[^\)]+\)', note_content)
 
 
 def apply_library(library, warnings, root, tag):
@@ -379,7 +381,7 @@ def apply_library(library, warnings, root, tag):
             # ----------------------------------------------------------------
             # Step 1: create the note (or retrieve existing) with tracks only
             # ----------------------------------------------------------------
-            initial_content = build_note_content_no_images(artist, albums_sorted, library)
+            initial_content = build_note_content_no_images(artist, albums_sorted, library, tag)
 
             raw = bearcli(
                 "create", artist,
@@ -392,13 +394,6 @@ def apply_library(library, warnings, root, tag):
             note_json    = json.loads(raw)
             note_id      = note_json["id"]
             note_existed = bool(note_json.get("title"))  # always has title; use modified heuristic
-
-            # Overwrite unconditionally so year-sort is always correct
-            bearcli(
-                "overwrite", note_id,
-                "--content", initial_content,
-                "--force",
-            )
 
             was_new = not note_existed
             if was_new:
@@ -433,6 +428,7 @@ def apply_library(library, warnings, root, tag):
                         "--filename", filename,
                         stdin_bytes=cover_bytes,
                     )
+                    time.sleep(0.3)   # give Bear time to process the attachment
                     print(f"    {year_str} · {album_name}: cover attached")
 
                     # Bear appended a link — we'll collect them all at the end
@@ -449,28 +445,28 @@ def apply_library(library, warnings, root, tag):
             note_parsed  = json.loads(note_raw)
             note_content = note_parsed.get("content", "")
 
-            # Bear appended links like [filename](bear://...) at the bottom.
-            # Build a map: filename stem -> full markdown link.
+            # Bear appended image links as ![](filename.jpg) at the bottom.
+            # Filenames are URL-encoded (spaces become %20, etc.).
+            # Build a map: decoded filename (lowercased) -> full markdown image syntax.
             bear_link_map = {}
-            for m in re.finditer(r'(\[([^\]]+)\]\(bear://[^\)]+\))', note_content):
-                full_link, link_text = m.group(1), m.group(2)
-                # link_text is the filename Bear used (may differ from what we asked for)
-                bear_link_map[link_text] = full_link
+            for m in re.finditer(r'(!\[\]\(([^)]+)\))', note_content):
+                full_link, encoded_fname = m.group(1), m.group(2)
+                decoded = unquote(encoded_fname).lower()
+                bear_link_map[decoded] = full_link
 
-            # Resolve placeholders to actual bear links
+            # Resolve placeholders to actual bear image links.
+            # Bear may rename on collision (e.g. "foo.jpg" -> "foo 2.jpg"),
+            # so we match on stem prefix.
             for album_key, val in cover_links.items():
                 if val is None:
                     continue
-                # Find by matching our requested filename or any with the same stem
-                # Bear may rename 'foo.jpg' to 'foo 2.jpg' on collision.
-                # We match on whatever is closest.
                 _, year_str, album_name = album_key
                 requested = attachment_filename(year_str, album_name)
                 requested_stem = os.path.splitext(requested)[0].lower()
 
                 matched_link = None
-                for link_text, full_link in bear_link_map.items():
-                    stem = os.path.splitext(link_text)[0].lower()
+                for decoded_fname, full_link in bear_link_map.items():
+                    stem = os.path.splitext(decoded_fname)[0]
                     if stem == requested_stem or stem.startswith(requested_stem):
                         matched_link = full_link
                         break
@@ -481,7 +477,7 @@ def apply_library(library, warnings, root, tag):
             # Step 4: overwrite with covers in the correct positions
             # ----------------------------------------------------------------
             final_content = build_note_content_with_images(
-                artist, albums_sorted, library, cover_links
+                artist, albums_sorted, library, cover_links, tag
             )
 
             bearcli(
