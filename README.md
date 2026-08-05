@@ -65,7 +65,7 @@ needs are **vendored directly** into the relevant package, so a fresh
 | Neovim | `nvim/.config/nvim/colors/default-plus.lua` |
 | zsh (prompt/colors/`LS_COLORS`) | merged into `zsh/.zshrc` |
 | opencode | `opencode/.config/opencode/themes/default-plus.json` |
-| lazygit, tig, herdr | merged directly into their config files (no separate theme file needed) |
+| lazygit, tig, herdr, hunk | merged directly into their config files (no separate theme file needed) |
 
 If the palette changes upstream in `default-plus`, re-copy the affected
 file(s) from that repo into the matching package here and commit.

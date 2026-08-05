@@ -31,7 +31,7 @@ case "$OS" in
   *)      OS_SUFFIX="" ;;
 esac
 
-ALL_PACKAGES=(zsh git nvim tmux ghostty lazygit tig herdr opencode)
+ALL_PACKAGES=(zsh git nvim tmux ghostty lazygit tig herdr opencode hunk)
 PACKAGES=("${@:-${ALL_PACKAGES[@]}}")
 
 log() { printf '==> %s\n' "$1"; }
