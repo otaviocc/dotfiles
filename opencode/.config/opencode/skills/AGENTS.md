@@ -18,6 +18,8 @@ Personal OpenCode skills. Each skill is a folder here bundling a `SKILL.md`
 | `stash-cli` | none (drives the `stash` binary) | Save, search, tag, import/export bookmarks in the self-hosted Stash manager |
 | `music-library-to-bear` | `music-library-to-bear/scripts/music-library-to-bear.py` | Scan a ripped CD library and create one Bear note per artist via bearcli |
 | `music-library-to-obsidian` | `music-library-to-obsidian/scripts/music-library-to-obsidian.py` | Scan a ripped CD library and create one Obsidian note per album with frontmatter, embedded cover, and track list; writes Albums.base and Artists.base |
+| `code-snippet-image` | `code-snippet-image/scripts/generate_code_image.py` | Generate macOS-style code snippet images from Swift code (dark theme, warm palette, retina-ready PNG); requires Pillow + Pygments |
+| `jellyfin-library-cards` | `jellyfin-library-cards/scripts/generate_card.py` | Generate Jellyfin library card artwork (Fredoka, purple-to-cyan gradient, transparent PNG); font bundled in `assets/`; requires Pillow |
 
 These are symlinked into `~/.config/opencode/skills/` by `install.sh`
 (part of the `opencode` package) — nothing to set up by hand.
