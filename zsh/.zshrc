@@ -51,7 +51,15 @@ precmd_functions+=(vcs_info)
 
 # --- PATH ----------------------------------------------------------------
 typeset -U path PATH  # de-dupe automatically, however many times we're sourced
-path=("$HOME/.local/bin" "$HOME/.opencode/bin" $path)
+
+# Add local and tool-specific bins to PATH if present
+[[ -d "$HOME/.local/bin" ]] && path=("$HOME/.local/bin" $path)
+
+# Add cargo binaries to PATH if Rust is installed
+[[ -d "$HOME/.cargo/bin" ]] && path=("$HOME/.cargo/bin" $path)
+
+# Add opencode binaries to PATH if present
+[[ -d "$HOME/.opencode/bin" ]] && path=("$HOME/.opencode/bin" $path)
 
 # --- Editor / misc ---------------------------------------------------------
 if [[ -n $SSH_CONNECTION ]]; then
