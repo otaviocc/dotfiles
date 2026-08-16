@@ -316,12 +316,9 @@ def count_discs(tracks):
     return len({t[0] for t in tracks})
 
 
-def build_track_line(disc, track_num, title, max_track, is_multidisc):
-    width  = 3 if max_track > 99 else 2
-    prefix = f"{track_num:0{width}d}"
-    if is_multidisc and disc > 1:
-        prefix = f"{disc}-{prefix}"
-    return f"{prefix}. {title}"
+def build_track_line(track_num, title, max_track):
+    width = 3 if max_track > 99 else 2
+    return f"{track_num:0{width}d}. {title}"
 
 
 def build_album_note(album_data, tag, artwork_vault_path):
@@ -366,6 +363,9 @@ def build_album_note(album_data, tag, artwork_vault_path):
         body_lines.append("")
 
     # Track list
+    body_lines.append("## Tracks")
+    body_lines.append("")
+
     is_multi  = count_discs(tracks) > 1
     max_track = max((t[1] for t in tracks), default=1)
 
@@ -373,9 +373,11 @@ def build_album_note(album_data, tag, artwork_vault_path):
     for disc, track_num, title in tracks:
         if is_multi and disc != current_disc:
             current_disc = disc
+            if body_lines[-1] != "":
+                body_lines.append("")
             body_lines.append(f"**Disc {disc}**")
             body_lines.append("")
-        body_lines.append(build_track_line(disc, track_num, title, max_track, is_multi))
+        body_lines.append(build_track_line(track_num, title, max_track))
 
     body_lines.append("")
 

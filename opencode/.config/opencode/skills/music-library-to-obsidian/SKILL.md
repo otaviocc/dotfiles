@@ -40,6 +40,8 @@ tags:
 
 ![[Music/Miles Davis/Artworks/Kind of Blue (1959).jpg]]
 
+## Tracks
+
 01. So What
 02. Freddie Freeloader
 03. Blue in Green
@@ -106,8 +108,9 @@ For each album the script:
 2. Picks the best cover: `folder.jpg` / `folder.jpeg` preferred, then the
    largest JPEG/PNG/WebP in the album directory
 3. Copies the cover to `<Artist>/Artworks/<Album> (<Year>).ext`
-4. Writes the album note with full YAML frontmatter and an embedded-artwork
-   wikilink (`![[vault/relative/path.jpg]]`) above the numbered track list
+4. Writes the album note with full YAML frontmatter, an embedded-artwork
+   wikilink (`![[vault/relative/path.jpg]]`), and a `## Tracks` heading above
+   the numbered track list
 
 ## Notes
 
@@ -117,7 +120,9 @@ For each album the script:
   `year`, `originaldate`, `originalyear`. Albums with no year sort last and
   note filename omits the year parenthetical.
 - **Multi-disc albums**: when more than one disc number is found, tracks are
-  prefixed `2-01`, `2-02`, etc. and grouped under **Disc N** headings.
+  grouped under **Disc N** headings with blank lines around each heading, and
+  numbered by their track number within the disc (disc 2 track 1 is `01`, not
+  `2-01`).
 - **Disc/track counts in frontmatter**: taken from the `N/M` denominator in
   the `tracknumber`/`discnumber` tags when available; otherwise derived from
   the actual tracks/discs found.
