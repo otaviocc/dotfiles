@@ -1,4 +1,4 @@
--- Default+ colorscheme (matches ghostty/tig/lazygit/opencode/zsh)
+-- Vesper colorscheme (matches ghostty/tig/lazygit/hunk/vigia/opencode/zsh)
 
 vim.cmd("hi clear")
 if vim.fn.exists("syntax_on") == 1 then
@@ -6,22 +6,22 @@ if vim.fn.exists("syntax_on") == 1 then
 end
 vim.o.termguicolors = true
 vim.o.background = "dark"
-vim.g.colors_name = "default-plus"
+vim.g.colors_name = "vesper"
 
 local c = {
-    bg = "#1E1E1E",
-    bg_panel = "#181818",
-    bg_selection = "#54554A",
+    bg = "#101010",
+    bg_panel = "#161616",
+    bg_selection = "#232323",
     fg = "#FFFFFF",
-    muted = "#4D4D4D",
-    muted_text = "#8E8E8E",
-    subtle = "#2A2A2A",
-    red = "#FC4651",
-    green = "#2EA85B",
-    yellow = "#FFE76D",
-    blue = "#35B0D8",
-    magenta = "#F2248C",
-    cyan = "#56D0B3",
+    muted = "#505050",
+    muted_text = "#7E7E7E",
+    subtle = "#1C1C1C",
+    red = "#FF8080",
+    green = "#90B99F",
+    yellow = "#FFC799",
+    blue = "#F591B2",
+    magenta = "#ECAAD6",
+    cyan = "#B9AEDA",
 }
 
 local function hi(group, opts)

@@ -9,7 +9,7 @@ onboarding = false
 # Built-in themes: catppuccin, terminal, tokyo-night, dracula, nord,
 #                  gruvbox, one-dark, solarized, kanagawa, rose-pine,
 #                  vesper
-name = "terminal"
+name = "vesper"
 auto_switch = false
 
 # Follow host terminal light/dark appearance and switch Herdr UI themes.
@@ -17,27 +17,10 @@ auto_switch = false
 # dark_name = "catppuccin"
 # light_name = "catppuccin-latte"
 
-# Default+ palette (matches ghostty/nvim/tig/lazygit/opencode/zsh):
-# bg #1E1E1E, panel #181818, fg #FFFFFF, muted #4D4D4D,
-# red #FC4651, green #2EA85B, yellow #FFE76D, blue #35B0D8,
-# magenta #F2248C, cyan #56D0B3
-[theme.custom]
-accent = "#56D0B3"
-panel_bg = "#181818"
-surface0 = "#242424"
-surface1 = "#2E2E2E"
-surface_dim = "#141414"
-overlay0 = "#4D4D4D"
-overlay1 = "#8E8E8E"
-text = "#FFFFFF"
-subtext0 = "#B3B3B3"
-mauve = "#F2248C"
-green = "#2EA85B"
-yellow = "#FFE76D"
-red = "#FC4651"
-blue = "#35B0D8"
-teal = "#56D0B3"
-peach = "#FD9660"
+# Using herdr's built-in `vesper` theme directly (matches ghostty's built-in
+# Vesper theme and the palette vendored into nvim/tig/lazygit/hunk/vigia/
+# opencode/zsh — see README "The Vesper theme"), so no [theme.custom] override
+# is needed here.
 [terminal]
 # Executable used for new interactive panes.
 # Empty means $SHELL, then /bin/sh.

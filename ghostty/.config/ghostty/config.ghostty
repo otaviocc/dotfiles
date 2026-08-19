@@ -5,10 +5,10 @@
 # --default --docs | grep xdg_config_home` if a future Ghostty release on
 # either machine expects plain `config` instead — rename/symlink as needed).
 
-# Theme (vendored in themes/Default+, see README "The Default+ theme")
-theme = "Default+"
+# Theme (built into Ghostty, see README "The Vesper theme")
+theme = "Vesper"
 bold-color = bright
-split-divider-color = #2EA85B
+split-divider-color = #90B99F
 
 # Font (unset: use each OS's default monospace font)
 font-size = 13

@@ -73,9 +73,9 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   `install.sh` has run.
 - **nvim** — plugins via lazy.nvim, bootstrapped in `lua/config/lazy.lua`, specs
   in `lua/plugins/`. `lazy-lock.json` is tracked; commit it after plugin updates.
-  The Default+ palette exists **twice**: `init.lua:83` calls
-  `require('themes.default_plus').setup()` (`lua/themes/default_plus.lua`), while
-  `colors/default-plus.lua` is the standalone `:colorscheme` variant and is not
+  The Vesper palette exists **twice**: `init.lua:83` calls
+  `require('themes.vesper').setup()` (`lua/themes/vesper.lua`), while
+  `colors/vesper.lua` is the standalone `:colorscheme` variant and is not
   referenced. Palette changes belong in both.
 - **herdr** — only `config.toml` is tracked. Logs, `session.json`,
   `release-notes.json` and `.plugins.lock` are runtime state; leave them out.
@@ -85,12 +85,13 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   `opencode/.config/opencode/skills/AGENTS.md` — read it before touching any
   skill script.
 
-## Default+ theme
+## Vesper theme
 
-Upstream is <https://github.com/otaviocc/default-plus>. The palette is
-**vendored** into each package here so a fresh `./install.sh` never reaches out
-to another repo. If the palette changes upstream, re-copy the affected files;
-don't hand-edit one tool's colors in isolation (README has the full table).
+Upstream is <https://github.com/raunofreiberg/vesper>. Ghostty and herdr use
+its **built-in** theme by name; every other tool has the palette **vendored**
+into its package so a fresh `./install.sh` never reaches out to another repo.
+If the palette changes upstream, re-copy the affected files; don't hand-edit
+one tool's colors in isolation (README has the full table).
 
 ## Commit messages
 

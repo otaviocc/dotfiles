@@ -1,64 +1,63 @@
-# Default+ theme for vigia
+# Vesper theme for vigia
 #
 # Place at ~/.config/vigia/theme, or point to it with:
 #   VIGIA_THEME=~/path/to/this/file
 #
 # Starts from the `dark` built-in and overrides every key.
+# Palette: https://github.com/raunofreiberg/vesper (the ANSI set Ghostty
+# and herdr both draw with — see README "The Vesper theme").
 
-base = dark
+base       = dark
 
-# Chrome — blue primary accent
-chrome     = #35B0D8 bold
-chrome_dim = #8E8E8E
+chrome     = #f591b2 bold
+chrome_dim = #7e7e7e
+path       = #ffffff bold
+path_live  = #ffffff
+path_cold  = #7e7e7e
+path_hover = #f0c9d6 underline
 
-# File list — three recency rungs
-path      = #FFFFFF bold
-path_live = #FFFFFF
-path_cold = #8E8E8E
-pulse     = #35B0D8
-spark     = #35B0D8
-spark_track = #2A2A2A
+pulse       = #ea83a5
+spark       = #ea83a5
+spark_warm  = #f5c1d2
+spark_hot   = #fbe6ed
+spark_track = #474747
 
-# Scrollbar
-bar       = #8E8E8E
-bar_track = #2A2A2A
+bar        = #a0a0a0
+bar_active = #ffffff
+bar_hover  = #d0d0d0
+bar_track  = #474747
 
-# Heat strip
-heat_track        = #2A2A2A
-heat_added        = #2EA85B
-heat_added_warm   = #4D8A5F
-heat_added_hot    = #5FD48A
-heat_removed      = #8A4048
-heat_removed_warm = #FC4651
-heat_removed_hot  = #FF8A91
-heat_mixed        = #B8A84E
-heat_mixed_warm   = #FFE76D
-heat_mixed_hot    = #FFF3AD
+heat_track       = #474747
+heat_added       = #90b99f
+heat_added_warm  = #95dcc2
+heat_added_hot   = #99ffe4
+heat_removed     = #f5a191
+heat_removed_warm = #fa9189
+heat_removed_hot = #ff8080
+heat_mixed       = #e6b99d
+heat_mixed_warm  = #f3c09b
+heat_mixed_hot   = #ffc799
 
-# Labels
-kind   = #FFE76D
-hunk   = #35B0D8
-gutter = #4D4D4D
+kind    = #e6b99d
+hunk    = #b9aeda
+gutter  = #7e7e7e
+added   = #90b99f
+removed = #f5a191
+context = #ffffff
 
-# Diff sigils
-added   = #2EA85B
-removed = #FC4651
-context = #FFFFFF
+added_row   = on #232925
+removed_row = on #322623
+added_bar   = on #90b99f
+removed_bar = on #f5a191
 
-# Row washes (truecolor only)
-added_row   = on #1E2A20
-removed_row = on #2A1E1F
+note  = #e29eca
+alert = #ff8080 bold
 
-# Status
-note  = #56D0B3
-alert = #FC4651 bold
-
-# Syntax
-keyword   = #F2248C
-type_name = #56D0B3
-function  = #35B0D8
-variable  = #FFFFFF
-constant  = #FFE76D
-string    = #2EA85B
-number    = #FFE76D
-comment   = #8E8E8E
+keyword   = #ff8080
+type_name = #ffc799
+function  = #ecaad6
+variable  = #b9aeda
+constant  = #e6b99d
+string    = #99ffe4
+number    = #f591b2
+comment   = #7e7e7e

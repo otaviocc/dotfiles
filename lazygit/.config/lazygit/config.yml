@@ -6,21 +6,21 @@ gui:
   portraitMode: 'always'
   theme:
     activeBorderColor:
-      - '#56D0B3'
+      - '#B9AEDA'
       - bold
     inactiveBorderColor:
-      - '#54554A'
+      - '#232323'
     selectedLineBgColor:
-      - '#54554A'
+      - '#232323'
     cherryPickedCommitBgColor:
-      - '#54554A'
+      - '#232323'
     cherryPickedCommitFgColor:
-      - '#FFE76D'
+      - '#FFC799'
     unstagedChangesColor:
-      - '#FFE76D'
+      - '#FFC799'
     defaultFgColor:
       - '#FFFFFF'
     searchingActiveBorderColor:
-      - '#FFE76D'
+      - '#FFC799'
     optionsTextColor:
-      - '#56D0B3'
+      - '#B9AEDA'

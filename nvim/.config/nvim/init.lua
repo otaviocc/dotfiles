@@ -80,5 +80,5 @@ vim.keymap.set('n', '<leader>fg', '<cmd>Telescope live_grep<cr>', { desc = 'Live
 vim.keymap.set('n', '<leader>fb', '<cmd>Telescope buffers<cr>', { desc = 'Find buffers' })
 
 -- Color scheme
-require('themes.default_plus').setup()
+require('themes.vesper').setup()
 

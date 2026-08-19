@@ -237,26 +237,26 @@ bindkey '^[[H' beginning-of-line
 bindkey '^[[F' end-of-line
 bindkey '^[[3~' delete-char
 
-# --- Default+ theme (colors, prompt, LS_COLORS) --------------------------
-# Default+ palette: bg #1E1E1E, fg #FFFFFF, muted #4D4D4D, blue #35B0D8,
-# yellow #FFE76D, red #FC4651, magenta #F2248C, cyan #56D0B3, green #2EA85B.
-# Vendored from https://github.com/otaviocc/default-plus (see README for
-# how to re-sync if the palette changes upstream).
+# --- Vesper theme (colors, prompt, LS_COLORS) -----------------------------
+# Vesper palette: bg #101010, fg #FFFFFF, muted #7E7E7E, blue #F591B2,
+# yellow #FFC799, red #FF8080, magenta #ECAAD6, cyan #B9AEDA, green #90B99F.
+# Palette: https://github.com/raunofreiberg/vesper (the ANSI set Ghostty
+# and herdr both draw with — see README "The Vesper theme").
 
 # `ls` colors (macOS CLICOLOR + GNU-style LS_COLORS for tools that read it)
 export CLICOLOR=YES
 export LSCOLORS="ExDxGxFxBxEgEdAbAgAcAd"
-export LS_COLORS="di=1;38;2;53;176;216:ln=38;2;255;231;109:so=38;2;242;36;140:pi=38;2;242;36;140:ex=1;38;2;252;70;81:bd=38;2;53;176;216;48;2;30;30;30:cd=38;2;53;176;216;48;2;30;30;30:su=38;2;30;30;30;48;2;252;70;81:sg=38;2;30;30;30;48;2;255;231;109:tw=38;2;30;30;30;48;2;86;208;179:ow=38;2;30;30;30;48;2;255;231;109"
+export LS_COLORS="di=1;38;2;245;145;178:ln=38;2;255;199;153:so=38;2;236;170;214:pi=38;2;236;170;214:ex=1;38;2;255;128;128:bd=38;2;245;145;178;48;2;16;16;16:cd=38;2;245;145;178;48;2;16;16;16:su=38;2;16;16;16;48;2;255;128;128:sg=38;2;16;16;16;48;2;255;199;153:tw=38;2;16;16;16;48;2;185;174;218:ow=38;2;16;16;16;48;2;255;199;153"
 
 # Completion list colors (uses LS_COLORS above)
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*:descriptions' format '%F{#56D0B3}-- %d --%f'
+zstyle ':completion:*:descriptions' format '%F{#B9AEDA}-- %d --%f'
 
 # VCS / prompt colors
-zstyle ':vcs_info:git:*' formats '%F{#FFE76D}%b%f '
+zstyle ':vcs_info:git:*' formats '%F{#FFC799}%b%f '
 
 setopt PROMPT_SUBST
-PROMPT=$'%F{#56D0B3}%~%f ${vcs_info_msg_0_}\n%F{#8E8E8E}$%f '
+PROMPT=$'%F{#B9AEDA}%~%f ${vcs_info_msg_0_}\n%F{#7E7E7E}$%f '
 
 # --- GPG -----------------------------------------------------------------
 export GPG_TTY=$(tty)

@@ -52,24 +52,26 @@ Don't confuse `~/.gitconfig.local.machine` with `~/.gitconfig.local` —
 the latter is the OS-selection symlink described above and is managed by
 Stow, not created by hand.
 
-## The Default+ theme
+## The Vesper theme
 
-[`default-plus`](https://github.com/otaviocc/default-plus) is the
-canonical source for this color theme (it also covers Xcode and other
-non-dotfile contexts, so it stays its own repo). The bits each tool here
-needs are **vendored directly** into the relevant package, so a fresh
-`./install.sh` run never has to reach out to another repo:
+[Vesper](https://github.com/raunofreiberg/vesper) is the canonical source
+for this color theme. Ghostty and herdr ship it as a built-in theme, so
+those two packages just select it by name; every other tool vendors the
+same palette directly into its own config, so a fresh `./install.sh` run
+never has to reach out to another repo:
 
-| Tool | Vendored as |
+| Tool | How it's applied |
 |---|---|
-| Ghostty | `ghostty/.config/ghostty/themes/Default+` |
-| Neovim | `nvim/.config/nvim/colors/default-plus.lua` |
+| Ghostty | built-in — `theme = "Vesper"` in `config.ghostty` |
+| herdr | built-in — `name = "vesper"` in `config.toml` |
+| opencode | built-in — `theme: "vesper"` in `tui.json` |
+| Neovim | vendored as `nvim/.config/nvim/colors/vesper.lua` |
 | zsh (prompt/colors/`LS_COLORS`) | merged into `zsh/.zshrc` |
-| opencode | `opencode/.config/opencode/themes/default-plus.json` |
-| lazygit, tig, herdr, hunk | merged directly into their config files (no separate theme file needed) |
+| vigia | vendored as `vigia/.config/vigia/theme` |
+| lazygit, tig, hunk | merged directly into their config files (no separate theme file needed) |
 
-If the palette changes upstream in `default-plus`, re-copy the affected
-file(s) from that repo into the matching package here and commit.
+If the palette changes upstream in Vesper, re-copy the affected file(s)
+into the matching package here and commit.
 
 ## Things intentionally not in this repo
 

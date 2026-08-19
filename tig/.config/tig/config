@@ -1,73 +1,73 @@
-# Default+ theme
+# Vesper theme
 # tig 2.6.1 has no hex/true-color support, so hex values below are mapped
 # to their nearest 256-color palette equivalents:
-#   Background #1E1E1E -> color234 (#1c1c1c)
+#   Background #101010 -> color233 (#121212)
 #   Foreground #FFFFFF -> color231 (#ffffff)
-#   Selection  #54554A -> color240 (#585858)
-#   Muted      #4D4D4D -> color239 (#4e4e4e)
-#   Yellow     #FFE76D -> color221 (#ffd75f)
-#   Green      #2EA85B -> color35  (#00af5f)
-#   Red        #FC4651 -> color203 (#ff5f5f)
-#   Magenta    #F2248C -> color198 (#ff0087)
-#   Blue       #35B0D8 -> color74  (#5fafd7)
-#   Cyan       #56D0B3 -> color79  (#5fd7af)
+#   Selection  #232323 -> color235 (#262626)
+#   Muted      #505050 -> color239 (#4e4e4e)
+#   Yellow     #FFC799 -> color222 (#ffd787)
+#   Green      #90B99F -> color109 (#87afaf)
+#   Red        #FF8080 -> color210 (#ff8787)
+#   Magenta    #ECAAD6 -> color218 (#ffafd7)
+#   Blue       #F591B2 -> color211 (#ff5fd7)
+#   Cyan       #B9AEDA -> color146 (#afafd7)
 
 # Layout
 set vertical-split = false
 
 # Base UI
-color default        color231 color234
-color cursor          color234 color221
-color cursor-blur     color231 color240
-color status          color231 color234
-color title-focus     color234 color221
-color title-blur      color231 color240
-color search-result   color234 color221
-color header          color231 color234
-color line-number     color239 color234
-color delimiter       color239 color234
-color id              color221 color234
-color date            color231 color234
-color author          color79 color234
-color committer       color231 color234
-color mode            color239 color234
-color overflow        color239 color234
-color directory       color221 color234
-color file            color231 color234
-color file-size       color239 color234
+color default        color231 color233
+color cursor          color233 color222
+color cursor-blur     color231 color235
+color status          color231 color233
+color title-focus     color233 color222
+color title-blur      color231 color235
+color search-result   color233 color222
+color header          color231 color233
+color line-number     color239 color233
+color delimiter       color239 color233
+color id              color222 color233
+color date            color231 color233
+color author          color146 color233
+color committer       color231 color233
+color mode            color239 color233
+color overflow        color239 color233
+color directory       color222 color233
+color file            color231 color233
+color file-size       color239 color233
 
 # Diff view
-color diff-add        color35 color234
-color diff-del         color203 color234
-color diff-header      color221 color234
-color diff-chunk        color79 color234
+color diff-add        color109 color233
+color diff-del         color210 color233
+color diff-header      color222 color233
+color diff-chunk        color146 color233
 
 # Log / commit graph
-color graph-commit    color221 color234
-color main-commit     color231 color234
-color main-annotated  color79 color234
-color main-head       color221 color234 bold
-color main-remote     color74 color234
-color main-tracked    color74 color234
-color main-tag        color198 color234
-color main-local-tag  color198 color234
-color main-ref        color79 color234
-color main-replace    color203 color234
-color main-stash      color198 color234
-color main-note       color35 color234
-color main-prefetch   color74 color234
-color main-other      color231 color234
+color graph-commit    color222 color233
+color main-commit     color231 color233
+color main-annotated  color146 color233
+color main-head       color222 color233 bold
+color main-remote     color211 color233
+color main-tracked    color211 color233
+color main-tag        color218 color233
+color main-local-tag  color218 color233
+color main-ref        color146 color233
+color main-replace    color210 color233
+color main-stash      color218 color233
+color main-note       color109 color233
+color main-prefetch   color211 color233
+color main-other      color231 color233
 
 # Status view
-color stat-none      color239 color234
-color stat-staged     color35 color234
-color stat-unstaged    color221 color234
-color stat-untracked     color203 color234
+color stat-none      color239 color233
+color stat-staged     color109 color233
+color stat-unstaged    color222 color233
+color stat-untracked     color210 color233
 
 # Help view
-color help-group   color221 color234 bold
-color help-action   color231 color234
+color help-group   color222 color233 bold
+color help-action   color231 color233
 
 # Tree view
-color tree.directory   color221 color234
-color tree.file        color231 color234
+color tree.directory   color222 color233
+color tree.file        color231 color233
