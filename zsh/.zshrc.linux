@@ -11,3 +11,7 @@ elif command -v xclip >/dev/null 2>&1; then
   alias clipcopy="xclip -selection clipboard"
   alias clippaste="xclip -selection clipboard -o"
 fi
+
+if [[ -d "/home/linuxbrew/.linuxbrew/bin/" ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+fi
