@@ -1,3 +1,5 @@
 # Linux (Fedora)-only Ghostty overrides.
 # No overrides currently needed; font-size and window size now match
 # macOS via the shared config.ghostty.
+
+gtk-titlebar-hide-when-maximized = true
