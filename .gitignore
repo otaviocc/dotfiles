@@ -4,6 +4,9 @@ __pycache__/
 *.pyc
 .venv/
 
+# Neovim runtime state written by LazyVim itself, never hand-edited.
+/nvim/.config/nvim/lazyvim.json
+
 # Exceptions: these *.local files are pre-committed relative symlinks that
 # make up the OS-overlay packages (see README "Handling Fedora vs macOS
 # differences"), not machine-local runtime state.

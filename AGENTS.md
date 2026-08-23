@@ -71,12 +71,14 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   `ghostty/.config/ghostty/config.ghostty`. Do not "fix" the filename. It ends
   with `config-file = ?config.local`; the `?` keeps Ghostty from erroring before
   `install.sh` has run.
-- **nvim** — plugins via lazy.nvim, bootstrapped in `lua/config/lazy.lua`, specs
-  in `lua/plugins/`. `lazy-lock.json` is tracked; commit it after plugin updates.
-  The Vesper palette exists **twice**: `init.lua:83` calls
-  `require('themes.vesper').setup()` (`lua/themes/vesper.lua`), while
-  `colors/vesper.lua` is the standalone `:colorscheme` variant and is not
-  referenced. Palette changes belong in both.
+- **nvim** — the stock [LazyVim](https://www.lazyvim.org) starter template,
+  kept verbatim so upgrades are a re-diff against
+  <https://github.com/LazyVim/starter>. The only intentional deviation is
+  `lua/plugins/colorscheme.lua`, which points LazyVim's `colorscheme` option at
+  `vesper`, served by the vendored `colors/vesper.lua` — the single source of
+  the palette in this package. Personal settings go in
+  `lua/config/{options,keymaps,autocmds}.lua`; extra plugins in `lua/plugins/`.
+  `lazy-lock.json` is tracked; commit it after plugin updates.
 - **herdr** — only `config.toml` is tracked. Logs, `session.json`,
   `release-notes.json` and `.plugins.lock` are runtime state; leave them out.
 - **opencode** — `~/.config/opencode/skills/` contains skills this repo does not
