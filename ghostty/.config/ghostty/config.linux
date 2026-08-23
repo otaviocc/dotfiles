@@ -3,3 +3,4 @@
 # macOS via the shared config.ghostty.
 
 gtk-titlebar-hide-when-maximized = true
+font-size = 10
