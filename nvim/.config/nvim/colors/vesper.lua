@@ -127,7 +127,7 @@ hi("TelescopeMatching", { fg = c.yellow, bold = true })
 
 -- Dashboard
 hi("Dashboard", { fg = c.fg, bg = c.bg })
-hi("DashboardHeader", { fg = c.red })
+hi("DashboardHeader", { fg = c.blue })
 hi("DashboardCenter", { fg = c.fg })
 hi("DashboardDesc", { fg = c.fg })
 hi("DashboardIcon", { fg = c.blue })
