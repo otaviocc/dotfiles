@@ -18,7 +18,6 @@ local mcqueen = [[
 ]]
 
 return {
-  { import = "lazyvim.plugins.extras.ui.dashboard-nvim" },
   {
     "nvimdev/dashboard-nvim",
     opts = {
