@@ -2,16 +2,20 @@
 """
 add-episode-titles.py
 
-Backfills missing episode titles into Jellyfin-organized TV filenames using the
-TVMaze API (no API key required, network access needed):
+Backfills missing episode titles into TV filenames using the TVMaze API
+(no API key required, network access needed).
 
+Supports two filename formats:
     /TV Shows/Show Name (year)/Season 01/
         Show Name (year) - s01e01.mkv
             -> Show Name (year) - s01e01 - Episode Title.mkv
 
-Only files already matching the Jellyfin show-naming convention are touched
-(Show Name (year) - sNNeNN.ext). Files that already carry an episode title are
-left alone. Matching subtitle files are renamed to stay paired with their video.
+    /TV Shows/Show Name/Season 01/
+        Show Name - s01e01.mkv
+            -> Show Name (year) - s01e01 - Episode Title.mkv  (+ dir rename)
+
+Files without a year are resolved against TVMaze to determine the premiere
+year, which is then added to both the filename and the parent directory name.
 
 Episode titles come from a remote API, so characters that are not legal in a
 path component (a slash in "Part 1/2", a colon, ...) are rewritten before the
@@ -61,6 +65,13 @@ SUB_LANG_RE = re.compile(
 FILENAME_RE = re.compile(
     r"^(?P<show>.+?) \((?P<year>\d{4})\)"
     r"(?P<edition> \{edition-[^}]+\})? - "
+    r"[sS](?P<season>\d{1,2})[eE](?P<ep>\d{1,2})"
+    r"(?:-e(?P<ep2>\d{1,2}))?"
+    r"(?: - (?P<title>.+))?$"
+)
+
+FILENAME_NO_YEAR_RE = re.compile(
+    r"^(?P<show>.+?) - "
     r"[sS](?P<season>\d{1,2})[eE](?P<ep>\d{1,2})"
     r"(?:-e(?P<ep2>\d{1,2}))?"
     r"(?: - (?P<title>.+))?$"
@@ -162,12 +173,21 @@ def fetch_episodes(show):
     return out
 
 
-def new_stem(m, name):
+def new_stem(m, name, resolved_year=None):
     tag = f"s{int(m.group('season')):02d}e{int(m.group('ep')):02d}"
     if m.group("ep2"):
         tag += f"-e{int(m.group('ep2')):02d}"
-    edition = m.group("edition") or ""
-    return (f"{m.group('show')} ({m.group('year')}){edition} - {tag} - "
+    try:
+        edition = m.group("edition") or ""
+    except IndexError:
+        edition = ""
+    try:
+        year = m.group("year")
+    except IndexError:
+        year = None
+    if not year:
+        year = str(resolved_year)
+    return (f"{m.group('show')} ({year}){edition} - {tag} - "
             f"{safe_component(name)}")
 
 
@@ -192,14 +212,18 @@ def sub_sibling_names(dirpath, old_stem, new_base):
     return out
 
 
-def execute_moves(moves, root, apply):
+def execute_moves(moves, root, apply, dir_renames=None):
     """Print, validate and optionally perform a list of (src, dst) moves.
 
     Resolves destinations claimed by several sources in favour of the largest
     file, refuses to overwrite anything already on disk, and defers a move whose
     destination is still held by a file that is itself scheduled to move away.
+    Optionally renames directories after file moves are complete.
     Returns (done, skipped, errors).
     """
+    if dir_renames is None:
+        dir_renames = []
+
     def rel(path):
         return os.path.relpath(path, root)
 
@@ -254,6 +278,8 @@ def execute_moves(moves, root, apply):
 
     for src, dst, _ in queue:
         print(f"{rel(src)}\n   -> {rel(dst)}")
+    for old_d, new_d in dir_renames:
+        print(f"{rel(old_d)}\n   -> {rel(new_d)}")
     for problem in problems:
         print(f"  !! {problem}")
 
@@ -280,6 +306,22 @@ def execute_moves(moves, root, apply):
                 print(f"  !! error moving {rel(src)}: {exc}", file=sys.stderr)
                 errors += 1
         remaining = blocked
+
+    for old_d, new_d in dir_renames:
+        if not os.path.isdir(old_d):
+            continue
+        if os.path.exists(new_d):
+            print(f"  !! directory already exists, skipping: {rel(new_d)}",
+                  file=sys.stderr)
+            skipped += 1
+            continue
+        try:
+            os.rename(old_d, new_d)
+            done += 1
+        except OSError as exc:
+            print(f"  !! error renaming {rel(old_d)}: {exc}", file=sys.stderr)
+            errors += 1
+
     return done, skipped, errors
 
 
@@ -318,13 +360,21 @@ def main():
             if ext.lower() not in VIDEO_EXTS:
                 continue
             m = FILENAME_RE.match(stem)
-            if not m:
+            if m:
+                if m.group("title"):
+                    already_titled += 1
+                    continue
+                key = (m.group("show"), int(m.group("year")),
+                       m.group("edition") or "", False)
+                jobs.setdefault(key, []).append((os.path.join(dp, fn), m))
                 continue
-            if m.group("title"):
-                already_titled += 1
-                continue
-            key = (m.group("show"), int(m.group("year")), m.group("edition") or "")
-            jobs.setdefault(key, []).append((os.path.join(dp, fn), m))
+            m = FILENAME_NO_YEAR_RE.match(stem)
+            if m:
+                if m.group("title"):
+                    already_titled += 1
+                    continue
+                key = (m.group("show"), 0, "", True)
+                jobs.setdefault(key, []).append((os.path.join(dp, fn), m))
 
     if not jobs:
         print(f"no Jellyfin-formatted files missing episode titles found "
@@ -332,13 +382,15 @@ def main():
         return
 
     plans = []
+    dir_renames = []
     stats = {"no_show": 0, "no_episode": 0, "multi_skip": 0}
     seen_shows = {}
 
-    for (show, year, _edition), items in sorted(jobs.items()):
+    for (show, year, _edition, needs_year), items in sorted(jobs.items()):
         cache_key = (show.lower(), year)
         if cache_key not in seen_shows:
-            print(f"\nresolving: {show} ({year})")
+            print(f"\nresolving: {show} ({year})" if year else
+                  f"\nresolving: {show} (no year)")
             tv, candidates = resolve_show(show, year, args.threshold)
             eps = {}
             if tv is None:
@@ -358,6 +410,12 @@ def main():
             stats["no_show"] += len(items)
             continue
 
+        resolved_year = None
+        if needs_year and tv.get("premiered"):
+            m_year = re.match(r"(\d{4})", tv["premiered"])
+            if m_year:
+                resolved_year = int(m_year.group(1))
+
         for path, m in items:
             rel = os.path.relpath(path, root)
             ss, ee = int(m.group("season")), int(m.group("ep"))
@@ -371,15 +429,27 @@ def main():
                 stats["no_episode"] += 1
                 print(f"  ?? s{ss:02d}e{ee:02d} not found in TVMaze: {rel}")
                 continue
-            base = new_stem(m, name)
+            base = new_stem(m, name, resolved_year)
             dst = os.path.join(os.path.dirname(path),
                                base + os.path.splitext(path)[1])
             plans.append((path, dst))
             old_stem = os.path.basename(os.path.splitext(path)[0])
             plans.extend(sub_sibling_names(os.path.dirname(path), old_stem, base))
 
+            if needs_year and resolved_year:
+                show_dir = os.path.dirname(os.path.dirname(path))
+                dir_name = os.path.basename(show_dir)
+                new_dir_name = f"{show} ({resolved_year})"
+                if dir_name != new_dir_name:
+                    new_show_dir = os.path.join(os.path.dirname(show_dir),
+                                                new_dir_name)
+                    pair = (show_dir, new_show_dir)
+                    if pair not in dir_renames:
+                        dir_renames.append(pair)
+
     print("-" * 70)
-    done, skipped, errors = execute_moves(plans, root, args.apply)
+    done, skipped, errors = execute_moves(plans, root, args.apply,
+                                         dir_renames)
     skipped += stats["multi_skip"]
 
     print("-" * 70)
