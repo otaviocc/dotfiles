@@ -13,7 +13,8 @@ One directory per tool = one Stow package. The path *inside* the package mirrors
 where the file lands under `$HOME` (`zsh/.zshrc` → `~/.zshrc`,
 `nvim/.config/nvim/init.lua` → `~/.config/nvim/init.lua`).
 
-Packages: `zsh git nvim tmux ghostty lazygit tig herdr opencode hunk`, plus the
+Packages: `zsh git nvim tmux ghostty lazygit tig herdr opencode hunk vigia`,
+plus the
 OS-overlay packages `git-macos`/`git-linux` and `ghostty-macos`/`ghostty-linux`.
 
 ## Commands

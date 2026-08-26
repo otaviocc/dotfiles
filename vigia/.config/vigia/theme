@@ -4,6 +4,8 @@
 #   VIGIA_THEME=~/path/to/this/file
 #
 # Starts from the `dark` built-in and overrides every key.
+# Checked against vigia 0.30.0 — re-diff crates/vigia/src/theme.rs when
+# bumping, since an unset key silently inherits `dark` rather than erroring.
 # Palette: https://github.com/raunofreiberg/vesper (the ANSI set Ghostty
 # and herdr both draw with — see README "The Vesper theme").
 
@@ -11,6 +13,12 @@ base       = dark
 
 chrome     = #f591b2 bold
 chrome_dim = #7e7e7e
+
+# Chrome pills (truecolour only; background-only so chrome/chrome_dim keep
+# their fg): the segmented chrome behind the branch/count and worktree name.
+chip        = on #1c1c1c
+chip_accent = on #232323
+
 path       = #ffffff bold
 path_live  = #ffffff
 path_cold  = #7e7e7e
@@ -20,14 +28,20 @@ pulse       = #ea83a5
 spark       = #ea83a5
 spark_warm  = #f5c1d2
 spark_hot   = #fbe6ed
-spark_track = #474747
+# A sparkline draws a thin `_` stroke, not a block, so its track needs more
+# contrast than a heat strip's to read at all — this used to duplicate
+# heat_track (~2.05:1 against our #101010 bg) and all but vanished. #7e7e7e
+# is the same "muted_text" tone `gutter`/`chrome_dim`/`comment` already use.
+spark_track = #7e7e7e
 
 bar        = #a0a0a0
 bar_active = #ffffff
 bar_hover  = #d0d0d0
 bar_track  = #474747
 
-heat_track       = #474747
+# One step darker than spark_track for the same reason, but still a step up
+# from the old #474747 (~2.05:1) so the strip's track reads as a track.
+heat_track       = #505050
 heat_added       = #90b99f
 heat_added_warm  = #95dcc2
 heat_added_hot   = #99ffe4
@@ -45,10 +59,21 @@ added   = #90b99f
 removed = #f5a191
 context = #ffffff
 
+# The palette's own green, the same one `added` takes.
+staged = #90b99f
+
 added_row   = on #232925
 removed_row = on #322623
 added_bar   = on #90b99f
 removed_bar = on #f5a191
+
+# Word emphasis: the row wash stepped toward the diff hue, never a new role.
+added_word   = on #2f4437
+removed_word = on #4c332d
+
+# Two-tone gutter: one step darker than the wash it sits beside.
+added_gutter   = on #1a1e1b
+removed_gutter = on #241d1b
 
 note  = #e29eca
 alert = #ff8080 bold

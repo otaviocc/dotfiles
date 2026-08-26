@@ -67,7 +67,7 @@ never has to reach out to another repo:
 | opencode | built-in — `theme: "vesper"` in `tui.json` |
 | Neovim | vendored as `nvim/.config/nvim/colors/vesper.lua` |
 | zsh (prompt/colors/`LS_COLORS`) | merged into `zsh/.zshrc` |
-| vigia | vendored as `vigia/.config/vigia/theme` |
+| vigia | vendored as `vigia/.config/vigia/theme`, alongside a plain `vigia/.config/vigia/config` for view prefs |
 | lazygit, tig, hunk | merged directly into their config files (no separate theme file needed) |
 
 If the palette changes upstream in Vesper, re-copy the affected file(s)
