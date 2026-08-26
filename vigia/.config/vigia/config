@@ -2,7 +2,7 @@
 # Same syntax as the theme file. Defaults: everything off, except `links`.
 # All of these are still togglable in-session with m / r / s / a.
 
-masthead = on     # the churn band at the top
+masthead = off    # the churn band at the top
 rail     = off    # the file list beside the diff, from 134 columns
 single   = off    # one file at a time
 staged   = on     # what is staged, beside what is not
