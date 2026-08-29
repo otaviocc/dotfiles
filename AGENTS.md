@@ -13,7 +13,7 @@ One directory per tool = one Stow package. The path *inside* the package mirrors
 where the file lands under `$HOME` (`zsh/.zshrc` → `~/.zshrc`,
 `nvim/.config/nvim/init.lua` → `~/.config/nvim/init.lua`).
 
-Packages: `zsh git nvim tmux ghostty lazygit tig herdr opencode hunk vigia`,
+Packages: `zsh git nvim tmux ghostty lazygit tig herdr opencode hunk vigia bat`,
 plus the
 OS-overlay packages `git-macos`/`git-linux` and `ghostty-macos`/`ghostty-linux`.
 
@@ -80,6 +80,11 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   the palette in this package. Personal settings go in
   `lua/config/{options,keymaps,autocmds}.lua`; extra plugins in `lua/plugins/`.
   `lazy-lock.json` is tracked; commit it after plugin updates.
+- **bat** — the Vesper theme is a Sublime `.tmTheme`
+  (`bat/.config/bat/themes/Vesper.tmTheme`) that bat only picks up from a
+  compiled cache. After stowing the package, or after editing the theme, run
+  `bat cache --build`; without it `--theme="Vesper"` in
+  `bat/.config/bat/config` fails with "unknown theme".
 - **herdr** — only `config.toml` is tracked. Logs, `session.json`,
   `release-notes.json` and `.plugins.lock` are runtime state; leave them out.
 - **opencode** — `~/.config/opencode/skills/` contains skills this repo does not

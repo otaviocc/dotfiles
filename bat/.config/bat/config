@@ -1,0 +1,18 @@
+# bat configuration — one CLI argument per line.
+#
+# The Vesper theme lives in themes/Vesper.tmTheme and is *not* built in, so
+# after a fresh `./install.sh bat` (or any edit to the .tmTheme) run:
+#
+#     bat cache --build
+#
+# which compiles ~/.config/bat/themes into ~/.cache/bat. `bat --list-themes`
+# should then show Vesper.
+
+--theme="Vesper"
+
+# Line numbers, git modification markers and a header per file, but no grid.
+--style="numbers,changes,header"
+
+# Only page when the output doesn't fit; keep colors and let bat's default
+# less flags through.
+--paging=auto

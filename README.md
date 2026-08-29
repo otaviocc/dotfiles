@@ -17,6 +17,7 @@ zsh/.zshrc.macos             git/.gitconfig.macos          ghostty/.config/ghost
                                                             herdr/.config/herdr/...
                                                             opencode/.config/opencode/...
                                                             hunk/.config/hunk/...
+                                                            bat/.config/bat/...
 ```
 
 ## Handling Fedora vs macOS differences
@@ -68,6 +69,7 @@ never has to reach out to another repo:
 | Neovim | vendored as `nvim/.config/nvim/colors/vesper.lua` |
 | zsh (prompt/colors/`LS_COLORS`) | merged into `zsh/.zshrc` |
 | vigia | vendored as `vigia/.config/vigia/theme`, alongside a plain `vigia/.config/vigia/config` for view prefs |
+| bat | vendored as `bat/.config/bat/themes/Vesper.tmTheme`; run `bat cache --build` once after stowing |
 | lazygit, tig, hunk | merged directly into their config files (no separate theme file needed) |
 
 If the palette changes upstream in Vesper, re-copy the affected file(s)
@@ -115,8 +117,8 @@ that isn't already a symlink target (new files need re-stowing).
 
 ### Fedora packages used by this config
 
-`zsh tmux ghostty neovim lazygit tig stow xclip wl-clipboard`
+`zsh tmux ghostty neovim lazygit tig bat stow xclip wl-clipboard`
 
 ### macOS packages used by this config (Homebrew)
 
-`zsh tmux ghostty neovim lazygit tig stow`
+`zsh tmux ghostty neovim lazygit tig bat stow`
