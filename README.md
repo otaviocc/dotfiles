@@ -82,7 +82,7 @@ old Vesper setup used.
 | vigia | vendored as `vigia/.config/vigia/theme` |
 | tmux, tig, hunk | merged directly into their config files |
 | Claude Code | vendored as `claude/.claude/themes/kanagawa-dragon.json` |
-| holodeck | **no Kanagawa theme exists** — left on `vesper`, the nearest warm option it ships |
+| holodeck | built-in — `"theme": "kanagawa-dragon"` in `config.json` (added to holodeck in 5c12fe6) |
 
 Kanagawa is less thoroughly ported than the previous two themes, so more here is
 hand-assembled — but almost none of it is *invented*: the diff row backgrounds
@@ -90,16 +90,13 @@ are upstream's own `diff` table, the muted signs its `vcs` table, and every
 syntax slot its `syn` table. Only the word-level and gutter diff steps are
 extrapolated.
 
-Five things that will bite:
+Four things that will bite:
 
 - **herdr and opencode ship only the Wave variant.** Wave's background is
   `#1F1F28`, noticeably purple next to Dragon's warm `#181616`, so those two
   panes read cooler than everything around them. Fixing it needs a
   `[theme.custom]` block in herdr's config and a custom theme file for
   opencode; neither is done here.
-- **holodeck has no Kanagawa at all**, so it sits on `vesper`. The real fix is
-  adding a `kanagawa-dragon` variant to its `ThemeName` enum, the same way the
-  Catppuccin flavors were added.
 - **bat needs the vendored theme and `bat cache --build`.** Upstream's
   `extras/tmTheme` only ships **Wave**, so the vendored file is that Wave
   tmTheme with every color swapped to its Dragon counterpart, paired by the role
