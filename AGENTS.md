@@ -111,10 +111,15 @@ colour into `bg`.
 
 Traps worth knowing:
 
-- **herdr and opencode are not truly on Dragon.** Their built-in `kanagawa` is
-  the **Wave** variant (purple `#1F1F28` background). Don't "fix" the other
-  tools to match them — they are the ones that are off. Ghostty, Neovim and
-  holodeck are on real Dragon.
+- **herdr is not truly on Dragon.** Its built-in `kanagawa` is the **Wave**
+  variant (purple `#1F1F28` background). Don't "fix" the other tools to match
+  it — it is the one that is off. Everything else is on real Dragon.
+- **opencode uses a vendored theme, not its built-in.** opencode's own
+  `kanagawa` is Wave (its bundled defs are `sumiInk*`/`fujiWhite`), so a Dragon
+  theme is vendored at `opencode/.config/opencode/themes/kanagawa-dragon.json`.
+  opencode loads global themes from `<config>/themes/<name>.json`; the file's
+  50 theme keys mirror its built-in kanagawa exactly, and every value is a
+  reference into `defs`.
 - **nvim needs a plugin spec.** LazyVim bundles tokyonight and catppuccin but
   not kanagawa, so `lua/plugins/colorscheme.lua` declares
   `rebelot/kanagawa.nvim` with `lazy = false` and `priority = 1000`. Commit

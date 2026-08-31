@@ -159,19 +159,24 @@ genuinely escalates out of the muted range rather than staying inside it.
 | Ghostty | built-in — `theme = "Kanagawa Dragon"` |
 | Neovim | the `kanagawa.nvim` plugin — `colorscheme = "kanagawa-dragon"` |
 | herdr | built-in — `name = "kanagawa"` (**Wave**, not Dragon — see below) |
-| opencode | built-in — `theme: "kanagawa"` (**Wave**, not Dragon — see below) |
+| opencode | `opencode/.config/opencode/themes/kanagawa-dragon.json` — vendored, because its built-in `kanagawa` is Wave |
 | bat | `bat/.config/bat/themes/kanagawa-dragon.tmTheme`, from upstream `extras/tmTheme` |
 | lazygit | `gui.theme` hand-ported (no official lazygit port) |
 | zsh | `LS_COLORS` hand-ported (vivid has no Kanagawa) |
 | tmux, tig, hunk, vigia | hand-ported inline |
-| holodeck | not yet — holodeck has no Kanagawa theme; needs adding to its `ThemeName` |
+| holodeck | built-in — `"theme": "kanagawa-dragon"` (added upstream) |
 | Claude Code | `claude/.claude/themes/kanagawa-dragon.json` |
 
-**The one real gap: herdr and opencode ship a single `kanagawa` and it is the
-Wave variant** (opencode's bundled theme embeds Wave's `#1f1f28`/`#dcd7ba` more
-than Dragon's `#181616`/`#c5c9c5`; herdr stores its colors non-textually so it
-could not be checked directly, but Wave is the upstream default). Wave's
-background is `#1F1F28` — noticeably purple next to Dragon's warm `#181616`. So
-those two panes will read cooler than everything around them. Fixing it means a
-`[theme.custom]` block in herdr's config and a custom theme file for opencode,
-neither of which is done here.
+**The one real gap: herdr ships a single `kanagawa` and it is the Wave
+variant** (herdr stores its colors non-textually so the variant could not be read out of
+the binary, but Wave is Kanagawa's default and herdr exposes no variant
+switch). Wave's background is `#1F1F28` — noticeably purple next to Dragon's
+warm `#181616`, so that pane reads cooler than everything around it. Fixing it
+means a `[theme.custom]` block in herdr's config, which is not done here.
+
+opencode had the identical problem — its bundled `kanagawa` defines
+`sumiInk0: #1F1F28` and `fujiWhite`, so it is unambiguously Wave — and *was*
+fixed, by vendoring a Dragon theme into
+`opencode/.config/opencode/themes/kanagawa-dragon.json`. opencode loads global
+themes from `<config>/themes/<name>.json`, and the vendored file mirrors the
+50 theme keys of its built-in kanagawa exactly.

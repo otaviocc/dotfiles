@@ -74,7 +74,7 @@ old Vesper setup used.
 | Ghostty | built-in — `theme = "Kanagawa Dragon"` in `config.ghostty` |
 | Neovim | the `kanagawa.nvim` plugin, declared in `lua/plugins/colorscheme.lua` — LazyVim does **not** bundle it, unlike tokyonight/catppuccin |
 | herdr | built-in — `name = "kanagawa"` in `config.toml` (**Wave**, not Dragon — see below) |
-| opencode | built-in — `theme: "kanagawa"` in `tui.json` (**Wave**, not Dragon — see below) |
+| opencode | vendored as `opencode/.config/opencode/themes/kanagawa-dragon.json`; `theme: "kanagawa-dragon"` in `tui.json` |
 | bat | vendored as `bat/.config/bat/themes/kanagawa-dragon.tmTheme`; run `bat cache --build` once after stowing |
 | lazygit | `gui.theme` in `config.yml`, hand-ported — upstream ships no lazygit extra |
 | zsh (`LS_COLORS`) | vendored as `zsh/.config/zsh/ls_colors.zsh`, remapped from vivid's `gruvbox-dark` — vivid has no Kanagawa |
@@ -92,11 +92,12 @@ extrapolated.
 
 Four things that will bite:
 
-- **herdr and opencode ship only the Wave variant.** Wave's background is
-  `#1F1F28`, noticeably purple next to Dragon's warm `#181616`, so those two
-  panes read cooler than everything around them. Fixing it needs a
-  `[theme.custom]` block in herdr's config and a custom theme file for
-  opencode; neither is done here.
+- **herdr ships only the Wave variant.** Its built-in `kanagawa` has a
+  `#1F1F28` background, noticeably purple next to Dragon's warm `#181616`, so
+  that pane reads cooler than everything around it. herdr is now the only tool
+  not on true Dragon; fixing it needs a `[theme.custom]` block in its config.
+  (opencode had the same problem and was fixed with a vendored theme — it
+  reads global themes from `~/.config/opencode/themes/<name>.json`.)
 - **bat needs the vendored theme and `bat cache --build`.** Upstream's
   `extras/tmTheme` only ships **Wave**, so the vendored file is that Wave
   tmTheme with every color swapped to its Dragon counterpart, paired by the role
