@@ -11,8 +11,8 @@
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=50000
 SAVEHIST=50000
-setopt APPEND_HISTORY
 setopt SHARE_HISTORY
+setopt EXTENDED_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_ALL_DUPS      # Remove older duplicate entries from history
 setopt HIST_IGNORE_SPACE
@@ -275,6 +275,9 @@ PROMPT=$'%F{#8992a7}%~%f ${vcs_info_msg_0_}\n%F{#737c73}$%f '
 
 # --- GPG -----------------------------------------------------------------
 export GPG_TTY=$(tty)
+
+# --- fzf ------------------------------------------------------------------
+source <(fzf --zsh)
 
 # --- OS-specific config ---------------------------------------------------
 case "$(uname -s)" in
