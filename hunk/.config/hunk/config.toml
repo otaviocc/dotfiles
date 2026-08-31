@@ -10,134 +10,142 @@ agent_notes            = false
 transparent_background = false
 
 # ---------------------------------------------------------------------------
-# Catppuccin Mocha theme (accent: mauve)
-# Palette: https://github.com/catppuccin/catppuccin — the full table, including
-# the derived diff shades used below, is in docs/palette.md.
+# Kanagawa Dragon theme (accent: yellow #c4b28a)
+# Palette: https://github.com/rebelot/kanagawa.nvim — the full table is in
+# docs/palette.md. Names below are upstream's own.
 #
-# base      = "#1e1e2e"   (also Ghostty's terminal background)
-# mantle    = "#181825"
-# crust     = "#11111b"
-# surface0  = "#313244"
-# surface1  = "#45475a"
-# surface2  = "#585b70"
-# text      = "#cdd6f4"
-# overlay1  = "#7f849c"
-# red       = "#f38ba8"
-# green     = "#a6e3a1"
-# peach     = "#fab387"
-# yellow    = "#f9e2af"
-# pink      = "#f5c2e7"
-# mauve     = "#cba6f7"
-# teal      = "#94e2d5"
+# bg         = "#181616"  (dragonBlack3, also Ghostty's terminal background)
+# bg_m2      = "#12120f"  (dragonBlack1)
+# bg_m3      = "#0d0c0c"  (dragonBlack0)
+# bg_p1      = "#282727"  (dragonBlack4)
+# whitespace = "#625e5a"  (dragonBlack6)
+# selection  = "#223249"  (waveBlue1 — the one cool colour Dragon keeps)
+# fg         = "#c5c9c5"  (dragonWhite)
+# comment    = "#737c73"  (dragonAsh)
+# red        = "#c4746e"  (dragonRed)
+# green      = "#8a9a7b"  (dragonGreen2)
+# yellow     = "#c4b28a"  (dragonYellow)
+# orange     = "#b6927b"  (dragonOrange)
+# violet     = "#8992a7"  (dragonViolet)
+# aqua       = "#8ea4a2"  (dragonAqua)
+# pink       = "#a292a3"  (dragonPink)
+# blue       = "#8ba4b0"  (dragonBlue2)
 #
-# The diff row/word backgrounds below follow the convention the official
-# catppuccin/delta port publishes: mix an accent into base at 20% for a row,
-# 35% for a word-level emphasis. Those four values are copied from it verbatim.
+# The diff row backgrounds are Kanagawa's own `diff` table (winterGreen /
+# winterRed / winterBlue / winterYellow) and the muted signs its `vcs` table
+# (autumnGreen / autumnRed) — nothing blended. Only the word-level and gutter
+# steps are extrapolated, by mixing the matching vcs colour into bg.
 # ---------------------------------------------------------------------------
 
 [custom_theme]
 base  = "dark-plus"
-label = "Catppuccin Mocha"
+label = "Kanagawa Dragon"
 
 # UI shell
-background  = "#1e1e2e"
-panel       = "#181825"
-panelAlt    = "#45475a"
-border      = "#585b70"
-accent      = "#cba6f7"
-accentMuted = "#5b4e74"
-text        = "#cdd6f4"
-muted       = "#7f849c"
+background  = "#181616"
+panel       = "#12120f"
+panelAlt    = "#282727"
+border      = "#625e5a"
+accent      = "#c4b28a"
+accentMuted = "#544d3f"
+text        = "#c5c9c5"
+muted       = "#737c73"
 
-# Diff row backgrounds — 20% of the accent mixed into base
-addedBg        = "#394545"
-removedBg      = "#493447"
-movedAddedBg   = "#413956"
-movedRemovedBg = "#333c57"
-contextBg      = "#1e1e2e"
+# Diff row backgrounds — Kanagawa's own diff table, verbatim
+addedBg        = "#2b3328"
+removedBg      = "#43242b"
+movedAddedBg   = "#252535"
+movedRemovedBg = "#49443c"
+contextBg      = "#181616"
 
-# Word-level (intra-line) highlights — 35% mixed into base
-addedContentBg   = "#4e6356"
-removedContentBg = "#694559"
-contextContentBg = "#313244"
+# Word-level (intra-line) highlights — vcs colour 35% into bg
+addedContentBg   = "#394233"
+removedContentBg = "#542526"
+contextContentBg = "#223249"
 
 # Gutter
-lineNumberBg     = "#181825"
-lineNumberFg     = "#585b70"
-addedSignColor   = "#698a6d"
-removedSignColor = "#935a71"
+lineNumberBg     = "#12120f"
+lineNumberFg     = "#625e5a"
+addedSignColor   = "#76946a"
+removedSignColor = "#c34043"
 
 # Selection
-selectedHunk = "#313244"
+selectedHunk = "#223249"
 
 # File status badges
-badgeAdded   = "#698a6d"
-badgeRemoved = "#935a71"
-badgeNeutral = "#7f849c"
+badgeAdded   = "#76946a"
+badgeRemoved = "#c34043"
+badgeNeutral = "#737c73"
 
-fileNew       = "#698a6d"
-fileDeleted   = "#935a71"
-fileRenamed   = "#cba6f7"
-fileModified  = "#fab387"
-fileUntracked = "#7f849c"
+fileNew       = "#76946a"
+fileDeleted   = "#c34043"
+fileRenamed   = "#c4b28a"
+fileModified  = "#dca561"
+fileUntracked = "#737c73"
 
 # Agent notes
-noteBorder          = "#cba6f7"
-noteBackground      = "#181825"
-noteTitleBackground = "#413956"
-noteTitleText       = "#cdd6f4"
+noteBorder          = "#c4b28a"
+noteBackground      = "#12120f"
+noteTitleBackground = "#252535"
+noteTitleText       = "#c5c9c5"
 
 [custom_theme.syntax_scopes]
+# Slots follow Dragon's own `syn` table in kanagawa.nvim's themes.lua:
+# keyword/statement=violet, operator/preproc/regex=red, type=aqua, fun=blue,
+# identifier=yellow, constant=orange, number=pink, string=green,
+# parameter=param, punct=punct, comment=comment. Dragon sets
+# syn.variable="none", so variables inherit the plain foreground.
+
 # Comments
-"comment"                        = "#7f849c"
-"punctuation.definition.comment" = "#7f849c"
+"comment"                        = "#737c73"
+"punctuation.definition.comment" = "#737c73"
 
-# Keywords / control flow  →  red
-"keyword"              = "#f38ba8"
-"keyword.control"      = "#f38ba8"
-"keyword.operator"     = "#f38ba8"
-"storage"              = "#f38ba8"
-"storage.type"         = "#f38ba8"
+# Keywords / control flow  →  violet
+"keyword"              = "#8992a7"
+"keyword.control"      = "#8992a7"
+"keyword.operator"     = "#c4746e"
+"storage"              = "#8992a7"
+"storage.type"         = "#8ea4a2"
 
-# Functions  →  mauve
-"entity.name.function" = "#cba6f7"
-"support.function"     = "#cba6f7"
-"meta.function-call"   = "#cba6f7"
+# Functions  →  blue
+"entity.name.function" = "#8ba4b0"
+"support.function"     = "#8ba4b0"
+"meta.function-call"   = "#8ba4b0"
 
-# Types / classes  →  peach
-"entity.name.type"     = "#fab387"
-"entity.name.class"    = "#fab387"
-"support.type"         = "#fab387"
-"support.class"        = "#fab387"
+# Types / classes  →  aqua
+"entity.name.type"     = "#8ea4a2"
+"entity.name.class"    = "#8ea4a2"
+"support.type"         = "#8ea4a2"
+"support.class"        = "#8ea4a2"
 
-# Strings  →  teal
-"string"                        = "#94e2d5"
-"string.quoted"                 = "#94e2d5"
-"punctuation.definition.string" = "#94e2d5"
+# Strings  →  green
+"string"                        = "#8a9a7b"
+"string.quoted"                 = "#8a9a7b"
+"punctuation.definition.string" = "#8a9a7b"
 
-# Numbers / constants  →  pink
-"constant.numeric"  = "#f5c2e7"
-"constant.language" = "#f5c2e7"
-"constant.other"    = "#f5c2e7"
+# Numbers  →  pink; other constants  →  orange
+"constant.numeric"  = "#a292a3"
+"constant.language" = "#b6927b"
+"constant.other"    = "#b6927b"
 
-# Preprocessor / includes  →  peach
-"meta.preprocessor"      = "#fab387"
-"keyword.control.import" = "#fab387"
-"keyword.other.using"    = "#fab387"
+# Preprocessor / includes  →  red
+"meta.preprocessor"      = "#c4746e"
+"keyword.control.import" = "#c4746e"
+"keyword.other.using"    = "#c4746e"
 
-# Variables  →  text
-"variable"       = "#cdd6f4"
-"variable.other" = "#cdd6f4"
+# Variables  →  plain fg (Dragon sets syn.variable = "none")
+"variable"       = "#c5c9c5"
+"variable.other" = "#c5c9c5"
 
-# Tags  →  pink
-"entity.name.tag"            = "#f5c2e7"
-"punctuation.definition.tag" = "#7f849c"
+# Tags  →  identifier yellow
+"entity.name.tag"            = "#c4b28a"
+"punctuation.definition.tag" = "#737c73"
 
-# Punctuation  →  muted
-"punctuation"           = "#7f849c"
-"punctuation.separator" = "#7f849c"
+# Punctuation  →  punct
+"punctuation"           = "#9e9b93"
+"punctuation.separator" = "#9e9b93"
 
-# Diff markup  →  muted green/red (matches row bg tone)
-"markup.inserted" = "#698a6d"
-"markup.deleted"  = "#935a71"
-"markup.changed"  = "#f5c2e7"
+# Diff markup  →  Kanagawa's own vcs table
+"markup.inserted" = "#76946a"
+"markup.deleted"  = "#c34043"
+"markup.changed"  = "#dca561"

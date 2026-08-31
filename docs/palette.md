@@ -1,141 +1,177 @@
-# Catppuccin Mocha — the palette this repo draws with
+# Kanagawa Dragon — the palette this repo draws with
 
 The single source of truth for every color in these dotfiles. Upstream is
-<https://github.com/catppuccin/catppuccin>; the hexes below are copied from
-[`catppuccin/palette`](https://github.com/catppuccin/palette)'s `palette.json`,
-`mocha` flavor.
+[rebelot/kanagawa.nvim](https://github.com/rebelot/kanagawa.nvim): the names in
+the second column are its own, from `lua/kanagawa/colors.lua`, and the role each
+one plays is the `dragon` block of `lua/kanagawa/themes.lua`. Nothing here is
+invented — even the diff backgrounds are upstream's.
 
-**Flavor: Mocha. Accent: mauve `#cba6f7`.**
+**Variant: Dragon.** Kanagawa ships three (Wave, Dragon, Lotus). Dragon is the
+darkest and the warmest: its background is `#181616` — R24 G22 B22, warm-neutral
+rather than the blue-violet `#1e1e2e` of Catppuccin or the `#1a1b26` of Tokyo
+Night. Every neutral in the theme leans warm, which is the point.
 
-Ghostty, herdr, opencode, Neovim, bat and holodeck select Catppuccin *by name*
-from a built-in or bundled theme, so they never repeat these values. Every other tool
-vendors them, because a fresh `./install.sh` must not have to reach out to
-another repo — so six config files hold copies of this table, in six different
-syntaxes. When a value here changes, they all have to change with it.
+**Accent: `yellow` (`dragonYellow`, `#c4b28a`).** Kanagawa declares no single
+accent the way Catppuccin parameterizes one, so this is a choice made here: it
+is the closest thing in the palette to the warm sandy `#FFC799` that the old
+Vesper setup used as its accent. Swapping it for `orange` (`#b6927b`) or `blue`
+(`#8ba4b0`) is a one-line change per tool.
 
-## The 26 colors
+## The palette
 
 `RGB` is the decimal form zsh's `LS_COLORS` needs (`38;2;r;g;b`). `256` is the
 nearest xterm-256 index, for tig, which has no truecolor.
 
-| Name | Hex | RGB | 256 |
-|---|---|---|---|
-| `rosewater` | `#f5e0dc` | `245;224;220` | `color224` |
-| `flamingo` | `#f2cdcd` | `242;205;205` | `color224` |
-| `pink` | `#f5c2e7` | `245;194;231` | `color218` |
-| `mauve` | `#cba6f7` | `203;166;247` | `color183` |
-| `red` | `#f38ba8` | `243;139;168` | `color211` |
-| `maroon` | `#eba0ac` | `235;160;172` | `color181` |
-| `peach` | `#fab387` | `250;179;135` | `color216` |
-| `yellow` | `#f9e2af` | `249;226;175` | `color223` |
-| `green` | `#a6e3a1` | `166;227;161` | `color151` |
-| `teal` | `#94e2d5` | `148;226;213` | `color116` |
-| `sky` | `#89dceb` | `137;220;235` | `color116` |
-| `sapphire` | `#74c7ec` | `116;199;236` | `color117` |
-| `blue` | `#89b4fa` | `137;180;250` | `color111` |
-| `lavender` | `#b4befe` | `180;190;254` | `color147` |
-| `text` | `#cdd6f4` | `205;214;244` | `color189` |
-| `subtext1` | `#bac2de` | `186;194;222` | `color146` |
-| `subtext0` | `#a6adc8` | `166;173;200` | `color146` |
-| `overlay2` | `#9399b2` | `147;153;178` | `color103` |
-| `overlay1` | `#7f849c` | `127;132;156` | `color103` |
-| `overlay0` | `#6c7086` | `108;112;134` | `color243` |
-| `surface2` | `#585b70` | `88;91;112` | `color241` |
-| `surface1` | `#45475a` | `69;71;90` | `color239` |
-| `surface0` | `#313244` | `49;50;68` | `color237` |
-| `base` | `#1e1e2e` | `30;30;46` | `color235` |
-| `mantle` | `#181825` | `24;24;37` | `color234` |
-| `crust` | `#11111b` | `17;17;27` | `color233` |
+| Name | Upstream name | Hex | RGB | 256 |
+|---|---|---|---|---|
+| `bg` | `dragonBlack3` | `#181616` | `24;22;22` | `color233` |
+| `bg_m1` | `dragonBlack2` | `#1d1c19` | `29;28;25` | `color234` |
+| `bg_m2` | `dragonBlack1` | `#12120f` | `18;18;15` | `color233` |
+| `bg_m3` | `dragonBlack0` | `#0d0c0c` | `13;12;12` | `color232` |
+| `bg_p1` | `dragonBlack4` | `#282727` | `40;39;39` | `color235` |
+| `bg_p2` | `dragonBlack5` | `#393836` | `57;56;54` | `color237` |
+| `whitespace` | `dragonBlack6` | `#625e5a` | `98;94;90` | `color59` |
+| `border` | `sumiInk6` | `#54546d` | `84;84;109` | `color59` |
+| `selection` | `waveBlue1` | `#223249` | `34;50;73` | `color236` |
+| `search` | `waveBlue2` | `#2d4f67` | `45;79;103` | `color239` |
+| `comment` | `dragonAsh` | `#737c73` | `115;124;115` | `color243` |
+| `special` | `dragonGray3` | `#7a8382` | `122;131;130` | `color244` |
+| `punct` | `dragonGray2` | `#9e9b93` | `158;155;147` | `color247` |
+| `param` | `dragonGray` | `#a6a69c` | `166;166;156` | `color247` |
+| `fg_dim` | `oldWhite` | `#c8c093` | `200;192;147` | `color180` |
+| `fg` | `dragonWhite` | `#c5c9c5` | `197;201;197` | `color251` |
+| `red` | `dragonRed` | `#c4746e` | `196;116;110` | `color173` |
+| `green` | `dragonGreen2` | `#8a9a7b` | `138;154;123` | `color245` |
+| `green_br` | `dragonGreen` | `#87a987` | `135;169;135` | `color108` |
+| `yellow` | `dragonYellow` | `#c4b28a` | `196;178;138` | `color180` |
+| `orange` | `dragonOrange` | `#b6927b` | `182;146;123` | `color138` |
+| `orange2` | `dragonOrange2` | `#b98d7b` | `185;141;123` | `color138` |
+| `blue` | `dragonBlue2` | `#8ba4b0` | `139;164;176` | `color109` |
+| `pink` | `dragonPink` | `#a292a3` | `162;146;163` | `color247` |
+| `aqua` | `dragonAqua` | `#8ea4a2` | `142;164;162` | `color247` |
+| `violet` | `dragonViolet` | `#8992a7` | `137;146;167` | `color103` |
+| `teal` | `dragonTeal` | `#949fb5` | `148;159;181` | `color109` |
+| `error` | `samuraiRed` | `#e82424` | `232;36;36` | `color160` |
+| `warning` | `roninYellow` | `#ff9e3b` | `255;158;59` | `color215` |
+| `ok` | `springGreen` | `#98bb6c` | `152;187;108` | `color107` |
+| `info` | `dragonBlue` | `#658594` | `101;133;148` | `color66` |
+| `hint` | `waveAqua1` | `#6a9589` | `106;149;137` | `color66` |
+| `diff_add` | `winterGreen` | `#2b3328` | `43;51;40` | `color236` |
+| `diff_delete` | `winterRed` | `#43242b` | `67;36;43` | `color236` |
+| `diff_change` | `winterBlue` | `#252535` | `37;37;53` | `color235` |
+| `diff_text` | `winterYellow` | `#49443c` | `73;68;60` | `color238` |
+| `vcs_added` | `autumnGreen` | `#76946a` | `118;148;106` | `color101` |
+| `vcs_removed` | `autumnRed` | `#c34043` | `195;64;67` | `color131` |
+| `vcs_changed` | `autumnYellow` | `#dca561` | `220;165;97` | `color179` |
 
-Note where the 256-color column collapses distinctions the truecolor palette
-makes: `rosewater`/`flamingo` both land on `color224`, `teal`/`sky` both on
-`color116`, `subtext1`/`subtext0` both on `color146`, and `overlay2`/`overlay1`
-both on `color103`. Worse, Mocha's three darks are all blue-tinted and the
-256-color palette has no tinted near-blacks — `base`, `mantle` and `crust`
-approximate to the *grayscale* ramp (`color235`/`234`/`233`), so tig reads
-slightly cooler-neutral than everything else. That is inherent to 256 colors,
-not a mistake to fix.
+Two things to know about this palette:
+
+- **`selection` and `search` are the only blue in Dragon.** `waveBlue1`
+  `#223249` and `waveBlue2` `#2d4f67` are borrowed from the Wave variant, and
+  upstream uses them for `bg_visual` / `bg_search` even in Dragon. They are kept
+  rather than warmed, because they are what gives a selected row enough contrast
+  against a background this dark — but they *are* the one cool note in an
+  otherwise warm theme.
+- **`error`, `warning` and `ok` are much more saturated than everything else**
+  (`samuraiRed #e82424`, `roninYellow #ff9e3b`, `springGreen #98bb6c`). That is
+  deliberate upstream: Dragon's ordinary syntax colors are deliberately muted,
+  so diagnostics need the extra punch to read as alarming. Don't "fix" them to
+  match the muted accents.
 
 ## Semantic roles
 
-Which slot plays which part, consistently across tools:
-
 | Role | Color |
 |---|---|
-| Editor / terminal background | `base` — ghostty's built-in Catppuccin Mocha sets the terminal background to `#1e1e2e`, so every vendored background must agree with it |
-| Panels, status bars | `mantle` — chrome sits *darker* than content in Catppuccin |
-| Darkest level; text on an accent chip | `crust` |
-| Selection, highlighted row | `surface0` |
-| Secondary panel, cherry-picked commit bg | `surface1` |
-| Borders, dividers, inactive gutter text | `surface2` |
-| Foreground text | `text` |
-| Dimmed / secondary text | `overlay1` |
-| **Accent** — active border, current window, focus | `mauve` |
-| Added / staged / success | `green` |
-| Removed / error | `red` |
-| Modified / warning | `peach` |
-| Types, classes | `peach` |
-| Functions | `mauve` |
-| Strings | `teal` |
-| Numbers, constants, tags | `pink` |
-| Variables | `text` |
-| Comments, punctuation | `overlay1` |
-| Authors, refs, chunk headers | `lavender` |
+| Editor / terminal background | `bg` — Ghostty's built-in Kanagawa Dragon sets the terminal bg to `#181616`, so every vendored background must agree |
+| Panels, status bars | `bg_m2` — one step darker than content |
+| Darkest level; text on an accent chip | `bg_m3` |
+| Selection, highlighted row | `selection` |
+| Secondary panel, cherry-picked commit bg | `bg_p1` |
+| Borders, dividers | `whitespace` (warm grey) |
+| Foreground text | `fg` |
+| Dimmed / secondary text | `comment` |
+| Slightly brighter dim text | `punct` |
+| **Accent** — active border, current window, focus | `yellow` |
+| Added / staged / success | `vcs_added` |
+| Removed / error | `vcs_removed` |
+| Modified / warning | `vcs_changed` |
+| Authors, refs, chunk headers | `violet` |
+
+Syntax slots follow Dragon's own `syn` table rather than translating whatever
+theme came before — the point of a port is to look like the thing it ports:
+
+| Syntax role | Color | Upstream key |
+|---|---|---|
+| Keywords, statements | `violet` | `syn.keyword`, `syn.statement` |
+| Operators, preprocessor, regex | `red` | `syn.operator`, `syn.preproc` |
+| Types | `aqua` | `syn.type` |
+| Functions | `blue` | `syn.fun` |
+| Identifiers | `yellow` | `syn.identifier` |
+| Constants | `orange` | `syn.constant` |
+| Numbers | `pink` | `syn.number` |
+| Strings | `green` | `syn.string` |
+| Parameters | `param` | `syn.parameter` |
+| Punctuation | `punct` | `syn.punct` |
+| Comments | `comment` | `syn.comment` |
+
+Note Dragon sets `syn.variable = "none"` — variables deliberately inherit the
+plain foreground rather than getting a color of their own.
 
 ## Derived shades
 
-Some tools need shades between two palette entries — diff row backgrounds, and
-the three-step "heat" ramps in vigia. Rather than inventing colors, these follow
-the convention the official [`catppuccin/delta`](https://github.com/catppuccin/delta)
-port established and publishes in `catppuccin.gitconfig`: **mix an accent into
-`base` at 20% for a row background and 35% for word-level emphasis.** Values
-marked ✓ are copied verbatim from that port; the rest are the same formula
-applied to another accent.
+Unlike the previous two themes, almost nothing needs deriving: Kanagawa ships
+real diff *backgrounds* in its `diff` table and real sign *foregrounds* in its
+`vcs` table, so the row level is upstream's verbatim (✓). Only the word-level
+and gutter steps are extrapolated, by mixing the matching `vcs` color into `bg`.
 
-| Purpose | Mix | Hex |
+| Purpose | Source | Hex |
 |---|---|---|
-| Added row background | `green` 20% | `#394545` ✓ |
-| Removed row background | `red` 20% | `#493447` ✓ |
-| Added word (intra-line) highlight | `green` 35% | `#4e6356` ✓ |
-| Removed word (intra-line) highlight | `red` 35% | `#694559` ✓ |
-| Added gutter | `green` 28% | `#44554e` |
-| Removed gutter | `red` 28% | `#5a3d50` |
-| Moved-added row background | `mauve` 20% | `#413956` |
-| Moved-removed row background | `blue` 20% | `#333c57` |
-| Accent, muted (`accentMuted`, note borders) | `mauve` 35% | `#5b4e74` ✓ |
-| Muted added sign / badge | `green` 55% | `#698a6d` |
-| Muted removed sign / badge | `red` 55% | `#935a71` |
+| Added row background | `diff_add` (`winterGreen`) | `#2b3328` ✓ |
+| Removed row background | `diff_delete` (`winterRed`) | `#43242b` ✓ |
+| Moved-added row background | `diff_change` (`winterBlue`) | `#252535` ✓ |
+| Moved-removed row background | `diff_text` (`winterYellow`) | `#49443c` ✓ |
+| Added word (intra-line) highlight | `vcs_added` 35% into `bg` | `#394233` |
+| Removed word (intra-line) highlight | `vcs_removed` 35% into `bg` | `#542526` |
+| Added gutter | `vcs_added` 22% into `bg` | `#2d3228` |
+| Removed gutter | `vcs_removed` 22% into `bg` | `#3e1f20` |
+| Accent, muted (note borders) | `yellow` 35% into `bg` | `#544d3f` |
+| Muted added sign / badge | `vcs_added` (`autumnGreen`) | `#76946a` ✓ |
+| Muted removed sign / badge | `vcs_removed` (`autumnRed`) | `#c34043` ✓ |
+| Muted changed sign / badge | `vcs_changed` (`autumnYellow`) | `#dca561` ✓ |
 
-Beware: `base` is blue-tinted (`#1e1e2e`), so a 20% mix pulls every hue toward
-slate — `green` 20% is `#394545`, which reads as a cool grey-teal rather than a
-green. That is correct and intended; the row background is meant to be felt, not
-seen, with the `+`/`-` sign and the syntax color carrying the actual signal.
-
-Three-step ramps walk along real palette entries instead of blending, so each
-step stays a true Catppuccin color:
+Three-step ramps walk along real palette entries instead of blending:
 
 | Ramp | cool → warm → hot |
 |---|---|
-| Added heat | `green #a6e3a1` → `teal #94e2d5` → `sky #89dceb` |
-| Removed heat | `maroon #eba0ac` → `red #f38ba8` → `flamingo #f2cdcd` |
-| Mixed heat | `peach #fab387` → `yellow #f9e2af` → `rosewater #f5e0dc` |
-| Accent pulse | `mauve #cba6f7` → `pink #f5c2e7` → `rosewater #f5e0dc` |
-| Track (behind any ramp) | `surface1 #45475a` |
+| Added heat | `green #8a9a7b` → `green_br #87a987` → `ok #98bb6c` |
+| Removed heat | `red #c4746e` → `vcs_removed #c34043` → `error #e82424` |
+| Mixed heat | `orange #b6927b` → `vcs_changed #dca561` → `warning #ff9e3b` |
+| Accent pulse | `yellow #c4b28a` → `vcs_changed #dca561` → `fg_dim #c8c093` |
+| Track (behind any ramp) | `bg_p2 #393836` |
+
+Each ramp deliberately ends on one of the saturated diagnostic colors, so "hot"
+genuinely escalates out of the muted range rather than staying inside it.
 
 ## Where the copies live
 
 | Tool | How it gets the palette |
 |---|---|
-| Ghostty | built-in — `theme = "Catppuccin Mocha"` |
-| herdr | built-in — `name = "catppuccin"` |
-| opencode | built-in — `theme: "catppuccin"` |
-| Neovim | the `catppuccin` plugin, already bundled by LazyVim |
-| bat | built-in (bat >= 0.25) — `--theme="Catppuccin Mocha"` |
-| holodeck | built-in — `"theme": "catppuccin-mocha"` |
-| Claude Code | `claude/.claude/themes/catppuccin-mocha.json` — `dark-ansi` base + accent overrides |
-| lazygit | `gui.theme` block, from [`catppuccin/lazygit`](https://github.com/catppuccin/lazygit) `themes/mocha/mauve.yml` |
-| tmux | hand-ported inline (the official port needs tpm, which this repo doesn't use) |
-| zsh | hand-ported inline — `LS_COLORS`, prompt, `zstyle` formats |
-| tig | hand-ported inline, 256-color approximation |
-| hunk | hand-ported inline — `[custom_theme]` |
-| vigia | hand-ported in `vigia/.config/vigia/theme` |
+| Ghostty | built-in — `theme = "Kanagawa Dragon"` |
+| Neovim | the `kanagawa.nvim` plugin — `colorscheme = "kanagawa-dragon"` |
+| herdr | built-in — `name = "kanagawa"` (**Wave**, not Dragon — see below) |
+| opencode | built-in — `theme: "kanagawa"` (**Wave**, not Dragon — see below) |
+| bat | `bat/.config/bat/themes/kanagawa-dragon.tmTheme`, from upstream `extras/tmTheme` |
+| lazygit | `gui.theme` hand-ported (no official lazygit port) |
+| zsh | `LS_COLORS` hand-ported (vivid has no Kanagawa) |
+| tmux, tig, hunk, vigia | hand-ported inline |
+| holodeck | not yet — holodeck has no Kanagawa theme; needs adding to its `ThemeName` |
+| Claude Code | `claude/.claude/themes/kanagawa-dragon.json` |
+
+**The one real gap: herdr and opencode ship a single `kanagawa` and it is the
+Wave variant** (opencode's bundled theme embeds Wave's `#1f1f28`/`#dcd7ba` more
+than Dragon's `#181616`/`#c5c9c5`; herdr stores its colors non-textually so it
+could not be checked directly, but Wave is the upstream default). Wave's
+background is `#1F1F28` — noticeably purple next to Dragon's warm `#181616`. So
+those two panes will read cooler than everything around them. Fixing it means a
+`[theme.custom]` block in herdr's config and a custom theme file for opencode,
+neither of which is done here.

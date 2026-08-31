@@ -1,61 +1,62 @@
-# Catppuccin Mocha, the palette Ghostty and herdr both draw with.
+# Kanagawa Dragon, the palette Ghostty and Neovim both draw with.
 # Full table, including the derived shades below: docs/palette.md
 base       = dark
 
-chrome      = #cba6f7 bold
-chrome_dim  = #7f849c
-path        = #cdd6f4 bold
-path_live   = #cdd6f4
-path_cold   = #7f849c
-path_hover  = #f5c2e7 underline
+chrome      = #c4b28a bold
+chrome_dim  = #737c73
+path        = #c5c9c5 bold
+path_live   = #c5c9c5
+path_cold   = #737c73
+path_hover  = #dca561 underline
 
-pulse       = #cba6f7
-spark       = #cba6f7
-spark_warm  = #f5c2e7
-spark_hot   = #f5e0dc
-spark_track = #45475a
+pulse       = #c4b28a
+spark       = #c4b28a
+spark_warm  = #dca561
+spark_hot   = #c8c093
+spark_track = #393836
 
-bar        = #a6adc8
-bar_active = #cdd6f4
-bar_hover  = #bac2de
-bar_track  = #45475a
+bar        = #7a8382
+bar_active = #c5c9c5
+bar_hover  = #9e9b93
+bar_track  = #393836
 
-heat_track       = #45475a
-heat_added       = #a6e3a1
-heat_added_warm  = #94e2d5
-heat_added_hot   = #89dceb
-heat_removed     = #eba0ac
-heat_removed_warm = #f38ba8
-heat_removed_hot = #f2cdcd
-heat_mixed       = #fab387
-heat_mixed_warm  = #f9e2af
-heat_mixed_hot   = #f5e0dc
+heat_track       = #393836
+heat_added       = #8a9a7b
+heat_added_warm  = #87a987
+heat_added_hot   = #98bb6c
+heat_removed     = #c4746e
+heat_removed_warm = #c34043
+heat_removed_hot = #e82424
+heat_mixed       = #b6927b
+heat_mixed_warm  = #dca561
+heat_mixed_hot   = #ff9e3b
 
-kind    = #f9e2af
-staged  = #a6e3a1
-hunk    = #b4befe
-gutter  = #7f849c
-added   = #a6e3a1
-removed = #f38ba8
-context = #cdd6f4
+kind    = #dca561
+staged  = #76946a
+hunk    = #8992a7
+gutter  = #737c73
+added   = #76946a
+removed = #c34043
+context = #c5c9c5
 
-added_row      = on #394545
-removed_row    = on #493447
-added_word     = on #4e6356
-removed_word   = on #694559
-added_gutter   = on #44554e
-removed_gutter = on #5a3d50
-added_bar      = on #a6e3a1
-removed_bar    = on #f38ba8
+added_row      = on #2b3328
+removed_row    = on #43242b
+added_word     = on #394233
+removed_word   = on #542526
+added_gutter   = on #2d3228
+removed_gutter = on #3e1f20
+added_bar      = on #76946a
+removed_bar    = on #c34043
 
-note  = #cba6f7
-alert = #f38ba8 bold
+note  = #c4b28a
+alert = #e82424 bold
 
-keyword   = #f38ba8
-type_name = #fab387
-function  = #cba6f7
-variable  = #b4befe
-constant  = #f9e2af
-string    = #94e2d5
-number    = #f5c2e7
-comment   = #7f849c
+# Syntax follows Dragon's own `syn` table (see docs/palette.md).
+keyword   = #8992a7
+type_name = #8ea4a2
+function  = #8ba4b0
+variable  = #c5c9c5
+constant  = #b6927b
+string    = #8a9a7b
+number    = #a292a3
+comment   = #737c73

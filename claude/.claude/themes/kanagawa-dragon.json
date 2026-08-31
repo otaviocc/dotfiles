@@ -1,0 +1,42 @@
+{
+  "name": "Kanagawa Dragon",
+  "base": "dark-ansi",
+  "overrides": {
+    "claude": "#c4b28a",
+    "claudeShimmer": "#d6c9ad",
+    "permission": "#a292a3",
+    "permissionShimmer": "#beb3bf",
+    "remember": "#dca561",
+
+    "planMode": "#8ba4b0",
+    "autoAccept": "#8a9a7b",
+    "bashBorder": "#a292a3",
+    "ide": "#8ea4a2",
+    "fastMode": "#b6927b",
+    "fastModeShimmer": "#ccb3a3",
+
+    "red_FOR_SUBAGENTS_ONLY": "#c4746e",
+    "blue_FOR_SUBAGENTS_ONLY": "#8ba4b0",
+    "green_FOR_SUBAGENTS_ONLY": "#8a9a7b",
+    "yellow_FOR_SUBAGENTS_ONLY": "#c4b28a",
+    "purple_FOR_SUBAGENTS_ONLY": "#8992a7",
+    "orange_FOR_SUBAGENTS_ONLY": "#b6927b",
+    "pink_FOR_SUBAGENTS_ONLY": "#a292a3",
+    "cyan_FOR_SUBAGENTS_ONLY": "#8ea4a2",
+
+    "rainbow_red": "#c4746e",
+    "rainbow_red_shimmer": "#d69e9a",
+    "rainbow_orange": "#b6927b",
+    "rainbow_orange_shimmer": "#ccb3a3",
+    "rainbow_yellow": "#c4b28a",
+    "rainbow_yellow_shimmer": "#d6c9ad",
+    "rainbow_green": "#8a9a7b",
+    "rainbow_green_shimmer": "#adb8a3",
+    "rainbow_blue": "#8ba4b0",
+    "rainbow_blue_shimmer": "#aebfc8",
+    "rainbow_indigo": "#8992a7",
+    "rainbow_indigo_shimmer": "#acb3c1",
+    "rainbow_violet": "#a292a3",
+    "rainbow_violet_shimmer": "#beb3bf"
+  }
+}

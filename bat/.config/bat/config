@@ -1,10 +1,23 @@
 # bat configuration — one CLI argument per line.
 #
-# "Catppuccin Mocha" is built into bat (>= 0.25), so it resolves by name alone
-# — nothing is vendored here and no `bat cache --build` is needed. Confirm with
-# `bat --list-themes | grep Catppuccin`. Palette: see docs/palette.md.
+# Kanagawa is not built into bat, so the theme is vendored as
+# themes/kanagawa-dragon.tmTheme. bat only picks a theme file up from a
+# compiled cache, so after a fresh `./install.sh bat` (or any edit to it) run:
+#
+#     bat cache --build
+#
+# `bat --list-themes` should then show `kanagawa-dragon`. Note bat names a
+# *user* theme after its filename, not the `name` key inside the plist, and a
+# wrong value is silent — bat falls back to its built-in Monokai default and
+# prints orange rather than erroring. Verify after any rename.
+#
+# The file is upstream's extras/tmTheme/kanagawa.tmTheme with every colour
+# swapped Wave -> Dragon, paired by the role each fills in kanagawa.nvim's
+# themes.lua. Upstream only ships a Wave tmTheme, and using it directly would
+# have left bat purple-tinted while everything else is warm. The scope
+# coverage and structure are untouched. Palette: see docs/palette.md.
 
---theme="Catppuccin Mocha"
+--theme="kanagawa-dragon"
 
 # Line numbers, git modification markers and a header per file, but no grid.
 --style="numbers,changes,header"

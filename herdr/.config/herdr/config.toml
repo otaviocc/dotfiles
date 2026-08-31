@@ -9,7 +9,7 @@ onboarding = false
 # Built-in themes: catppuccin, terminal, tokyo-night, dracula, nord,
 #                  gruvbox, one-dark, solarized, kanagawa, rose-pine,
 #                  vesper
-name = "catppuccin"
+name = "kanagawa"
 auto_switch = false
 
 # Follow host terminal light/dark appearance and switch Herdr UI themes.
@@ -17,10 +17,11 @@ auto_switch = false
 # dark_name = "catppuccin"
 # light_name = "catppuccin-latte"
 
-# Using herdr's built-in `catppuccin` theme directly (= Mocha; matches ghostty's
-# built-in Catppuccin Mocha theme and the palette vendored into tig/lazygit/
-# hunk/vigia/bat/tmux/zsh — see docs/palette.md), so no [theme.custom] override
-# is needed here.
+# herdr's built-in `kanagawa` is the *Wave* variant, not Dragon: Wave's
+# background is #1F1F28, noticeably purple next to Dragon's warm #181616. So
+# this pane reads cooler than everything around it. Accepted for now rather
+# than fixed — the fix is a [theme.custom] block here spelling out Dragon's
+# colours from docs/palette.md. Same limitation applies to opencode.
 [terminal]
 # Executable used for new interactive panes.
 # Empty means $SHELL, then /bin/sh.

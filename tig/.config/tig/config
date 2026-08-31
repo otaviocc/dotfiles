@@ -1,87 +1,95 @@
-# Catppuccin Mocha theme (accent: mauve)
-# Palette: see docs/palette.md. Upstream: https://github.com/catppuccin/catppuccin
+# Kanagawa Dragon theme (accent: yellow)
+# Palette: see docs/palette.md. Upstream: https://github.com/rebelot/kanagawa.nvim
 #
-# tig 2.6.1 has no hex/true-color support, so every colour below is the nearest
-# xterm-256 index:
-#   text     #cdd6f4 -> color189 (#d7d7ff)
-#   subtext0 #a6adc8 -> color146 (#afafd7)
-#   overlay1 #7f849c -> color103 (#8787af)
-#   surface2 #585b70 -> color241 (#626262)
-#   surface1 #45475a -> color239 (#4e4e4e)
-#   surface0 #313244 -> color237 (#3a3a3a)
-#   mauve    #cba6f7 -> color183 (#d7afff)
-#   lavender #b4befe -> color147 (#afafff)
-#   pink     #f5c2e7 -> color218 (#ffafd7)
-#   red      #f38ba8 -> color211 (#ff87af)
-#   peach    #fab387 -> color216 (#ffaf87)
-#   yellow   #f9e2af -> color223 (#ffd7af)
-#   green    #a6e3a1 -> color151 (#afd7af)
+# tig 2.6.1 has no hex/true-color support, so every colour below is a 256-colour
+# stand-in. Unlike the previous themes these were NOT chosen by nearest-RGB:
+# Dragon is deliberately low-chroma, and a plain nearest-neighbour search sends
+# half the palette onto the xterm *greyscale* ramp — `green` #8a9a7b lands on
+# color245, `aqua` and `pink` both on color247 — which would render tig almost
+# entirely monochrome and collapse three syntax roles into one. Restricting the
+# search to the 6x6x6 colour cube instead just moves the collisions around.
 #
-# Backgrounds are deliberately left as `default` rather than approximated.
-# Mocha's darks are all blue-tinted (base #1e1e2e, mantle #181825, crust
-# #11111b) and the 256-colour palette has no tinted near-blacks — the nearest
-# entries are the *grey* ramp (color235/234/233), which would leave tig sitting
-# on a visibly colder, flatter background than every other tool. Inheriting
-# `default` instead means tig gets the terminal's real #1e1e2e from Ghostty's
-# built-in Catppuccin Mocha, exactly matching its neighbours. Only genuinely
-# *highlighted* backgrounds get an explicit index.
+# So these are hand-picked for maximum distinctness while keeping each hue
+# recognisable. They are approximations of approximations; the truecolor tools
+# are the reference, not this file.
+#
+# Only the roles tig actually has are listed — it exposes no string/type/
+# function scopes, so most of the syntax palette never reaches it.
+#
+#   fg           #c5c9c5 -> color188   text
+#   comment      #737c73 -> color243   (unused; kept for reference)
+#   special      #7a8382 -> color245   muted chrome, line numbers
+#   yellow       #c4b28a -> color180   THE ACCENT — cursor, titles, dirs, HEAD
+#   violet       #8992a7 -> color103   authors, refs, chunk headers
+#   pink         #a292a3 -> color139   remotes, tracked, prefetch
+#   orange       #b6927b -> color137   unstaged changes
+#   vcs_added    #76946a -> color65    added / staged / notes
+#   vcs_removed  #c34043 -> color131   removed / untracked / replaced
+#   vcs_changed  #dca561 -> color179   changed / tags / stash / commit ids
+#   bg_m3        #0d0c0c -> color232   text on a filled accent
+#   bg_p1        #282727 -> color235   the one non-default background (blurred
+#                                      title and cursor rows)
+#
+# Backgrounds are left as `default` so tig inherits the terminal's real
+# #181616 from Ghostty rather than an approximation — the same reasoning as
+# above, applied to the background.
 
 # Layout
 set vertical-split = false
 
 # Base UI
-color default        color189 default
-color cursor          color237 color183
-color cursor-blur     color189 color237
-color status          color189 default
-color title-focus     color237 color183
-color title-blur      color189 color237
-color search-result   color237 color183
-color header          color189 default
-color line-number     color241 default
-color delimiter       color241 default
-color id              color223 default
-color date            color189 default
-color author          color147 default
-color committer       color189 default
-color mode            color241 default
-color overflow        color241 default
-color directory       color218 default
-color file            color189 default
-color file-size       color241 default
+color default        color188 default
+color cursor          color232 color180
+color cursor-blur     color188 color235
+color status          color188 default
+color title-focus     color232 color180
+color title-blur      color188 color235
+color search-result   color232 color180
+color header          color188 default
+color line-number     color245 default
+color delimiter       color245 default
+color id              color179 default
+color date            color188 default
+color author          color103 default
+color committer       color188 default
+color mode            color245 default
+color overflow        color245 default
+color directory       color180 default
+color file            color188 default
+color file-size       color245 default
 
 # Diff view
-color diff-add        color151 default
-color diff-del         color211 default
-color diff-header      color183 default
-color diff-chunk        color147 default
+color diff-add        color65  default
+color diff-del         color131 default
+color diff-header      color180 default
+color diff-chunk        color103 default
 
 # Log / commit graph
-color graph-commit    color183 default
-color main-commit     color189 default
-color main-annotated  color147 default
-color main-head       color183 default bold
-color main-remote     color218 default
-color main-tracked    color218 default
-color main-tag        color223 default
-color main-local-tag  color223 default
-color main-ref        color147 default
-color main-replace    color211 default
-color main-stash      color223 default
-color main-note       color151 default
-color main-prefetch   color218 default
-color main-other      color189 default
+color graph-commit    color180 default
+color main-commit     color188 default
+color main-annotated  color103 default
+color main-head       color180 default bold
+color main-remote     color139 default
+color main-tracked    color139 default
+color main-tag        color179 default
+color main-local-tag  color179 default
+color main-ref        color103 default
+color main-replace    color131 default
+color main-stash      color179 default
+color main-note       color65  default
+color main-prefetch   color139 default
+color main-other      color188 default
 
 # Status view
-color stat-none      color241 default
-color stat-staged     color151 default
-color stat-unstaged    color216 default
-color stat-untracked     color211 default
+color stat-none      color245 default
+color stat-staged     color65  default
+color stat-unstaged    color137 default
+color stat-untracked     color131 default
 
 # Help view
-color help-group   color183 default bold
-color help-action   color189 default
+color help-group   color180 default bold
+color help-action   color188 default
 
 # Tree view
-color tree.directory   color218 default
-color tree.file        color189 default
+color tree.directory   color180 default
+color tree.file        color188 default

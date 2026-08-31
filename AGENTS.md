@@ -75,16 +75,16 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
 - **nvim** — the stock [LazyVim](https://www.lazyvim.org) starter template,
   kept verbatim so upgrades are a re-diff against
   <https://github.com/LazyVim/starter>. The only intentional deviation is
-  `lua/plugins/colorscheme.lua`, which points LazyVim's `colorscheme` option at
-  `catppuccin-mocha`. LazyVim already ships the `catppuccin` plugin, so nothing
-  is vendored here and there is no `colors/` directory. Personal settings go in
+  `lua/plugins/colorscheme.lua`, which declares `rebelot/kanagawa.nvim` and
+  points LazyVim's `colorscheme` option at `kanagawa-dragon`. LazyVim does not
+  bundle kanagawa (it does bundle tokyonight and catppuccin), so the plugin
+  spec is required; there is no vendored `colors/` directory. Personal settings go in
   `lua/config/{options,keymaps,autocmds}.lua`; extra plugins in `lua/plugins/`.
   `lazy-lock.json` is tracked; commit it after plugin updates.
-- **bat** — "Catppuccin Mocha" is built into bat >= 0.25, so `config` is the
-  whole package: no vendored `.tmTheme`, no `themes/` directory, and no
-  `bat cache --build` step. (That step *was* needed under Vesper, which bat
-  does not ship — don't reintroduce it from muscle memory.) Only add a
-  `themes/` dir back if a machine ends up on bat < 0.25.
+- **bat** — Kanagawa is not built into bat, so the theme is vendored as
+  `themes/kanagawa-dragon.tmTheme` and bat only picks it up from a compiled
+  cache: run `bat cache --build` after stowing or after editing it. See the
+  theme trap in the Kanagawa Dragon section about the `--theme` value.
 - **herdr** — only `config.toml` is tracked. Logs, `session.json`,
   `release-notes.json` and `.plugins.lock` are runtime state; leave them out.
 - **holodeck** — only `config.json` is tracked. `url-history.json` next to it
@@ -96,35 +96,42 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   `opencode/.config/opencode/skills/AGENTS.md` — read it before touching any
   skill script.
 
-## Catppuccin Mocha theme
+## Kanagawa Dragon theme
 
-**`docs/palette.md` is the source of truth for every color in this repo.** Read
-it before touching any color anywhere.
+**`docs/palette.md` is the source of truth for every color in this repo.**
+Variant is **Dragon**, accent is **yellow** `#c4b28a`.
 
-Ghostty, herdr, opencode, Neovim, bat and holodeck select Catppuccin **by
-name** from a built-in or bundled theme; every other tool has the palette **vendored** into
-its package so a fresh `./install.sh` never reaches out to another repo. Two of
-One of those vendored copies comes from an official port and should be
-re-synced from upstream rather than hand-edited (lazygit, from
-`catppuccin/lazygit`); the rest — tmux, zsh, tig, hunk, vigia — are hand-ported
-because no usable port exists for them.
+Almost nothing here is invented: diff row backgrounds come from Kanagawa's own
+`diff` table, muted diff signs from its `vcs` table, and every syntax slot from
+its `syn` table (keyword=violet, operator/preproc=red, type=aqua, fun=blue,
+identifier=yellow, constant=orange, number=pink, string=green). Dragon sets
+`syn.variable = "none"`, so variables inherit the plain foreground. Only the
+word-level and gutter diff steps are extrapolated, by mixing the matching `vcs`
+colour into `bg`.
 
-Never hand-edit one tool's colors in isolation: change `docs/palette.md` first,
-then propagate. Two traps worth knowing:
+Traps worth knowing:
 
-- **tmux hex must stay lowercase.** `#F`, `#I`, `#W`, `#S`, `#T`, `#P`, `#H` and
-  `#D` are legacy format specifiers, so `bg=#CBA6F7` silently expands to the
-  nonsense `bg=*BA6F7` instead of erroring.
-- **tig has no truecolor.** Its config is a 256-color approximation, and its
-  backgrounds are deliberately `default` so it inherits the terminal's real
-  `#1e1e2e` rather than the grey `color235` the 256-color palette would force.
+- **Only Ghostty and Neovim are truly on Dragon.** herdr's and opencode's
+  built-in `kanagawa` is the **Wave** variant (purple `#1F1F28` background), and
+  holodeck has no Kanagawa at all (left on `vesper`). Don't "fix" the other
+  tools to match those — they are the ones that are off.
+- **nvim needs a plugin spec.** LazyVim bundles tokyonight and catppuccin but
+  not kanagawa, so `lua/plugins/colorscheme.lua` declares
+  `rebelot/kanagawa.nvim` with `lazy = false` and `priority = 1000`. Commit
+  `lazy-lock.json` after any plugin change.
+- **bat's `--theme` is the .tmTheme *filename*** (`kanagawa-dragon`), not the
+  plist's `name` key. A wrong value is silent — bat prints its Monokai default
+  rather than erroring. The vendored file is upstream's *Wave* tmTheme remapped
+  to Dragon, because upstream ships no Dragon tmTheme.
+- **tmux hex must stay lowercase.** `#F`/`#I`/`#W`/`#S`/`#T`/`#P`/`#H`/`#D` are
+  legacy format specifiers.
+- **tig's 256-colour values are hand-picked, not computed.** Nearest-RGB sends
+  Dragon's low-chroma palette onto the greyscale ramp. Don't "correct" them.
+- **`LS_COLORS` is not from `vivid generate <name>`** — vivid has no Kanagawa.
+  It is vivid's `gruvbox-dark` output with the palette remapped role-by-role;
+  see the header of `zsh/.config/zsh/ls_colors.zsh`.
 - **The `claude` package tracks `~/.claude/themes/` only.** `settings.json`
   selects the theme but also holds API tokens — never add it to the repo.
-- **zsh has two `ls` variables.** `LS_COLORS` (GNU, truecolor, ~677 rules) is
-  vendored in `zsh/.config/zsh/ls_colors.zsh` and regenerated with
-  `vivid generate catppuccin-mocha` — don't hand-edit it. `LSCOLORS` is the
-  8-colour BSD form that only `/bin/ls` reads; macOS aliases `ls` to `gls` so
-  the truecolor set is what actually renders on both machines.
 
 ## Commit messages
 
