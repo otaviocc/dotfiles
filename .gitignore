@@ -7,6 +7,13 @@ __pycache__/
 # Neovim runtime state written by LazyVim itself, never hand-edited.
 /nvim/.config/nvim/lazyvim.json
 
+# Claude Code: the `claude` package tracks themes/ and nothing else.
+# settings.json selects the theme but also carries API tokens, and the rest
+# of ~/.claude is session/runtime state. Ignored rather than merely absent,
+# so a stray `git add claude/` can't pull a token into history.
+/claude/.claude/*
+!/claude/.claude/themes/
+
 # Exceptions: these *.local files are pre-committed relative symlinks that
 # make up the OS-overlay packages (see README "Handling Fedora vs macOS
 # differences"), not machine-local runtime state.

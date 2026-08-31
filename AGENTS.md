@@ -118,13 +118,13 @@ then propagate. Two traps worth knowing:
 - **tig has no truecolor.** Its config is a 256-color approximation, and its
   backgrounds are deliberately `default` so it inherits the terminal's real
   `#1e1e2e` rather than the grey `color235` the 256-color palette would force.
+- **The `claude` package tracks `~/.claude/themes/` only.** `settings.json`
+  selects the theme but also holds API tokens — never add it to the repo.
 - **zsh has two `ls` variables.** `LS_COLORS` (GNU, truecolor, ~677 rules) is
   vendored in `zsh/.config/zsh/ls_colors.zsh` and regenerated with
   `vivid generate catppuccin-mocha` — don't hand-edit it. `LSCOLORS` is the
   8-colour BSD form that only `/bin/ls` reads; macOS aliases `ls` to `gls` so
   the truecolor set is what actually renders on both machines.
-- **The `claude` package tracks `~/.claude/themes/` only.** `settings.json`
-  selects the theme but also holds API tokens — never add it to the repo.
 
 ## Commit messages
 
