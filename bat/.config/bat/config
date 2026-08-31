@@ -1,14 +1,10 @@
 # bat configuration — one CLI argument per line.
 #
-# The Vesper theme lives in themes/Vesper.tmTheme and is *not* built in, so
-# after a fresh `./install.sh bat` (or any edit to the .tmTheme) run:
-#
-#     bat cache --build
-#
-# which compiles ~/.config/bat/themes into ~/.cache/bat. `bat --list-themes`
-# should then show Vesper.
+# "Catppuccin Mocha" is built into bat (>= 0.25), so it resolves by name alone
+# — nothing is vendored here and no `bat cache --build` is needed. Confirm with
+# `bat --list-themes | grep Catppuccin`. Palette: see docs/palette.md.
 
---theme="Vesper"
+--theme="Catppuccin Mocha"
 
 # Line numbers, git modification markers and a header per file, but no grid.
 --style="numbers,changes,header"

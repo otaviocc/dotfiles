@@ -9,7 +9,7 @@ onboarding = false
 # Built-in themes: catppuccin, terminal, tokyo-night, dracula, nord,
 #                  gruvbox, one-dark, solarized, kanagawa, rose-pine,
 #                  vesper
-name = "vesper"
+name = "catppuccin"
 auto_switch = false
 
 # Follow host terminal light/dark appearance and switch Herdr UI themes.
@@ -17,9 +17,9 @@ auto_switch = false
 # dark_name = "catppuccin"
 # light_name = "catppuccin-latte"
 
-# Using herdr's built-in `vesper` theme directly (matches ghostty's built-in
-# Vesper theme and the palette vendored into nvim/tig/lazygit/hunk/vigia/
-# opencode/zsh — see README "The Vesper theme"), so no [theme.custom] override
+# Using herdr's built-in `catppuccin` theme directly (= Mocha; matches ghostty's
+# built-in Catppuccin Mocha theme and the palette vendored into tig/lazygit/
+# hunk/vigia/bat/tmux/zsh — see docs/palette.md), so no [theme.custom] override
 # is needed here.
 [terminal]
 # Executable used for new interactive panes.

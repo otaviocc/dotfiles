@@ -237,26 +237,30 @@ bindkey '^[[H' beginning-of-line
 bindkey '^[[F' end-of-line
 bindkey '^[[3~' delete-char
 
-# --- Vesper theme (colors, prompt, LS_COLORS) -----------------------------
-# Vesper palette: bg #101010, fg #FFFFFF, muted #7E7E7E, blue #F591B2,
-# yellow #FFC799, red #FF8080, magenta #ECAAD6, cyan #B9AEDA, green #90B99F.
-# Palette: https://github.com/raunofreiberg/vesper (the ANSI set Ghostty
-# and herdr both draw with — see README "The Vesper theme").
+# --- Catppuccin Mocha theme (colors, prompt, LS_COLORS) -------------------
+# Palette: base #1e1e2e, crust #11111b, text #cdd6f4, overlay1 #7f849c,
+# pink #f5c2e7, peach #fab387, red #f38ba8, mauve #cba6f7, lavender #b4befe.
+# The full table, including the decimal RGB triplets LS_COLORS needs below,
+# lives in docs/palette.md. Upstream: https://github.com/catppuccin/catppuccin
+#
+# LSCOLORS just below is BSD's 8-colour letter form, so it is palette-agnostic
+# — it resolves through whatever ANSI 1-8 the terminal theme defines, and needs
+# no change when the palette does. LS_COLORS is the truecolor one.
 
 # `ls` colors (macOS CLICOLOR + GNU-style LS_COLORS for tools that read it)
 export CLICOLOR=YES
 export LSCOLORS="ExDxGxFxBxEgEdAbAgAcAd"
-export LS_COLORS="di=1;38;2;245;145;178:ln=38;2;255;199;153:so=38;2;236;170;214:pi=38;2;236;170;214:ex=1;38;2;255;128;128:bd=38;2;245;145;178;48;2;16;16;16:cd=38;2;245;145;178;48;2;16;16;16:su=38;2;16;16;16;48;2;255;128;128:sg=38;2;16;16;16;48;2;255;199;153:tw=38;2;16;16;16;48;2;185;174;218:ow=38;2;16;16;16;48;2;255;199;153"
+export LS_COLORS="di=1;38;2;245;194;231:ln=38;2;250;179;135:so=38;2;203;166;247:pi=38;2;203;166;247:ex=1;38;2;243;139;168:bd=38;2;245;194;231;48;2;30;30;46:cd=38;2;245;194;231;48;2;30;30;46:su=38;2;17;17;27;48;2;243;139;168:sg=38;2;17;17;27;48;2;250;179;135:tw=38;2;17;17;27;48;2;180;190;254:ow=38;2;17;17;27;48;2;250;179;135"
 
 # Completion list colors (uses LS_COLORS above)
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*:descriptions' format '%F{#B9AEDA}-- %d --%f'
+zstyle ':completion:*:descriptions' format '%F{#b4befe}-- %d --%f'
 
 # VCS / prompt colors
-zstyle ':vcs_info:git:*' formats '%F{#FFC799}%b%f '
+zstyle ':vcs_info:git:*' formats '%F{#fab387}%b%f '
 
 setopt PROMPT_SUBST
-PROMPT=$'%F{#B9AEDA}%~%f ${vcs_info_msg_0_}\n%F{#7E7E7E}$%f '
+PROMPT=$'%F{#b4befe}%~%f ${vcs_info_msg_0_}\n%F{#7f849c}$%f '
 
 # --- GPG -----------------------------------------------------------------
 export GPG_TTY=$(tty)

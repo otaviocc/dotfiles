@@ -4,23 +4,34 @@ gui:
   showBottomLine: false
   showListFooter: false
   portraitMode: 'always'
+  # Catppuccin Mocha, mauve accent — verbatim from
+  # https://github.com/catppuccin/lazygit themes/mocha/mauve.yml.
+  # Palette: see docs/palette.md.
   theme:
     activeBorderColor:
-      - '#B9AEDA'
+      - '#cba6f7'
       - bold
     inactiveBorderColor:
-      - '#232323'
-    selectedLineBgColor:
-      - '#232323'
-    cherryPickedCommitBgColor:
-      - '#232323'
-    cherryPickedCommitFgColor:
-      - '#FFC799'
-    unstagedChangesColor:
-      - '#FFC799'
-    defaultFgColor:
-      - '#FFFFFF'
+      - '#a6adc8'
     searchingActiveBorderColor:
-      - '#FFC799'
+      - '#f9e2af'
     optionsTextColor:
-      - '#B9AEDA'
+      - '#89b4fa'
+    selectedLineBgColor:
+      - '#313244'
+    inactiveViewSelectedLineBgColor:
+      - '#6c7086'
+    cherryPickedCommitFgColor:
+      - '#cba6f7'
+    cherryPickedCommitBgColor:
+      - '#45475a'
+    markedBaseCommitFgColor:
+      - '#89b4fa'
+    markedBaseCommitBgColor:
+      - '#f9e2af'
+    unstagedChangesColor:
+      - '#f38ba8'
+    defaultFgColor:
+      - '#cdd6f4'
+  authorColors:
+    '*': '#b4befe'

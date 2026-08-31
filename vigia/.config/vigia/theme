@@ -1,60 +1,61 @@
-# Vesper, from the palette Ghostty and herdr both draw with.
+# Catppuccin Mocha, the palette Ghostty and herdr both draw with.
+# Full table, including the derived shades below: docs/palette.md
 base       = dark
 
-chrome      = #f591b2 bold
-chrome_dim  = #7e7e7e
-path        = #ffffff bold
-path_live   = #ffffff
-path_cold   = #7e7e7e
-path_hover  = #f0c9d6 underline
+chrome      = #cba6f7 bold
+chrome_dim  = #7f849c
+path        = #cdd6f4 bold
+path_live   = #cdd6f4
+path_cold   = #7f849c
+path_hover  = #f5c2e7 underline
 
-pulse       = #ea83a5
-spark       = #ea83a5
-spark_warm  = #f5c1d2
-spark_hot   = #fbe6ed
-spark_track = #474747
+pulse       = #cba6f7
+spark       = #cba6f7
+spark_warm  = #f5c2e7
+spark_hot   = #f5e0dc
+spark_track = #45475a
 
-bar        = #a0a0a0
-bar_active = #ffffff
-bar_hover  = #d0d0d0
-bar_track  = #474747
+bar        = #a6adc8
+bar_active = #cdd6f4
+bar_hover  = #bac2de
+bar_track  = #45475a
 
-heat_track       = #474747
-heat_added       = #90b99f
-heat_added_warm  = #95dcc2
-heat_added_hot   = #99ffe4
-heat_removed     = #f5a191
-heat_removed_warm = #fa9189
-heat_removed_hot = #ff8080
-heat_mixed       = #e6b99d
-heat_mixed_warm  = #f3c09b
-heat_mixed_hot   = #ffc799
+heat_track       = #45475a
+heat_added       = #a6e3a1
+heat_added_warm  = #94e2d5
+heat_added_hot   = #89dceb
+heat_removed     = #eba0ac
+heat_removed_warm = #f38ba8
+heat_removed_hot = #f2cdcd
+heat_mixed       = #fab387
+heat_mixed_warm  = #f9e2af
+heat_mixed_hot   = #f5e0dc
 
-kind    = #e6b99d
-staged  = #90b99f
-hunk    = #b9aeda
-gutter  = #7e7e7e
-added   = #90b99f
-removed = #f5a191
-context = #ffffff
+kind    = #f9e2af
+staged  = #a6e3a1
+hunk    = #b4befe
+gutter  = #7f849c
+added   = #a6e3a1
+removed = #f38ba8
+context = #cdd6f4
 
-added_row      = on #232925
-removed_row    = on #322623
-added_word     = on #414e45
-removed_word   = on #674537
-added_gutter   = on #2c352f
-removed_gutter = on #41322f
-added_bar      = on #90b99f
-removed_bar    = on #f5a191
+added_row      = on #394545
+removed_row    = on #493447
+added_word     = on #4e6356
+removed_word   = on #694559
+added_gutter   = on #44554e
+removed_gutter = on #5a3d50
+added_bar      = on #a6e3a1
+removed_bar    = on #f38ba8
 
-note  = #e29eca
-alert = #ff8080 bold
+note  = #cba6f7
+alert = #f38ba8 bold
 
-keyword   = #ff8080
-type_name = #ffc799
-function  = #ecaad6
-variable  = #b9aeda
-constant  = #e6b99d
-string    = #99ffe4
-number    = #f591b2
-comment   = #7e7e7e
+keyword   = #f38ba8
+type_name = #fab387
+function  = #cba6f7
+variable  = #b4befe
+constant  = #f9e2af
+string    = #94e2d5
+number    = #f5c2e7
+comment   = #7f849c

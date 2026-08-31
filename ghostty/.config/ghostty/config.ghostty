@@ -5,10 +5,11 @@
 # --default --docs | grep xdg_config_home` if a future Ghostty release on
 # either machine expects plain `config` instead — rename/symlink as needed).
 
-# Theme (built into Ghostty, see README "The Vesper theme")
-theme = "Vesper"
+# Theme (built into Ghostty, see README "The Catppuccin Mocha theme")
+theme = "Catppuccin Mocha"
 bold-color = bright
-split-divider-color = #90B99F
+# surface2 — the divider is chrome, not signal, so it stays out of the accent.
+split-divider-color = #585b70
 
 # Font (unset: use each OS's default monospace font)
 font-size = 13

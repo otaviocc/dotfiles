@@ -10,128 +10,134 @@ agent_notes            = false
 transparent_background = false
 
 # ---------------------------------------------------------------------------
-# Vesper theme
-# Palette: https://github.com/raunofreiberg/vesper (the ANSI set Ghostty
-# and herdr both draw with)
+# Catppuccin Mocha theme (accent: mauve)
+# Palette: https://github.com/catppuccin/catppuccin — the full table, including
+# the derived diff shades used below, is in docs/palette.md.
 #
-# bg            = "#101010"
-# bg_panel      = "#161616"
-# bg_selection  = "#232323"
-# fg            = "#FFFFFF"
-# muted         = "#505050"
-# muted_text    = "#7E7E7E"
-# subtle        = "#1C1C1C"
-# red           = "#FF8080"
-# green         = "#90B99F"
-# yellow        = "#FFC799"
-# blue          = "#F591B2"
-# magenta       = "#ECAAD6"
-# cyan          = "#B9AEDA"
+# base      = "#1e1e2e"   (also Ghostty's terminal background)
+# mantle    = "#181825"
+# crust     = "#11111b"
+# surface0  = "#313244"
+# surface1  = "#45475a"
+# surface2  = "#585b70"
+# text      = "#cdd6f4"
+# overlay1  = "#7f849c"
+# red       = "#f38ba8"
+# green     = "#a6e3a1"
+# peach     = "#fab387"
+# yellow    = "#f9e2af"
+# pink      = "#f5c2e7"
+# mauve     = "#cba6f7"
+# teal      = "#94e2d5"
+#
+# The diff row/word backgrounds below follow the convention the official
+# catppuccin/delta port publishes: mix an accent into base at 20% for a row,
+# 35% for a word-level emphasis. Those four values are copied from it verbatim.
 # ---------------------------------------------------------------------------
 
 [custom_theme]
 base  = "dark-plus"
-label = "Vesper"
+label = "Catppuccin Mocha"
 
 # UI shell
-background  = "#101010"
-panel       = "#161616"
-panelAlt    = "#282828"
-border      = "#505050"
-accent      = "#F591B2"
-accentMuted = "#774A59"
-text        = "#FFFFFF"
-muted       = "#7E7E7E"
+background  = "#1e1e2e"
+panel       = "#181825"
+panelAlt    = "#45475a"
+border      = "#585b70"
+accent      = "#cba6f7"
+accentMuted = "#5b4e74"
+text        = "#cdd6f4"
+muted       = "#7f849c"
 
-# Diff row backgrounds
-addedBg        = "#232925"
-removedBg      = "#322623"
-movedAddedBg   = "#322328"
-movedRemovedBg = "#31272D"
-contextBg      = "#101010"
+# Diff row backgrounds — 20% of the accent mixed into base
+addedBg        = "#394545"
+removedBg      = "#493447"
+movedAddedBg   = "#413956"
+movedRemovedBg = "#333c57"
+contextBg      = "#1e1e2e"
 
-# Word-level (intra-line) highlights
-addedContentBg   = "#3D4B42"
-removedContentBg = "#60433D"
-contextContentBg = "#232323"
+# Word-level (intra-line) highlights — 35% mixed into base
+addedContentBg   = "#4e6356"
+removedContentBg = "#694559"
+contextContentBg = "#313244"
 
 # Gutter
-lineNumberBg     = "#161616"
-lineNumberFg     = "#505050"
-addedSignColor   = "#86998D"
-removedSignColor = "#B48E87"
+lineNumberBg     = "#181825"
+lineNumberFg     = "#585b70"
+addedSignColor   = "#698a6d"
+removedSignColor = "#935a71"
 
 # Selection
-selectedHunk = "#232323"
+selectedHunk = "#313244"
 
 # File status badges
-badgeAdded   = "#86998D"
-badgeRemoved = "#B48E87"
-badgeNeutral = "#7E7E7E"
+badgeAdded   = "#698a6d"
+badgeRemoved = "#935a71"
+badgeNeutral = "#7f849c"
 
-fileNew       = "#86998D"
-fileDeleted   = "#B48E87"
-fileRenamed   = "#F591B2"
-fileModified  = "#E6B99D"
-fileUntracked = "#7E7E7E"
+fileNew       = "#698a6d"
+fileDeleted   = "#935a71"
+fileRenamed   = "#cba6f7"
+fileModified  = "#fab387"
+fileUntracked = "#7f849c"
 
 # Agent notes
-noteBorder          = "#F591B2"
-noteBackground      = "#161616"
-noteTitleBackground = "#322328"
-noteTitleText       = "#FFFFFF"
+noteBorder          = "#cba6f7"
+noteBackground      = "#181825"
+noteTitleBackground = "#413956"
+noteTitleText       = "#cdd6f4"
 
 [custom_theme.syntax_scopes]
 # Comments
-"comment"                        = "#7E7E7E"
-"punctuation.definition.comment" = "#7E7E7E"
+"comment"                        = "#7f849c"
+"punctuation.definition.comment" = "#7f849c"
 
 # Keywords / control flow  →  red
-"keyword"              = "#FF8080"
-"keyword.control"      = "#FF8080"
-"keyword.operator"     = "#FF8080"
-"storage"              = "#FF8080"
-"storage.type"         = "#FF8080"
+"keyword"              = "#f38ba8"
+"keyword.control"      = "#f38ba8"
+"keyword.operator"     = "#f38ba8"
+"storage"              = "#f38ba8"
+"storage.type"         = "#f38ba8"
 
-# Functions  →  magenta
-"entity.name.function" = "#ECAAD6"
-"support.function"     = "#ECAAD6"
-"meta.function-call"   = "#ECAAD6"
+# Functions  →  mauve
+"entity.name.function" = "#cba6f7"
+"support.function"     = "#cba6f7"
+"meta.function-call"   = "#cba6f7"
 
 # Types / classes  →  peach
-"entity.name.type"     = "#FFC799"
-"entity.name.class"    = "#FFC799"
-"support.type"         = "#FFC799"
-"support.class"        = "#FFC799"
+"entity.name.type"     = "#fab387"
+"entity.name.class"    = "#fab387"
+"support.type"         = "#fab387"
+"support.class"        = "#fab387"
 
-# Strings  →  mint
-"string"                        = "#99FFE4"
-"string.quoted"                 = "#99FFE4"
-"punctuation.definition.string" = "#99FFE4"
+# Strings  →  teal
+"string"                        = "#94e2d5"
+"string.quoted"                 = "#94e2d5"
+"punctuation.definition.string" = "#94e2d5"
 
 # Numbers / constants  →  pink
-"constant.numeric"  = "#F591B2"
-"constant.language" = "#F591B2"
-"constant.other"    = "#F591B2"
+"constant.numeric"  = "#f5c2e7"
+"constant.language" = "#f5c2e7"
+"constant.other"    = "#f5c2e7"
 
 # Preprocessor / includes  →  peach
-"meta.preprocessor"      = "#FFC799"
-"keyword.control.import" = "#FFC799"
-"keyword.other.using"    = "#FFC799"
+"meta.preprocessor"      = "#fab387"
+"keyword.control.import" = "#fab387"
+"keyword.other.using"    = "#fab387"
 
-# Variables  →  white
-"variable"       = "#FFFFFF"
-"variable.other" = "#FFFFFF"
+# Variables  →  text
+"variable"       = "#cdd6f4"
+"variable.other" = "#cdd6f4"
 
 # Tags  →  pink
-"entity.name.tag"            = "#F591B2"
-"punctuation.definition.tag" = "#7E7E7E"
+"entity.name.tag"            = "#f5c2e7"
+"punctuation.definition.tag" = "#7f849c"
 
 # Punctuation  →  muted
-"punctuation"           = "#7E7E7E"
-"punctuation.separator" = "#7E7E7E"
+"punctuation"           = "#7f849c"
+"punctuation.separator" = "#7f849c"
 
 # Diff markup  →  muted green/red (matches row bg tone)
-"markup.inserted" = "#86998D"
-"markup.deleted"  = "#B48E87"
-"markup.changed"  = "#F591B2"
+"markup.inserted" = "#698a6d"
+"markup.deleted"  = "#935a71"
+"markup.changed"  = "#f5c2e7"

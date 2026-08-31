@@ -53,27 +53,47 @@ Don't confuse `~/.gitconfig.local.machine` with `~/.gitconfig.local` —
 the latter is the OS-selection symlink described above and is managed by
 Stow, not created by hand.
 
-## The Vesper theme
+## The Catppuccin Mocha theme
 
-[Vesper](https://github.com/raunofreiberg/vesper) is the canonical source
-for this color theme. Ghostty and herdr ship it as a built-in theme, so
-those two packages just select it by name; every other tool vendors the
-same palette directly into its own config, so a fresh `./install.sh` run
+[Catppuccin](https://github.com/catppuccin/catppuccin) is the canonical source
+for this color theme; the flavor is **Mocha** and the accent is **mauve**
+(`#cba6f7`). **[`docs/palette.md`](docs/palette.md) is the single source of
+truth** — all 26 colors with their hex, decimal-RGB and 256-color forms, the
+semantic role each one plays, and the derived shades used for diff backgrounds.
+Change it first, then propagate to the tools below.
+
+Five tools select Catppuccin by name from a theme they already ship. Everything
+else vendors the palette into its own config, so a fresh `./install.sh` run
 never has to reach out to another repo:
 
 | Tool | How it's applied |
 |---|---|
-| Ghostty | built-in — `theme = "Vesper"` in `config.ghostty` |
-| herdr | built-in — `name = "vesper"` in `config.toml` |
-| opencode | built-in — `theme: "vesper"` in `tui.json` |
-| Neovim | vendored as `nvim/.config/nvim/colors/vesper.lua` |
-| zsh (prompt/colors/`LS_COLORS`) | merged into `zsh/.zshrc` |
+| Ghostty | built-in — `theme = "Catppuccin Mocha"` in `config.ghostty` |
+| herdr | built-in — `name = "catppuccin"` in `config.toml` |
+| opencode | built-in — `theme: "catppuccin"` in `tui.json` |
+| Neovim | the `catppuccin` plugin, already bundled by LazyVim — `colorscheme = "catppuccin-mocha"`, nothing vendored |
+| bat | built-in (bat >= 0.25) — `--theme="Catppuccin Mocha"` in `config`; nothing vendored, no `bat cache --build` needed |
+| lazygit | `gui.theme` in `config.yml`, verbatim from [`catppuccin/lazygit`](https://github.com/catppuccin/lazygit) `themes/mocha/mauve.yml` |
 | vigia | vendored as `vigia/.config/vigia/theme`, alongside a plain `vigia/.config/vigia/config` for view prefs |
-| bat | vendored as `bat/.config/bat/themes/Vesper.tmTheme`; run `bat cache --build` once after stowing |
-| lazygit, tig, hunk | merged directly into their config files (no separate theme file needed) |
+| zsh (prompt/colors/`LS_COLORS`) | merged into `zsh/.zshrc` |
+| tmux, tig, hunk | merged directly into their config files (no separate theme file needed) |
 
-If the palette changes upstream in Vesper, re-copy the affected file(s)
-into the matching package here and commit.
+The one row that comes from an official port (lazygit) should be re-synced from
+upstream rather than hand-edited. The rest are hand-ported, because no usable
+port exists for them — notably `catppuccin/tmux` is a whole status-bar
+framework built around tpm, which this repo doesn't use, so tmux keeps its own
+hand-tuned status line and only borrows the colors.
+
+Two things that will bite:
+
+- **tmux hex must stay lowercase.** `#F`, `#I`, `#W`, `#S`, `#T`, `#P`, `#H` and
+  `#D` are legacy format specifiers, so `bg=#CBA6F7` silently expands to the
+  nonsense `bg=*BA6F7` rather than erroring.
+- **tig has no truecolor**, so its config is a 256-color approximation. Its
+  backgrounds are deliberately left as `default` — Mocha's darks are all
+  blue-tinted and the 256-color palette has no tinted near-blacks, so
+  approximating would drop tig onto a flat grey. Inheriting `default` gets it
+  the terminal's real `#1e1e2e` instead.
 
 ## Things intentionally not in this repo
 

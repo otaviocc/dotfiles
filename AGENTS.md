@@ -76,15 +76,15 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   kept verbatim so upgrades are a re-diff against
   <https://github.com/LazyVim/starter>. The only intentional deviation is
   `lua/plugins/colorscheme.lua`, which points LazyVim's `colorscheme` option at
-  `vesper`, served by the vendored `colors/vesper.lua` — the single source of
-  the palette in this package. Personal settings go in
+  `catppuccin-mocha`. LazyVim already ships the `catppuccin` plugin, so nothing
+  is vendored here and there is no `colors/` directory. Personal settings go in
   `lua/config/{options,keymaps,autocmds}.lua`; extra plugins in `lua/plugins/`.
   `lazy-lock.json` is tracked; commit it after plugin updates.
-- **bat** — the Vesper theme is a Sublime `.tmTheme`
-  (`bat/.config/bat/themes/Vesper.tmTheme`) that bat only picks up from a
-  compiled cache. After stowing the package, or after editing the theme, run
-  `bat cache --build`; without it `--theme="Vesper"` in
-  `bat/.config/bat/config` fails with "unknown theme".
+- **bat** — "Catppuccin Mocha" is built into bat >= 0.25, so `config` is the
+  whole package: no vendored `.tmTheme`, no `themes/` directory, and no
+  `bat cache --build` step. (That step *was* needed under Vesper, which bat
+  does not ship — don't reintroduce it from muscle memory.) Only add a
+  `themes/` dir back if a machine ends up on bat < 0.25.
 - **herdr** — only `config.toml` is tracked. Logs, `session.json`,
   `release-notes.json` and `.plugins.lock` are runtime state; leave them out.
 - **opencode** — `~/.config/opencode/skills/` contains skills this repo does not
@@ -93,13 +93,28 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   `opencode/.config/opencode/skills/AGENTS.md` — read it before touching any
   skill script.
 
-## Vesper theme
+## Catppuccin Mocha theme
 
-Upstream is <https://github.com/raunofreiberg/vesper>. Ghostty and herdr use
-its **built-in** theme by name; every other tool has the palette **vendored**
-into its package so a fresh `./install.sh` never reaches out to another repo.
-If the palette changes upstream, re-copy the affected files; don't hand-edit
-one tool's colors in isolation (README has the full table).
+**`docs/palette.md` is the source of truth for every color in this repo.** Read
+it before touching any color anywhere.
+
+Ghostty, herdr, opencode, Neovim and bat select Catppuccin **by name** from a
+built-in or bundled theme; every other tool has the palette **vendored** into
+its package so a fresh `./install.sh` never reaches out to another repo. Two of
+One of those vendored copies comes from an official port and should be
+re-synced from upstream rather than hand-edited (lazygit, from
+`catppuccin/lazygit`); the rest — tmux, zsh, tig, hunk, vigia — are hand-ported
+because no usable port exists for them.
+
+Never hand-edit one tool's colors in isolation: change `docs/palette.md` first,
+then propagate. Two traps worth knowing:
+
+- **tmux hex must stay lowercase.** `#F`, `#I`, `#W`, `#S`, `#T`, `#P`, `#H` and
+  `#D` are legacy format specifiers, so `bg=#CBA6F7` silently expands to the
+  nonsense `bg=*BA6F7` instead of erroring.
+- **tig has no truecolor.** Its config is a 256-color approximation, and its
+  backgrounds are deliberately `default` so it inherits the terminal's real
+  `#1e1e2e` rather than the grey `color235` the 256-color palette would force.
 
 ## Commit messages
 
