@@ -87,6 +87,9 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   `themes/` dir back if a machine ends up on bat < 0.25.
 - **herdr** — only `config.toml` is tracked. Logs, `session.json`,
   `release-notes.json` and `.plugins.lock` are runtime state; leave them out.
+- **holodeck** — only `config.json` is tracked. `url-history.json` next to it
+  is runtime state; leave it out. The file is strict JSON (serde_json), so it
+  takes no comments — document choices here or in the README, not inline.
 - **opencode** — `~/.config/opencode/skills/` contains skills this repo does not
   track (Supacode's own, and symlinks into `~/.agents/skills/`). Don't assume
   everything there is version-controlled. Skill-specific rules live in
@@ -98,8 +101,8 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
 **`docs/palette.md` is the source of truth for every color in this repo.** Read
 it before touching any color anywhere.
 
-Ghostty, herdr, opencode, Neovim and bat select Catppuccin **by name** from a
-built-in or bundled theme; every other tool has the palette **vendored** into
+Ghostty, herdr, opencode, Neovim, bat and holodeck select Catppuccin **by
+name** from a built-in or bundled theme; every other tool has the palette **vendored** into
 its package so a fresh `./install.sh` never reaches out to another repo. Two of
 One of those vendored copies comes from an official port and should be
 re-synced from upstream rather than hand-edited (lazygit, from

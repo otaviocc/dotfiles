@@ -7,8 +7,8 @@ The single source of truth for every color in these dotfiles. Upstream is
 
 **Flavor: Mocha. Accent: mauve `#cba6f7`.**
 
-Ghostty, herdr, opencode, Neovim and bat select Catppuccin *by name* from a
-built-in or bundled theme, so they never repeat these values. Every other tool
+Ghostty, herdr, opencode, Neovim, bat and holodeck select Catppuccin *by name*
+from a built-in or bundled theme, so they never repeat these values. Every other tool
 vendors them, because a fresh `./install.sh` must not have to reach out to
 another repo — so six config files hold copies of this table, in six different
 syntaxes. When a value here changes, they all have to change with it.
@@ -131,6 +131,8 @@ step stays a true Catppuccin color:
 | opencode | built-in — `theme: "catppuccin"` |
 | Neovim | the `catppuccin` plugin, already bundled by LazyVim |
 | bat | built-in (bat >= 0.25) — `--theme="Catppuccin Mocha"` |
+| holodeck | built-in — `"theme": "catppuccin-mocha"` |
+| Claude Code | `claude/.claude/themes/catppuccin-mocha.json` — `dark-ansi` base + accent overrides |
 | lazygit | `gui.theme` block, from [`catppuccin/lazygit`](https://github.com/catppuccin/lazygit) `themes/mocha/mauve.yml` |
 | tmux | hand-ported inline (the official port needs tpm, which this repo doesn't use) |
 | zsh | hand-ported inline — `LS_COLORS`, prompt, `zstyle` formats |
