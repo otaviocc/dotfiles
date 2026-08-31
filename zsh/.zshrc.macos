@@ -5,9 +5,18 @@ if [ -x /opt/homebrew/bin/brew ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# BSD ls color support. This alone makes every `ls` call (including the
-# l/la/ll/lla aliases in the shared .zshrc) auto-color on a TTY, same as
-# GNU's --color=auto below, so no -G flags are needed on the aliases.
+# Prefer GNU ls over BSD /bin/ls. BSD ls cannot read LS_COLORS at all — it only
+# understands the 8-colour LSCOLORS string — so on stock macOS the Catppuccin
+# palette would reach zsh's completion menu and every GNU tool, but not `ls`
+# itself, and directories would be a different colour in the two places. gls
+# (coreutils) reads the same LS_COLORS as Fedora, so both machines match.
+# Falls back silently to BSD ls if coreutils isn't installed.
+if command -v gls >/dev/null 2>&1; then
+  alias ls="gls --color=auto"
+fi
+
+# CLICOLOR is what makes BSD ls auto-colour on a TTY. Still exported so an
+# explicit /bin/ls (or a script that bypasses the alias) stays coloured.
 export CLICOLOR=1
 alias clipcopy="pbcopy"
 alias clippaste="pbpaste"

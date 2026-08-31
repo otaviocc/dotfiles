@@ -1,0 +1,42 @@
+{
+  "name": "Catppuccin Mocha",
+  "base": "dark-ansi",
+  "overrides": {
+    "claude": "#cba6f7",
+    "claudeShimmer": "#dbc1f9",
+    "permission": "#f5c2e7",
+    "permissionShimmer": "#f8d4ee",
+    "remember": "#f9e2af",
+
+    "planMode": "#74c7ec",
+    "autoAccept": "#a6e3a1",
+    "bashBorder": "#f5c2e7",
+    "ide": "#94e2d5",
+    "fastMode": "#fab387",
+    "fastModeShimmer": "#fccaab",
+
+    "red_FOR_SUBAGENTS_ONLY": "#f38ba8",
+    "blue_FOR_SUBAGENTS_ONLY": "#89b4fa",
+    "green_FOR_SUBAGENTS_ONLY": "#a6e3a1",
+    "yellow_FOR_SUBAGENTS_ONLY": "#f9e2af",
+    "purple_FOR_SUBAGENTS_ONLY": "#cba6f7",
+    "orange_FOR_SUBAGENTS_ONLY": "#fab387",
+    "pink_FOR_SUBAGENTS_ONLY": "#f5c2e7",
+    "cyan_FOR_SUBAGENTS_ONLY": "#94e2d5",
+
+    "rainbow_red": "#f38ba8",
+    "rainbow_red_shimmer": "#f7aec2",
+    "rainbow_orange": "#fab387",
+    "rainbow_orange_shimmer": "#fccaab",
+    "rainbow_yellow": "#f9e2af",
+    "rainbow_yellow_shimmer": "#fbebc7",
+    "rainbow_green": "#a6e3a1",
+    "rainbow_green_shimmer": "#c1ebbd",
+    "rainbow_blue": "#89b4fa",
+    "rainbow_blue_shimmer": "#accafc",
+    "rainbow_indigo": "#b4befe",
+    "rainbow_indigo_shimmer": "#cad2fe",
+    "rainbow_violet": "#cba6f7",
+    "rainbow_violet_shimmer": "#dbc1f9"
+  }
+}
