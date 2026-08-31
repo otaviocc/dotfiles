@@ -2,6 +2,11 @@
   "name": "Kanagawa Dragon",
   "base": "dark-ansi",
   "overrides": {
+    "userMessageBackground": "#282727",
+    "userMessageBackgroundHover": "#393836",
+    "composerSidebarBackground": "#12120f",
+    "memoryBackgroundColor": "#223249",
+
     "claude": "#c4b28a",
     "claudeShimmer": "#d6c9ad",
     "permission": "#a292a3",

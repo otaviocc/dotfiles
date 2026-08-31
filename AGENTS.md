@@ -111,9 +111,19 @@ colour into `bg`.
 
 Traps worth knowing:
 
-- **herdr is not truly on Dragon.** Its built-in `kanagawa` is the **Wave**
-  variant (purple `#1F1F28` background). Don't "fix" the other tools to match
-  it — it is the one that is off. Everything else is on real Dragon.
+- **herdr's base is Wave, corrected by `[theme.custom]`.** Its built-in
+  `kanagawa` is the Wave variant; all 19 tokens of its `CustomThemeColors`
+  struct are overridden to Dragon in `config.toml`. Colours herdr derives
+  outside those 19 still come from Wave. `herdr config check` does not validate
+  colour values — a bad hex silently falls back — and `herdr server
+  reload-config` applies changes without a restart.
+- **Kanagawa Dragon sets ANSI 8 ("bright black") to a LIGHT grey** `#a6a69c`,
+  unlike almost every other dark theme. Anything that assumes bright-black is a
+  dark background breaks. That is why the Claude Code theme overrides
+  `userMessageBackground`, `userMessageBackgroundHover`,
+  `composerSidebarBackground` and `memoryBackgroundColor`: its `dark-ansi` base
+  maps three of them to `ansi:blackBright`, which rendered user messages as
+  light-on-light. Watch for the same trap in any other ANSI-based theme.
 - **opencode uses a vendored theme, not its built-in.** opencode's own
   `kanagawa` is Wave (its bundled defs are `sumiInk*`/`fujiWhite`), so a Dragon
   theme is vendored at `opencode/.config/opencode/themes/kanagawa-dragon.json`.

@@ -73,7 +73,7 @@ old Vesper setup used.
 |---|---|
 | Ghostty | built-in — `theme = "Kanagawa Dragon"` in `config.ghostty` |
 | Neovim | the `kanagawa.nvim` plugin, declared in `lua/plugins/colorscheme.lua` — LazyVim does **not** bundle it, unlike tokyonight/catppuccin |
-| herdr | built-in — `name = "kanagawa"` in `config.toml` (**Wave**, not Dragon — see below) |
+| herdr | base `name = "kanagawa"` (Wave) with all 19 `[theme.custom]` tokens overridden to Dragon |
 | opencode | vendored as `opencode/.config/opencode/themes/kanagawa-dragon.json`; `theme: "kanagawa-dragon"` in `tui.json` |
 | bat | vendored as `bat/.config/bat/themes/kanagawa-dragon.tmTheme`; run `bat cache --build` once after stowing |
 | lazygit | `gui.theme` in `config.yml`, hand-ported — upstream ships no lazygit extra |
@@ -92,12 +92,19 @@ extrapolated.
 
 Four things that will bite:
 
-- **herdr ships only the Wave variant.** Its built-in `kanagawa` has a
-  `#1F1F28` background, noticeably purple next to Dragon's warm `#181616`, so
-  that pane reads cooler than everything around it. herdr is now the only tool
-  not on true Dragon; fixing it needs a `[theme.custom]` block in its config.
-  (opencode had the same problem and was fixed with a vendored theme — it
-  reads global themes from `~/.config/opencode/themes/<name>.json`.)
+- **herdr and opencode both ship only Wave**, whose `#1F1F28` background reads
+  purple next to Dragon's warm `#181616`. Both are worked around rather than
+  left off-palette: opencode gets a vendored theme (it reads global themes from
+  `~/.config/opencode/themes/<name>.json`), and herdr keeps `kanagawa` as its
+  base but overrides all 19 `[theme.custom]` tokens. Anything herdr derives
+  outside those 19 still comes from Wave, so a little purple may survive in
+  corners. Note `herdr config check` validates the TOML but not colour values —
+  a typo'd hex reports "config: ok" and silently falls back.
+- **Claude Code needs four background tokens overridden.** Its `dark-ansi` base
+  maps `userMessageBackground`, `composerSidebarBackground` and
+  `memoryBackgroundColor` to `ansi:blackBright`, and Kanagawa Dragon sets ANSI 8
+  to `#a6a69c` — a *light* grey, where almost every dark theme makes it dark.
+  Left alone, your own messages render as light-on-light and are unreadable.
 - **bat needs the vendored theme and `bat cache --build`.** Upstream's
   `extras/tmTheme` only ships **Wave**, so the vendored file is that Wave
   tmTheme with every color swapped to its Dragon counterpart, paired by the role
