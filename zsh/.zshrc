@@ -5,7 +5,7 @@
 #   - OS-specific bits live in .zshrc.linux / .zshrc.macos (both tracked in
 #     this repo, picked automatically at runtime based on `uname`)
 #   - anything truly private/one-off for a single machine can go in
-#     ~/.zshrc.local (NOT tracked, sourced last if present)
+#     ~/.zshrc.local (NOT tracked, sourced after the OS file)
 
 # --- History -----------------------------------------------------------
 HISTFILE="$HOME/.zsh_history"
@@ -60,6 +60,23 @@ typeset -U path PATH  # de-dupe automatically, however many times we're sourced
 
 # Add opencode binaries to PATH if present
 [[ -d "$HOME/.opencode/bin" ]] && path=("$HOME/.opencode/bin" $path)
+
+# --- OS-specific config ---------------------------------------------------
+# Loaded early so any PATH additions they make are available to everything
+# below (tooling, aliases, functions, fzf).
+case "$(uname -s)" in
+  Darwin)
+    [ -f "$HOME/.zshrc.macos" ] && source "$HOME/.zshrc.macos"
+    ;;
+  Linux)
+    [ -f "$HOME/.zshrc.linux" ] && source "$HOME/.zshrc.linux"
+    ;;
+esac
+
+# --- Local, untracked, machine-only overrides ------------------------------
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+
+typeset -U path PATH  # de-dupe again now that OS + local PATHs are in
 
 # --- Editor / misc ---------------------------------------------------------
 if [[ -n $SSH_CONNECTION ]]; then
@@ -277,17 +294,6 @@ PROMPT=$'%F{#8992a7}%~%f ${vcs_info_msg_0_}\n%F{#737c73}$%f '
 export GPG_TTY=$(tty)
 
 # --- fzf ------------------------------------------------------------------
-source <(fzf --zsh)
-
-# --- OS-specific config ---------------------------------------------------
-case "$(uname -s)" in
-  Darwin)
-    [ -f "$HOME/.zshrc.macos" ] && source "$HOME/.zshrc.macos"
-    ;;
-  Linux)
-    [ -f "$HOME/.zshrc.linux" ] && source "$HOME/.zshrc.linux"
-    ;;
-esac
-
-# --- Local, untracked, machine-only overrides ------------------------------
-[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+if command -v fzf &>/dev/null; then
+  source <(fzf --zsh)
+fi
