@@ -170,12 +170,12 @@ require("mason").setup()
 
 -- Servers resolve from nvim-lspconfig unless overridden by a file in `lsp/`.
 -- Install them with `:Mason`; sourcekit ships with the Xcode toolchain.
+-- No kotlin_language_server (needs a JVM) and no ruby_lsp (needs Ruby >= 3.0;
+-- this machine has the 2.6 system Ruby). Treesitter still highlights both.
 vim.lsp.enable({
     "bashls",
-    "kotlin_language_server",
     "lua_ls",
     "pyright",
-    "ruby_lsp",
     "ruff",
     "rust_analyzer",
     "sourcekit",
