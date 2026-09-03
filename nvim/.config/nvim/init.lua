@@ -73,7 +73,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 vim.pack.add({
     { src = "https://github.com/rebelot/kanagawa.nvim" },
     { src = "https://github.com/nvim-lua/plenary.nvim" },
-    { src = "https://github.com/nvim-tree/nvim-web-devicons" },
+    { src = "https://github.com/echasnovski/mini.nvim" },
     { src = "https://github.com/nvim-telescope/telescope.nvim", version = "0.1.8" },
     { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
     { src = "https://github.com/neovim/nvim-lspconfig" },
@@ -92,6 +92,79 @@ require("kanagawa").setup({
     background = { dark = "dragon" },
 })
 vim.cmd.colorscheme("kanagawa-dragon")
+
+-- mini.nvim ----------------------------------------------------------------
+-- One plugin, several independent modules. Set up before oil and telescope so
+-- the nvim-web-devicons mock is in place before anything renders an icon.
+
+-- Icons: replaces nvim-web-devicons outright. The mock keeps plugins that
+-- still `require("nvim-web-devicons")` working.
+require("mini.icons").setup()
+MiniIcons.mock_nvim_web_devicons()
+
+-- Extended a/i textobjects: arguments (a), balanced brackets (b), quotes (q),
+-- function calls (f), tags (t). Deliberately no gen_spec.treesitter specs for
+-- function *definitions* -- nvim-treesitter's main branch ships no textobjects
+-- queries, so those would silently never match.
+require("mini.ai").setup({ n_lines = 500 })
+
+-- Surroundings: sa add, sd delete, sr replace, sf/sF find, sh highlight.
+-- Note this takes over `s` in normal mode (was substitute-character; use `cl`).
+require("mini.surround").setup()
+
+-- Autopairs.
+require("mini.pairs").setup()
+
+-- Git diff: signs in the gutter, plus a toggleable inline overlay. The
+-- default style is "number" (it tints the line number) whenever 'number' is
+-- set; force signs instead, since 'signcolumn' is already reserved above.
+require("mini.diff").setup({
+    view = {
+        style = "sign",
+        signs = { add = "+", change = "~", delete = "_" },
+    },
+})
+
+-- Highlight TODO/FIXME/HACK/NOTE, and render hex colours as inline swatches.
+local hipatterns = require("mini.hipatterns")
+hipatterns.setup({
+    highlighters = {
+        fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "MiniHipatternsFixme" },
+        hack = { pattern = "%f[%w]()HACK()%f[%W]", group = "MiniHipatternsHack" },
+        todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "MiniHipatternsTodo" },
+        note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote" },
+        hex_color = hipatterns.gen_highlighter.hex_color(),
+    },
+})
+
+-- Show the available next keys after a prefix, like which-key.
+local clue = require("mini.clue")
+clue.setup({
+    triggers = {
+        { mode = "n", keys = "<Leader>" },
+        { mode = "x", keys = "<Leader>" },
+        { mode = "n", keys = "g" },
+        { mode = "x", keys = "g" },
+        { mode = "n", keys = "z" },
+        { mode = "x", keys = "z" },
+        { mode = "n", keys = "[" },
+        { mode = "n", keys = "]" },
+        { mode = "n", keys = "'" },
+        { mode = "n", keys = "`" },
+        { mode = "n", keys = '"' },
+        { mode = "n", keys = "<C-w>" },
+        { mode = "i", keys = "<C-r>" },
+    },
+    clues = {
+        clue.gen_clues.builtin_completion(),
+        clue.gen_clues.g(),
+        clue.gen_clues.marks(),
+        clue.gen_clues.registers(),
+        clue.gen_clues.windows(),
+        clue.gen_clues.z(),
+    },
+    window = { config = { border = "rounded" } },
+})
 
 -- Treesitter ---------------------------------------------------------------
 -- The `main` branch has no `ensure_installed` and does not enable
@@ -259,6 +332,9 @@ map("n", "<leader>e", "<cmd>Oil<cr>", { desc = "Open parent directory" })
 map("n", "<leader>lf", function()
     require("conform").format({ async = true, lsp_format = "fallback" })
 end, { desc = "Format current buffer" })
+map("n", "<leader>gd", function()
+    require("mini.diff").toggle_overlay()
+end, { desc = "Toggle git diff overlay" })
 
 -- Keep the cursor centred when jumping, and the selection when indenting.
 map("n", "n", "nzzzv")
