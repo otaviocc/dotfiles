@@ -14,7 +14,7 @@ control:
 ```
 zsh      shell prompt, aliases, LS_COLORS
 git      global git config
-nvim     Neovim (LazyVim)
+nvim     Neovim (single-file config on vim.pack)
 tmux     tmux
 ghostty  Ghostty terminal
 lazygit  lazygit

@@ -72,15 +72,23 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   `ghostty/.config/ghostty/config.ghostty`. Do not "fix" the filename. It ends
   with `config-file = ?config.local`; the `?` keeps Ghostty from erroring before
   `install.sh` has run.
-- **nvim** — the stock [LazyVim](https://www.lazyvim.org) starter template,
-  kept verbatim so upgrades are a re-diff against
-  <https://github.com/LazyVim/starter>. The only intentional deviation is
-  `lua/plugins/colorscheme.lua`, which declares `rebelot/kanagawa.nvim` and
-  points LazyVim's `colorscheme` option at `kanagawa-dragon`. LazyVim does not
-  bundle kanagawa (it does bundle tokyonight and catppuccin), so the plugin
-  spec is required; there is no vendored `colors/` directory. Personal settings go in
-  `lua/config/{options,keymaps,autocmds}.lua`; extra plugins in `lua/plugins/`.
-  `lazy-lock.json` is tracked; commit it after plugin updates.
+- **nvim** — a hand-written single-file config: everything lives in
+  `init.lua`, on Neovim's built-in `vim.pack` manager. There is no distro and
+  no plugin-manager bootstrap, so there is no upstream to re-diff against —
+  edit `init.lua` directly. **Requires Neovim >= 0.12** for `vim.pack`,
+  `vim.lsp.enable`, the `lsp/` directory and `vim.opt.winborder`; it will not
+  start on 0.11. Only two things sit outside `init.lua`: `lsp/<server>.lua`,
+  autoloaded by `vim.lsp.enable` to override nvim-lspconfig's defaults for
+  that server, and `.luarc.json`, which is for `lua-language-server` (not
+  Neovim) and only makes editing this config comfortable. Completion is
+  Neovim's built-in `vim.lsp.completion`, not a plugin — the `LspAttach`
+  autocmd widens `triggerCharacters` to all printable ASCII, which is what
+  makes it fire as you type. Servers are installed manually with `:Mason`;
+  `sourcekit` comes from the Xcode toolchain instead. The tracked lockfile is
+  `nvim-pack-lock.json`: `vim.pack` writes it, so **never hand-edit it** and
+  commit it after plugin changes (`:h vim.pack-lockfile`). Plugins install to
+  `~/.local/share/nvim/site/pack/core/opt`, outside this repo. Before this it
+  was the LazyVim starter; `70ad436` and its parent hold that history.
 - **bat** — Kanagawa is not built into bat, so the theme is vendored as
   `themes/kanagawa-dragon.tmTheme` and bat only picks it up from a compiled
   cache: run `bat cache --build` after stowing or after editing it. See the
@@ -130,10 +138,12 @@ Traps worth knowing:
   opencode loads global themes from `<config>/themes/<name>.json`; the file's
   50 theme keys mirror its built-in kanagawa exactly, and every value is a
   reference into `defs`.
-- **nvim needs a plugin spec.** LazyVim bundles tokyonight and catppuccin but
-  not kanagawa, so `lua/plugins/colorscheme.lua` declares
-  `rebelot/kanagawa.nvim` with `lazy = false` and `priority = 1000`. Commit
-  `lazy-lock.json` after any plugin change.
+- **nvim needs a plugin spec.** Nothing ships kanagawa, so `init.lua` adds
+  `rebelot/kanagawa.nvim` to `vim.pack.add` and calls
+  `require("kanagawa").setup{ theme = "dragon" }` followed by
+  `colorscheme kanagawa-dragon` immediately after, so the theme is applied
+  before the first buffer is drawn. There is no vendored `colors/` directory.
+  Commit `nvim-pack-lock.json` after any plugin change.
 - **bat's `--theme` is the .tmTheme *filename*** (`kanagawa-dragon`), not the
   plist's `name` key. A wrong value is silent — bat prints its Monokai default
   rather than erroring. The vendored file is upstream's *Wave* tmTheme remapped

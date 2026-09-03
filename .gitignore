@@ -4,9 +4,6 @@ __pycache__/
 *.pyc
 .venv/
 
-# Neovim runtime state written by LazyVim itself, never hand-edited.
-/nvim/.config/nvim/lazyvim.json
-
 # Claude Code: the `claude` package tracks themes/ and nothing else.
 # settings.json selects the theme but also carries API tokens, and the rest
 # of ~/.claude is session/runtime state. Ignored rather than merely absent,
