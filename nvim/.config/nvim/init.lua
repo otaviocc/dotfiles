@@ -125,6 +125,13 @@ require("mini.diff").setup({
     },
 })
 
+-- [b/]b between buffers, plus the same pattern for diagnostics, quickfix,
+-- comments, conflicts, undo states, oldfiles and more. [B/]B for first/last.
+require("mini.bracketed").setup()
+
+-- Close a buffer without collapsing the window layout, which :bdelete does.
+require("mini.bufremove").setup()
+
 -- Highlight TODO/FIXME/HACK/NOTE, and render hex colours as inline swatches.
 local hipatterns = require("mini.hipatterns")
 hipatterns.setup({
@@ -147,6 +154,9 @@ clue.setup({
         { mode = "x", keys = "g" },
         { mode = "n", keys = "z" },
         { mode = "x", keys = "z" },
+        -- mini.surround lives under `s`; without this its verbs are invisible.
+        { mode = "n", keys = "s" },
+        { mode = "x", keys = "s" },
         { mode = "n", keys = "[" },
         { mode = "n", keys = "]" },
         { mode = "n", keys = "'" },
@@ -156,6 +166,11 @@ clue.setup({
         { mode = "i", keys = "<C-r>" },
     },
     clues = {
+        -- Group labels for the <Leader> submenus.
+        { mode = "n", keys = "<Leader>b", desc = "+buffer" },
+        { mode = "n", keys = "<Leader>f", desc = "+find" },
+        { mode = "n", keys = "<Leader>g", desc = "+git" },
+        { mode = "n", keys = "<Leader>l", desc = "+lsp" },
         clue.gen_clues.builtin_completion(),
         clue.gen_clues.g(),
         clue.gen_clues.marks(),
@@ -335,6 +350,10 @@ end, { desc = "Format current buffer" })
 map("n", "<leader>gd", function()
     require("mini.diff").toggle_overlay()
 end, { desc = "Toggle git diff overlay" })
+map("n", "<leader>a", "<cmd>edit #<cr>", { desc = "Alternate buffer" })
+map("n", "<leader>bd", function()
+    require("mini.bufremove").delete()
+end, { desc = "Delete buffer, keep layout" })
 
 -- Keep the cursor centred when jumping, and the selection when indenting.
 map("n", "n", "nzzzv")
