@@ -96,6 +96,20 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   whenever `'number'` is set; and `mini.ai` deliberately has no
   `gen_spec.treesitter` entries, since nvim-treesitter's `main` branch ships
   no textobjects queries and such specs would silently never match.
+  **Treesitter highlighting depends on symlinks outside this repo.** On the
+  `main` branch the highlight queries live in the plugin's
+  `runtime/queries/<lang>/`, which is *not* on the runtimepath; `install()`
+  symlinks each language into `~/.local/share/nvim/site/queries/<lang>` and
+  skips any link that already exists, so a stale one silently survives
+  forever. If files look unhighlighted, that is the first thing to check:
+  `find -L ~/.local/share/nvim/site/queries -maxdepth 1 -type l` lists broken
+  links; delete them and re-run `require("nvim-treesitter").install(langs,
+  { force = true })` to relink. Only `c`, `lua`, `markdown`,
+  `markdown_inline`, `query`, `vim` and `vimdoc` keep working when the links
+  are broken, because Neovim ships those queries itself -- which makes the
+  breakage look language-specific rather than systemic. This happened once
+  already: the links pointed into the old LazyVim plugin tree and broke when
+  it was deleted.
 - **bat** — Kanagawa is not built into bat, so the theme is vendored as
   `themes/kanagawa-dragon.tmTheme` and bat only picks it up from a compiled
   cache: run `bat cache --build` after stowing or after editing it. See the
