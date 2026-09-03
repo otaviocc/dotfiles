@@ -89,6 +89,13 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   commit it after plugin changes (`:h vim.pack-lockfile`). Plugins install to
   `~/.local/share/nvim/site/pack/core/opt`, outside this repo. Before this it
   was the LazyVim starter; `70ad436` and its parent hold that history.
+  Three mini.nvim traps: `mini.icons` is the icon provider and
+  `mock_nvim_web_devicons()` is what keeps oil and telescope working, so do
+  not "fix" a missing `nvim-web-devicons` by reinstalling it; `mini.diff` is
+  pinned to `style = "sign"` because its default tints the line number
+  whenever `'number'` is set; and `mini.ai` deliberately has no
+  `gen_spec.treesitter` entries, since nvim-treesitter's `main` branch ships
+  no textobjects queries and such specs would silently never match.
 - **bat** — Kanagawa is not built into bat, so the theme is vendored as
   `themes/kanagawa-dragon.tmTheme` and bat only picks it up from a compiled
   cache: run `bat cache --build` after stowing or after editing it. See the
