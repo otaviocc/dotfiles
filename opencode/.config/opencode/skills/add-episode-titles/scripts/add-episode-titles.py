@@ -5,6 +5,9 @@ add-episode-titles.py
 Backfills missing episode titles into TV filenames using the TVMaze API
 (no API key required, network access needed).
 
+Also adds the premiere year when it is missing from the filename and/or show
+folder, even when the episode already carries a title.
+
 Supports two filename formats:
     /TV Shows/Show Name (year)/Season 01/
         Show Name (year) - s01e01.mkv
@@ -13,9 +16,12 @@ Supports two filename formats:
     /TV Shows/Show Name/Season 01/
         Show Name - s01e01.mkv
             -> Show Name (year) - s01e01 - Episode Title.mkv  (+ dir rename)
+        Show Name - s01e01 - Some Title.mkv
+            -> Show Name (year) - s01e01 - Episode Title.mkv  (+ dir rename)
 
 Files without a year are resolved against TVMaze to determine the premiere
 year, which is then added to both the filename and the parent directory name.
+Files with a year but no title have only the title backfilled.
 
 Episode titles come from a remote API, so characters that are not legal in a
 path component (a slash in "Part 1/2", a colon, ...) are rewritten before the
@@ -361,7 +367,7 @@ def main():
                 continue
             m = FILENAME_RE.match(stem)
             if m:
-                if m.group("title"):
+                if m.group("title") and m.group("year"):
                     already_titled += 1
                     continue
                 key = (m.group("show"), int(m.group("year")),
@@ -370,15 +376,12 @@ def main():
                 continue
             m = FILENAME_NO_YEAR_RE.match(stem)
             if m:
-                if m.group("title"):
-                    already_titled += 1
-                    continue
                 key = (m.group("show"), 0, "", True)
                 jobs.setdefault(key, []).append((os.path.join(dp, fn), m))
 
     if not jobs:
-        print(f"no Jellyfin-formatted files missing episode titles found "
-              f"(already titled: {already_titled})")
+        print(f"no Jellyfin-formatted files needing titles or years found "
+              f"(already complete: {already_titled})")
         return
 
     plans = []
@@ -424,11 +427,14 @@ def main():
                 stats["multi_skip"] += 1
                 print(f"  -- multi-episode, skipping: {rel}")
                 continue
-            name = eps.get((ss, ee))
-            if not name:
-                stats["no_episode"] += 1
-                print(f"  ?? s{ss:02d}e{ee:02d} not found in TVMaze: {rel}")
-                continue
+            if m.group("title"):
+                name = m.group("title")
+            else:
+                name = eps.get((ss, ee))
+                if not name:
+                    stats["no_episode"] += 1
+                    print(f"  ?? s{ss:02d}e{ee:02d} not found in TVMaze: {rel}")
+                    continue
             base = new_stem(m, name, resolved_year)
             dst = os.path.join(os.path.dirname(path),
                                base + os.path.splitext(path)[1])
