@@ -13,7 +13,7 @@ One directory per tool = one Stow package. The path *inside* the package mirrors
 where the file lands under `$HOME` (`zsh/.zshrc` → `~/.zshrc`,
 `nvim/.config/nvim/init.lua` → `~/.config/nvim/init.lua`).
 
-Packages: `zsh git nvim tmux ghostty lazygit tig herdr opencode hunk vigia bat
+Packages: `zsh git nvim tmux ghostty sublime lazygit tig herdr opencode hunk vigia bat
 claude holodeck vademecum`, plus the
 OS-overlay packages `git-macos`/`git-linux` and `ghostty-macos`/`ghostty-linux`.
 
@@ -50,6 +50,16 @@ Pick the right one; they are not interchangeable.
    on `uname`, so the main config unconditionally includes a `*.local` file, and
    a tiny overlay package ships a **pre-committed relative symlink** pointing at
    the right OS variant (e.g. `git-macos/.gitconfig.local -> ../git/.gitconfig.macos`).
+
+   `sublime-macos` is the same mechanism pointed at a different problem: macOS
+   keeps the whole Sublime Text data dir under `~/Library/Application Support`
+   while Linux uses `~/.config/sublime-text`. The base `sublime` package uses the
+   Linux path, and the macOS overlay ships one symlink mounting
+   `Packages/User` there back at the same content
+   (`sublime-macos/Library/Application Support/Sublime Text/Packages/User ->
+   ../../../../../sublime/.config/sublime-text/Packages/User`). The committed
+   relative target is counted from inside the repo package; stow re-creates it
+   at `$HOME`.
 
 If you add a third overlay, note that `.gitignore` ignores `*.local` globally —
 you must add an explicit `!` negation for the new symlink or git will not track

@@ -1,0 +1,8 @@
+{
+	// LSP-SourceKit ships disabled by default. Enable globally so Swift
+	// (and C/C++/ObjC) files get completion/diagnostics/go-to-definition.
+	// `command` and `selector` are inherited from the package defaults:
+	// `sourcekit-lsp` is on $PATH on both machines (swiftly on Fedora,
+	// the Xcode toolchain on macOS).
+	"enabled": true
+}

@@ -1,0 +1,21 @@
+{
+	// Workbench theme: keep the stock Adaptive theme so the
+	// color scheme below drives all of the chrome (tabs, sidebar,
+	// status bar, panels).
+	"theme": "Adaptive.sublime-theme",
+
+	// Kanagawa Dragon, vendored from this repo's palette.
+	"color_scheme": "Packages/User/kanagawa-dragon.sublime-color-scheme",
+
+	// The scheme defines a line highlight; make it visible.
+	"highlight_line": true,
+
+	// Unify indentation across the two machines.
+	"tab_size": 4,
+	"translate_tabs_to_spaces": true,
+	"ignored_packages":
+	[
+		"Vintage",
+	],
+	"index_files": true,
+}

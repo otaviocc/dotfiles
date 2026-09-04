@@ -17,6 +17,7 @@ git      global git config
 nvim     Neovim (single-file config on vim.pack)
 tmux     tmux
 ghostty  Ghostty terminal
+sublime  Sublime Text (Kanagawa Dragon scheme, LSP-SourceKit)
 lazygit  lazygit
 tig      tig
 herdr    herdr
@@ -44,7 +45,7 @@ cd ~/.dotfiles
 - back up any real (non-symlink) files it would otherwise overwrite to
   `~/.dotfiles-backup-<timestamp>` before linking,
 - stow each requested package, plus its OS-specific overlay package if one
-  exists (e.g. `git` + `git-macos`).
+  exists (e.g. `git` + `git-macos`, `sublime` + `sublime-macos`).
 
 Editing a file that is already linked takes effect immediately. Re-run
 `./install.sh <package>` after adding a new file to a package so the new
