@@ -13,8 +13,8 @@ One directory per tool = one Stow package. The path *inside* the package mirrors
 where the file lands under `$HOME` (`zsh/.zshrc` → `~/.zshrc`,
 `nvim/.config/nvim/init.lua` → `~/.config/nvim/init.lua`).
 
-Packages: `zsh git nvim tmux ghostty lazygit tig herdr opencode hunk vigia bat`,
-plus the
+Packages: `zsh git nvim tmux ghostty lazygit tig herdr opencode hunk vigia bat
+claude holodeck vademecum`, plus the
 OS-overlay packages `git-macos`/`git-linux` and `ghostty-macos`/`ghostty-linux`.
 
 ## Commands
@@ -124,6 +124,15 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   everything there is version-controlled. Skill-specific rules live in
   `opencode/.config/opencode/skills/AGENTS.md` — read it before touching any
   skill script.
+
+- **vademecum** — the theme is the whole config; there is no "default theme by
+  name" setting. `~/.config/vademecum/theme.toml` *is* the default theme, so
+  `theme.toml` here is a verbatim copy of vademecum's own built-in
+  `kanagawa-dragon.toml` and will drift if upstream edits it. Re-copy to
+  resync. Do not trim it to a partial file: partials merge over the built-in
+  **`ansi`** defaults, not over kanagawa-dragon, so a two-line file loses the
+  rest of the palette. `--theme kanagawa-dragon` selects the same theme per
+  run without this file at all; the file exists only to make it the default.
 
 ## Kanagawa Dragon theme
 

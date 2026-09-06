@@ -26,6 +26,7 @@ vigia    vigia
 bat      bat
 claude   Claude Code themes
 holodeck holodeck
+vademecum vademecum
 ```
 
 ## Usage
