@@ -87,7 +87,6 @@ fi
 
 # --- Tooling ---------------------------------------------------------------
 export CLAUDE_CODE_DISABLE_AUTO_MEMORY=0
-export OPENCODE_DISABLE_EXTERNAL_SKILLS=1
 
 # --- Aliases ---------------------------------------------------------------
 alias vim="nvim"

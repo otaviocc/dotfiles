@@ -26,7 +26,7 @@ opencode OpenCode
 hunk     hunk
 vigia    vigia
 bat      bat
-claude   Claude Code themes
+claude   Claude Code themes + shared agent skills
 holodeck holodeck
 vademecum vademecum
 ```

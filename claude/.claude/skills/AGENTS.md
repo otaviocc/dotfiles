@@ -1,8 +1,9 @@
 # AGENTS.md
 
-Personal OpenCode skills. Each skill is a folder here bundling a `SKILL.md`
-(instructions) with a self-contained Python script. Most scripts use
-**only the stdlib** — no pip install needed. Exceptions are noted below.
+Personal agent skills, shared between Claude Code and opencode. Each skill is a
+folder here bundling a `SKILL.md` (instructions) with a self-contained Python
+script. Most scripts use **only the stdlib** — no pip install needed. Exceptions
+are noted below.
 
 ## Skills in this repo
 
@@ -21,13 +22,15 @@ Personal OpenCode skills. Each skill is a folder here bundling a `SKILL.md`
 | `code-snippet-image` | `code-snippet-image/scripts/generate_code_image.py` | Generate macOS-style code snippet images from Swift code (dark theme, warm palette, retina-ready PNG); requires Pillow + Pygments |
 | `jellyfin-library-cards` | `jellyfin-library-cards/scripts/generate_card.py` | Generate Jellyfin library card artwork (Fredoka, purple-to-cyan gradient, transparent PNG); font bundled in `assets/`; requires Pillow |
 
-These are symlinked into `~/.config/opencode/skills/` by `install.sh`
-(part of the `opencode` package) — nothing to set up by hand.
+These live in the `claude` package at `claude/.claude/skills/`, stowed to
+`~/.claude/skills/`. Both Claude Code and opencode read that directory natively —
+nothing to set up by hand.
 
 ## Skills NOT in this repo
 
-`~/.config/opencode/skills/` also contains skills that this repo does **not**
-track, so they will not survive a bootstrap onto a new machine:
+`~/.config/opencode/skills/` (opencode-only, on the macOS machine) also contains
+skills that this repo does **not** track, so they will not survive a bootstrap
+onto a new machine:
 
 | Skill | Where it actually lives |
 |-------|-------------------------|

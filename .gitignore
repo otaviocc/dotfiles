@@ -4,12 +4,14 @@ __pycache__/
 *.pyc
 .venv/
 
-# Claude Code: the `claude` package tracks themes/ and nothing else.
+# Claude Code: the `claude` package tracks themes/ and skills/ only.
 # settings.json selects the theme but also carries API tokens, and the rest
 # of ~/.claude is session/runtime state. Ignored rather than merely absent,
-# so a stray `git add claude/` can't pull a token into history.
+# so a stray `git add claude/` can't pull a token into history. skills/ is
+# shared with opencode, which also reads ~/.claude/skills/.
 /claude/.claude/*
 !/claude/.claude/themes/
+!/claude/.claude/skills/
 
 # Exceptions: these *.local files are pre-committed relative symlinks that
 # make up the OS-overlay packages (see README "Handling Fedora vs macOS

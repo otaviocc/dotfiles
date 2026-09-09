@@ -137,11 +137,13 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
 - **holodeck** — only `config.json` is tracked. `url-history.json` next to it
   is runtime state; leave it out. The file is strict JSON (serde_json), so it
   takes no comments — document choices here or in the README, not inline.
-- **opencode** — `~/.config/opencode/skills/` contains skills this repo does not
-  track (Supacode's own, and symlinks into `~/.agents/skills/`). Don't assume
-  everything there is version-controlled. Skill-specific rules live in
-  `opencode/.config/opencode/skills/AGENTS.md` — read it before touching any
-  skill script.
+- **skills** — personal agent skills live in the `claude` package at
+  `claude/.claude/skills/`, stowed to `~/.claude/skills/`, which both Claude Code
+  and opencode read natively. Skill-specific rules live in
+  `claude/.claude/skills/AGENTS.md` — read it before touching any skill script.
+  On the macOS machine `~/.config/opencode/skills/` still holds a few
+  opencode-only skills this repo does not track (Supacode's own, and symlinks
+  into `~/.agents/skills/`) — don't assume everything there is version-controlled.
 
 - **vademecum** — the theme is the whole config; there is no "default theme by
   name" setting. `~/.config/vademecum/theme.toml` *is* the default theme, so
@@ -204,8 +206,9 @@ Traps worth knowing:
 - **`LS_COLORS` is not from `vivid generate <name>`** — vivid has no Kanagawa.
   It is vivid's `gruvbox-dark` output with the palette remapped role-by-role;
   see the header of `zsh/.config/zsh/ls_colors.zsh`.
-- **The `claude` package tracks `~/.claude/themes/` only.** `settings.json`
-  selects the theme but also holds API tokens — never add it to the repo.
+- **The `claude` package tracks `~/.claude/themes/` and `~/.claude/skills/`
+  only.** `settings.json` selects the theme but also holds API tokens — never
+  add it to the repo; the rest of `~/.claude` is session/runtime state.
 
 ## Commit messages
 
