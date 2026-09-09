@@ -44,11 +44,14 @@ let stow link them like the rest.
 - Every script is **self-contained**: no shared module, so a single skill folder
   can be copied to a media library and run on its own. The price is that
   `safe_component`, `execute_moves`, `prune_empty_dirs`, `smart_title`,
-  `QUALITY_RE`, `EDITION_PATTERNS` and `NOISE_RE` are duplicated across scripts.
+  `QUALITY_RE`, `NOISE_RE` (and, in the two Jellyfin video organizers,
+  `EDITION_PATTERNS`) are duplicated across scripts.
   **When you fix one, check whether the same fix belongs in the siblings.**
-- `safe_component` and `execute_moves` are intentionally byte-identical across
-  `organize-tv`, `organize-kids-shows`, `organize-movies`, `organize-music` and
-  `add-episode-titles`. Keep them that way.
+- `execute_moves` is byte-identical across `organize-tv`, `organize-kids-shows`
+  and `organize-movies` — keep it that way. `add-episode-titles` carries a
+  superset: the same body plus a `dir_renames` parameter and a trailing
+  directory-rename pass. `safe_component`'s body is identical across all four;
+  only its docstring is tailored per skill.
 
 ### Shared move semantics
 
@@ -98,8 +101,10 @@ python3 add-episode-titles/scripts/add-episode-titles.py --root /path/to/tv --ap
 ## Notes
 
 - All three video organizers support `--sub-lang CODE`; all default to **no**
-  language code. `organize-movies` additionally preserves a language code the
-  subtitle already carries when `--sub-lang` is not given.
+  language code, and all recognise a code the subtitle already carries (across
+  the full `LANG_CODES` list) so it stays paired with its episode.
+  `organize-movies` additionally carries that code into the new name when
+  `--sub-lang` is not given; `organize-tv` and `organize-kids-shows` drop it.
 - `organize-tv` has `--minimal` to drop episode titles from filenames.
 - `organize-tv` and `organize-kids-shows` both have `--bare-number-episodes`,
   off by default so movies are not mistaken for episodes. Both resolve the
