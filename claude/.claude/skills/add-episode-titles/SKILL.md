@@ -65,7 +65,7 @@ python3 scripts/add-episode-titles.py --root /path/to/tv --apply
 ## Notes
 
 - The show is resolved against TVMaze by title; a nearby premiere year gives a matching bonus, and the title must clear `--threshold` (default 0.75). Unmatched shows and episodes are reported and skipped, never guessed.
-- When a file or its show folder is missing the year, it is resolved from TVMaze and added to both the filename and the parent directory — even when the episode already carries a title. This lets you run `organize-tv` first (which may produce year-less folders from scene releases) and backfill the year here.
+- When a file or its show folder is missing the year, it is resolved from TVMaze and added to both the filename and the parent directory — even when the episode already carries a title. This lets you run `organize-tv` first (which may produce year-less folders from scene releases) and backfill the year here. If the matched show has no premiere date on TVMaze, those files are reported under `no year` and left untouched rather than renamed to `Show (None) - ...`.
 - When no match clears the threshold, the three closest TVMaze candidates are printed with their similarity scores, so you can tell the user whether lowering `--threshold` would help or whether the show is genuinely absent.
 - Episode titles come from a remote API and routinely contain characters that are not legal in a filename. `/`, `\` and `|` become `-`; `:`, `?`, `"`, `*`, `<`, `>` are dropped. `"Hide and Seek: Part 1/2"` becomes `Hide and Seek Part 1-2`, never a stray subdirectory.
 - Matching is done once per show, so a full library takes roughly 0.7s per show (two API calls, rate-limited). Network errors are retried before the show is given up on.

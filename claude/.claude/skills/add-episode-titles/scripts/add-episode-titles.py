@@ -386,7 +386,7 @@ def main():
 
     plans = []
     dir_renames = []
-    stats = {"no_show": 0, "no_episode": 0, "multi_skip": 0}
+    stats = {"no_show": 0, "no_episode": 0, "no_year": 0, "multi_skip": 0}
     seen_shows = {}
 
     for (show, year, _edition, needs_year), items in sorted(jobs.items()):
@@ -404,7 +404,9 @@ def main():
                     print(f"     (lower --threshold below {args.threshold} to accept one)")
             else:
                 eps = fetch_episodes(tv)
-                print(f"  matched -> {tv['name']} ({str(tv.get('premiered'))[:4]})"
+                tv_year = str(tv.get("premiered"))[:4] if tv.get("premiered") \
+                    else "no year"
+                print(f"  matched -> {tv['name']} ({tv_year})"
                       f"  {len(eps)} episode titles")
             seen_shows[cache_key] = (tv, eps)
         tv, eps = seen_shows[cache_key]
@@ -418,6 +420,14 @@ def main():
             m_year = re.match(r"(\d{4})", tv["premiered"])
             if m_year:
                 resolved_year = int(m_year.group(1))
+
+        if needs_year and not resolved_year:
+            # The show matched but TVMaze carries no premiere date, so there is
+            # no year to insert. Skip rather than write a literal "(None)".
+            stats["no_year"] += len(items)
+            print(f"  ?? no premiere year on TVMaze — {len(items)} file(s) "
+                  f"skipped")
+            continue
 
         for path, m in items:
             rel = os.path.relpath(path, root)
@@ -462,7 +472,8 @@ def main():
     summary = (f"{'renamed' if args.apply else 'planned'}: {done}   "
                f"already titled: {already_titled}   skipped: {skipped}   "
                f"no show match: {stats['no_show']}   "
-               f"no episode: {stats['no_episode']}")
+               f"no episode: {stats['no_episode']}   "
+               f"no year: {stats['no_year']}")
     if errors:
         summary += f"   errors: {errors}"
     print(summary)
