@@ -58,6 +58,7 @@ python3 scripts/organize-tv.py --root /path/to/tv --apply
 - Season numbers come from the filename's `sNNeNN` marker, falling back to a `Season NN` parent folder when the filename does not carry one.
 - `--bare-number-episodes` is off by default so movies and specials are not mistaken for episodes. Turn it on for sources named `Show Name 1`, `Show Name 2`, etc. When it is on, the season still comes from the containing `Season NN` folder.
 - Files with no detectable episode number are filed as **Season 00 specials**, numbered in filename order, keeping their original name as the episode title so they stay identifiable. A video and its subtitle are given the same number so the pair stays together.
+- A language code a subtitle already carries (`... - s01e01.it.srt`) is recognised across the full ISO code list, so it is paired with its episode rather than misfiled as a special. Without `--sub-lang` the code is dropped from the new name; pass `--sub-lang` to set one explicitly.
 - Nothing is overwritten. Two files that resolve to the same destination are reported before anything moves, and the larger one wins — this is the usual outcome when a library holds two quality copies of one episode.
 - Case-only renames (`show (2019)` → `Show (2019)`) work correctly on case-insensitive filesystems.
 - Moves use `shutil.move`, so a library spanning multiple mounts works.

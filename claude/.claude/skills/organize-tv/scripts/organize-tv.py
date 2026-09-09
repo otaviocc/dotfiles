@@ -296,9 +296,19 @@ def season_dir(ss):
     return "Season 00" if ss == 0 else f"Season {ss:02d}"
 
 
+LANG_CODES = (
+    r"eng|english|en|por|portuguese|pt|spa|spanish|es|fre|french|fr|"
+    r"ger|german|de|ita|italian|it|jpn|japanese|ja|kor|korean|ko|"
+    r"chi|chinese|zh|nld|dutch|nl|swe|swedish|sv|nor|norwegian|no|"
+    r"dan|danish|da|fin|finnish|fi|pol|polish|pl|rus|russian|ru|"
+    r"tur|turkish|tr|ara|arabic|heb|hebrew|he"
+)
+LANG_RE = re.compile(rf"[ ._-]({LANG_CODES})$", re.IGNORECASE)
+
+
 def sub_stem(stem):
-    return re.sub(r"[ ._-](?:eng|english|en|por|pt|spa|es|fre|fr|ger|de)$", "", stem,
-                  flags=re.IGNORECASE)
+    """Strip a trailing language code from a subtitle stem for parsing."""
+    return LANG_RE.sub("", stem)
 
 
 def media_kind(fn):
@@ -384,12 +394,12 @@ def execute_moves(moves, root, apply):
         ready = [m for m in remaining if m[2] or not os.path.exists(m[1])]
         blocked = [m for m in remaining if not (m[2] or not os.path.exists(m[1]))]
         if not ready:
-            for _src, dst, _ in blocked:
+            for _src, dst, _flag in blocked:
                 print(f"  !! blocked, target still occupied: {rel(dst)}",
                       file=sys.stderr)
                 skipped += 1
             break
-        for src, dst, _ in ready:
+        for src, dst, _flag in ready:
             try:
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
                 shutil.move(src, dst)

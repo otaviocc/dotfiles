@@ -28,6 +28,7 @@ WHAT IT DOES
     - Extracts the show name and premiere year from folder names and filenames.
     - Strips release junk (resolution, source, codec, audio, group tags, etc.).
     - Detects sNNeNN episode markers and rebuilds "Season NN" folders.
+    - Multi-episode files (sNNeNN-eNN) are detected and named correctly.
     - Falls back to bare numbers (1, 2, 3...) as episodes only when
       --bare-number-episodes is set.
     - Season numbers come from a "Season NN" parent folder when the filename does
@@ -48,10 +49,12 @@ import re
 import shutil
 import sys
 
-VIDEO_EXTS = {".mkv", ".mp4", ".m4v", ".avi", ".mov"}
+VIDEO_EXTS = {".mkv", ".mp4", ".m4v", ".avi", ".mov", ".ts"}
 SUB_EXTS = {".srt", ".ass", ".ssa", ".sub", ".vtt"}
 
 SE_RE = re.compile(r"[Ss](\d{1,2})[Ee](\d{1,2})")
+MULTI_EPRE = re.compile(r"[\s._-]*-?\s*[eE](\d{1,2})\b")
+MULTI_PAREN_RE = re.compile(r"\((\d+)\)[\s._]*and[\s._]*\((\d+)\)")
 BARE_RE = re.compile(r"(?:^|[\s._-])(\d{1,2})\s*$")
 SEASON_DIR_RE = re.compile(r"[Ss]eason\s*(\d{1,2})")
 
@@ -179,24 +182,35 @@ def fallback_show_title(name):
 
 
 def parse_episode(stem, allow_bare):
-    """Return (season, episode, title) or None.
+    """Return (season, episode, episode2, title) or None.
 
     season is None when the number came from a trailing bare number, in which
-    case the caller resolves the season from the containing folder.
+    case the caller resolves the season from the containing folder. episode2 is
+    the last episode of a multi-episode file (sNNeNN-eNN), else None.
     """
     m = SE_RE.search(stem)
     if m:
         ss, ee = int(m.group(1)), int(m.group(2))
-        rest = stem[m.end():]
-        title = rest.replace("_", " ").replace(".", " ")
+        after = stem[m.end():]
+        ee2 = None
+        m2 = MULTI_EPRE.search(after)
+        if m2:
+            ee2 = int(m2.group(1))
+            after = after[:m2.start()]
+        else:
+            m3 = MULTI_PAREN_RE.search(after)
+            if m3:
+                ee2 = ee + 1
+                after = after[:m3.start()]
+        title = after.replace("_", " ").replace(".", " ")
         title = re.sub(r"\s+", " ", title).strip(" -")
         tokens = [t for t in title.split() if not QUALITY_RE.match(t)]
         title = " ".join(tokens).strip(" -")
-        return ss, ee, title
+        return ss, ee, ee2, title
     if allow_bare:
         m2 = BARE_RE.search(stem)
         if m2:
-            return None, int(m2.group(1)), ""
+            return None, int(m2.group(1)), None, ""
     return None
 
 
@@ -227,9 +241,26 @@ def show_folder_name(ident):
     return title
 
 
+def ep_tag(ss, ee, ee2):
+    tag = f"s{ss:02d}e{ee:02d}"
+    if ee2 is not None:
+        tag += f"-e{ee2:02d}"
+    return tag
+
+
+LANG_CODES = (
+    r"eng|english|en|por|portuguese|pt|spa|spanish|es|fre|french|fr|"
+    r"ger|german|de|ita|italian|it|jpn|japanese|ja|kor|korean|ko|"
+    r"chi|chinese|zh|nld|dutch|nl|swe|swedish|sv|nor|norwegian|no|"
+    r"dan|danish|da|fin|finnish|fi|pol|polish|pl|rus|russian|ru|"
+    r"tur|turkish|tr|ara|arabic|heb|hebrew|he"
+)
+LANG_RE = re.compile(rf"[ ._-]({LANG_CODES})$", re.IGNORECASE)
+
+
 def sub_stem(stem):
-    return re.sub(r"[ ._-](?:eng|english|en|por|pt|spa|es|fre|fr|ger|de)$", "", stem,
-                  flags=re.IGNORECASE)
+    """Strip a trailing language code from a subtitle stem for parsing."""
+    return LANG_RE.sub("", stem)
 
 
 def media_kind(fn):
@@ -381,8 +412,8 @@ def main():
     warnings = []
     old_dirs = []
 
-    def plan_episode(src_path, ident, ss, ee, title, kind, ext):
-        base = f"{show_folder_name(ident)} - s{ss:02d}e{ee:02d}"
+    def plan_episode(src_path, ident, ss, ee, ee2, title, kind, ext):
+        base = f"{show_folder_name(ident)} - {ep_tag(ss, ee, ee2)}"
         if title:
             base += f" - {safe_component(title)}"
         if kind == "sub" and sub_lang:
@@ -406,7 +437,7 @@ def main():
             groups.setdefault(key, []).append((fpath, kind, ext))
         for index, key in enumerate(sorted(groups), start=1):
             for fpath, kind, ext in groups[key]:
-                plan_episode(fpath, ident, 0, index, key, kind, ext)
+                plan_episode(fpath, ident, 0, index, None, key, kind, ext)
         if groups:
             warnings.append(
                 f"{len(groups)} item(s) in '{label}' had no episode number — "
@@ -448,11 +479,11 @@ def main():
                     stem = sub_stem(stem)
                 ep = parse_episode(stem, bare)
                 if ep:
-                    ss, ee, title = ep
+                    ss, ee, ee2, title = ep
                     if ss is None:
                         folder_season = season_from_folder(fpath)
                         ss = folder_season if folder_season is not None else 1
-                    episodes.append((fpath, ss, ee, title, kind, ext))
+                    episodes.append((fpath, ss, ee, ee2, title, kind, ext))
                 else:
                     unmatched.append((fpath, fn, kind, ext))
 
@@ -467,15 +498,16 @@ def main():
             continue
 
         ep_best = {}
-        for fpath, ss, ee, title, kind, ext in episodes:
-            if title:
+        for fpath, ss, ee, ee2, title, kind, ext in episodes:
+            if ee2 is None and title:
                 key = (ss, ee)
                 if len(title) > len(ep_best.get(key, "")):
                     ep_best[key] = title
 
-        for fpath, ss, ee, title, kind, ext in episodes:
-            title = ep_best.get((ss, ee), title)
-            plan_episode(fpath, ident, ss, ee, title, kind, ext)
+        for fpath, ss, ee, ee2, title, kind, ext in episodes:
+            if ee2 is None:
+                title = ep_best.get((ss, ee), title)
+            plan_episode(fpath, ident, ss, ee, ee2, title, kind, ext)
 
         plan_specials(unmatched, ident, entry)
 
@@ -488,7 +520,7 @@ def main():
         if not ep:
             warnings.append(f"could not parse episode (file left as-is): {fn}")
             continue
-        ss, ee, title = ep
+        ss, ee, ee2, title = ep
         if ss is None:
             ss = 1
         ident = parse_show_identity(stem)
@@ -497,7 +529,7 @@ def main():
                 fallback_show_title(stem)
                 or clean_show_name(fn.split(".")[0].replace("_", " ").strip()), 0
             )
-        plan_episode(os.path.join(root, fn), ident, ss, ee, title, kind, ext)
+        plan_episode(os.path.join(root, fn), ident, ss, ee, ee2, title, kind, ext)
 
     done, skipped, errors = execute_moves(moves, root, apply)
 
