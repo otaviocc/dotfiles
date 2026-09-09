@@ -55,12 +55,13 @@ def check_ffmpeg():
             stderr=subprocess.DEVNULL,
             check=True,
         )
-    except FileNotFoundError:
+    except (FileNotFoundError, subprocess.CalledProcessError):
         if sys.platform == "darwin":
             hint = "brew install ffmpeg"
         else:
             hint = "your package manager (apt install ffmpeg, dnf install ffmpeg, etc.)"
-        print(f"Error: ffmpeg not found. Install with: {hint}", file=sys.stderr)
+        print(f"Error: ffmpeg not found or not working. Install with: {hint}",
+              file=sys.stderr)
         sys.exit(1)
 
 
@@ -138,18 +139,16 @@ def pcm_digest(path):
          "-i", path, "-map", "0:a:0", "-vn",
          "-f", "s32le", "-acodec", "pcm_s32le", "-"],
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
     )
-    stdout, stderr = proc.stdout, proc.stderr
-    assert stdout is not None and stderr is not None
+    stdout = proc.stdout
+    assert stdout is not None
     digest = hashlib.blake2b(digest_size=16)
     try:
         for chunk in iter(lambda: stdout.read(READ_CHUNK), b""):
             digest.update(chunk)
     finally:
         stdout.close()
-        stderr.read()
-        stderr.close()
         code = proc.wait()
     return digest.digest() if code == 0 else None
 

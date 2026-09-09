@@ -160,17 +160,24 @@ def main():
                          help="Horizontal margin as a fraction of width (each side)")
     args = parser.parse_args()
 
-    out = generate_card(
-        text=args.text,
-        output_path=args.output,
-        width=args.width,
-        height=args.height,
-        font_path=args.font,
-        weight=args.weight,
-        start_color=args.start_color,
-        end_color=args.end_color,
-        margin_frac=args.margin_frac,
-    )
+    try:
+        out = generate_card(
+            text=args.text,
+            output_path=args.output,
+            width=args.width,
+            height=args.height,
+            font_path=args.font,
+            weight=args.weight,
+            start_color=args.start_color,
+            end_color=args.end_color,
+            margin_frac=args.margin_frac,
+        )
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        if "fit" in str(exc).lower():
+            print("  try a larger --width or a smaller --margin-frac",
+                  file=sys.stderr)
+        sys.exit(1)
     print(f"Saved: {out}")
 
 
