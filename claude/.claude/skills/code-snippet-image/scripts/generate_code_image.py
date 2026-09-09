@@ -5,13 +5,14 @@ Supports Swift syntax highlighting with a warm, professional color palette.
 Optimized for retina/high-DPI displays.
 """
 
+import argparse
+import os
+import shutil
+import subprocess
 import sys
-from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
-from pygments import highlight
 from pygments.lexers import SwiftLexer
 from pygments.token import Token
-import argparse
 
 
 # Color palette: warm, dark theme with orange accents
@@ -64,27 +65,65 @@ COLORS = {
 }
 
 
-def get_font(size, bold=False):
-    """Get font, trying multiple common system fonts."""
-    font_names = [
-        'Menlo',
-        'Monaco', 
-        'Courier New',
-        'DejaVuSansMono',
-        'LiberationMono-Regular',
-        'FreeMono'
-    ]
-    
-    for font_name in font_names:
+# Absolute paths to a monospace face, most-preferred first. PIL needs a real
+# path or a font registered with the OS; bare names like "Menlo" do not resolve
+# on Linux, so we look these up explicitly and fall back to fontconfig.
+FONT_CANDIDATES = [
+    '/System/Library/Fonts/Menlo.ttc',            # macOS
+    '/System/Library/Fonts/Monaco.ttf',           # macOS
+    '/Library/Fonts/Menlo.ttc',
+    '/usr/share/fonts/liberation-mono-fonts/LiberationMono-Regular.ttf',
+    '/usr/share/fonts/adwaita-mono-fonts/AdwaitaMono-Regular.ttf',
+    '/usr/share/fonts/adobe-source-code-pro-fonts/SourceCodePro-Regular.otf',
+    '/usr/share/fonts/dejavu-sans-mono-fonts/DejaVuSansMono.ttf',
+    '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf',       # Debian/Ubuntu
+    '/usr/share/fonts/TTF/DejaVuSansMono.ttf',                   # Arch
+]
+
+
+def resolve_font_path(explicit=None):
+    """Return a path to a usable monospace font, or exit with a clear message.
+
+    Never falls back to PIL's bitmap default: that font ignores the requested
+    size and renders unusably small.
+    """
+    if explicit:
+        if os.path.isfile(explicit):
+            return explicit
+        print(f"Error: font not found: {explicit}", file=sys.stderr)
+        sys.exit(1)
+
+    for path in FONT_CANDIDATES:
+        if os.path.isfile(path):
+            return path
+
+    fc_match = shutil.which("fc-match")
+    if fc_match:
         try:
-            if bold:
-                return ImageFont.truetype(font_name + '-Bold', size)
-            return ImageFont.truetype(font_name, size)
-        except:
-            continue
-    
-    # Fallback to default font
-    return ImageFont.load_default()
+            out = subprocess.run(
+                [fc_match, "-f", "%{file}", "monospace"],
+                capture_output=True, text=True, check=True,
+            ).stdout.strip()
+            if out and os.path.isfile(out):
+                return out
+        except (OSError, subprocess.CalledProcessError):
+            pass
+
+    print(
+        "Error: no monospace font found. Install one (macOS ships Menlo; on "
+        "Linux try 'dnf install liberation-mono-fonts' or 'apt install "
+        "fonts-liberation'), or pass --font /path/to/font.ttf",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+
+def load_font(font_path, size):
+    try:
+        return ImageFont.truetype(font_path, size)
+    except OSError:
+        print(f"Error: could not load font: {font_path}", file=sys.stderr)
+        sys.exit(1)
 
 
 def tokenize_swift_code(code):
@@ -132,22 +171,23 @@ def calculate_image_dimensions(tokens, font, line_height, padding, chrome_height
     if current_line:
         lines.append(current_line)
     
-    # Calculate width
+    # Calculate width. Use advance width (getlength), not the ink bounding box:
+    # getbbox ignores leading/trailing whitespace, which would drop indentation.
     max_width = 0
     for line in lines:
         line_text = ''.join(token[1] for token in line)
-        bbox = font.getbbox(line_text)
-        line_width = bbox[2] - bbox[0]
+        line_width = font.getlength(line_text)
         max_width = max(max_width, line_width)
     
-    # Calculate dimensions
-    width = max_width + padding * 2
+    # Calculate dimensions (+1 to absorb the float text width truncation)
+    width = int(max_width) + 1 + padding * 2
     height = chrome_height + len(lines) * line_height + padding * 2
-    
+
     return width, height, lines
 
 
-def render_code_image(code, output_path, with_border=True, scale_factor=2, dpi=144):
+def render_code_image(code, output_path, font_path, with_border=True,
+                      scale_factor=2, dpi=144):
     """
     Render code as an image with macOS-style window chrome.
     Warm, professional color palette. Optimized for retina/high-DPI displays.
@@ -155,6 +195,7 @@ def render_code_image(code, output_path, with_border=True, scale_factor=2, dpi=1
     Args:
         code: Swift code string to render
         output_path: Path to save the output image
+        font_path: Path to the monospace .ttf/.otf to render with
         with_border: Whether to include the orange border background
         scale_factor: Resolution multiplier for retina displays (2 = 2x retina, 3 = 3x)
         dpi: DPI setting for the output image (default: 144 for retina)
@@ -170,7 +211,7 @@ def render_code_image(code, output_path, with_border=True, scale_factor=2, dpi=1
     traffic_light_spacing = 8 * scale_factor
     
     # Get font
-    font = get_font(font_size)
+    font = load_font(font_path, font_size)
     
     # Tokenize code
     tokens = tokenize_swift_code(code)
@@ -232,10 +273,10 @@ def render_code_image(code, output_path, with_border=True, scale_factor=2, dpi=1
             
             # Draw text
             draw.text((x_position, y_position), token_value, font=font, fill=color)
-            
-            # Move x position
-            bbox = font.getbbox(token_value)
-            x_position += bbox[2] - bbox[0]
+
+            # Advance by the glyph advance width, not the ink box — otherwise
+            # whitespace-only tokens (indentation, inter-token spaces) collapse.
+            x_position += font.getlength(token_value)
         
         y_position += line_height
     
@@ -268,6 +309,11 @@ def main():
         help='Disable the orange border background'
     )
     parser.add_argument(
+        '--font',
+        help='Path to a monospace .ttf/.otf (default: auto-detect, '
+             'then fontconfig)'
+    )
+    parser.add_argument(
         '--scale',
         type=int,
         default=2,
@@ -293,10 +339,13 @@ def main():
         print("Error: Must provide code via argument or --file", file=sys.stderr)
         sys.exit(1)
     
+    font_path = resolve_font_path(args.font)
+
     # Generate image
     output_path = render_code_image(
-        code, 
-        args.output, 
+        code,
+        args.output,
+        font_path,
         with_border=not args.no_border,
         scale_factor=args.scale,
         dpi=args.dpi
