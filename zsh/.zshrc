@@ -61,6 +61,9 @@ typeset -U path PATH  # de-dupe automatically, however many times we're sourced
 # Add opencode binaries to PATH if present
 [[ -d "$HOME/.opencode/bin" ]] && path=("$HOME/.opencode/bin" $path)
 
+# Add hunk binaries to PATH if present
+[[ -d "$HOME/.hunk/bin" ]] && path=("$HOME/.hunk/bin" $path)
+
 # --- OS-specific config ---------------------------------------------------
 # Loaded early so any PATH additions they make are available to everything
 # below (tooling, aliases, functions, fzf).
