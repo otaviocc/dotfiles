@@ -55,7 +55,9 @@ python3 scripts/organize-kids-shows.py --root /path/to/kids --apply
 - Shows with no year in the name are filed under a year-less folder (`Peppa Pig/Season 03/...`), with release junk stripped from the title rather than carried into the folder name.
 - `--bare-number-episodes` is off by default to avoid treating movies as episodes. A folder whose files carry no episode markers at all is reported and **left untouched**, with a hint to re-run with the flag if those files really are episodes.
 - Season numbers come from the filename's `sNNeNN` marker, falling back to a `Season NN` parent folder.
+- Multi-episode files (`sNNeNN-eNN`) are detected and named correctly, matching `organize-tv`.
 - Files with no detectable episode number that sit *alongside* real episodes are filed as **Season 00 specials**, numbered in filename order and keeping their original name as the title, so bonus features are no longer left behind in the source folder.
+- A language code a subtitle already carries (`... - s01e01.it.srt`) is recognised across the full ISO code list so it is paired with its episode; the code is dropped from the new name unless `--sub-lang` is given.
 - Nothing is overwritten. Two files that resolve to the same destination are reported before anything moves, and the larger one wins.
 - Case-only renames work correctly on case-insensitive filesystems, and moves use `shutil.move` so a library spanning multiple mounts works.
 - Empty leftover folders are removed after a successful `--apply`.
