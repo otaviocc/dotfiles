@@ -15,6 +15,10 @@ __pycache__/
 !/claude/.claude/skills/
 !/claude/.claude/statusline.py
 
+# hunk writes runtime state next to its tracked config; only config.toml
+# belongs in the repo (same split as herdr and holodeck).
+/hunk/.config/hunk/state.json
+
 # Exceptions: these *.local files are pre-committed relative symlinks that
 # make up the OS-overlay packages (see README "Handling Fedora vs macOS
 # differences"), not machine-local runtime state.
