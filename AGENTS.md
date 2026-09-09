@@ -145,12 +145,13 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
 
 - **vademecum** — the theme is the whole config; there is no "default theme by
   name" setting. `~/.config/vademecum/theme.toml` *is* the default theme, so
-  `theme.toml` here is a verbatim copy of vademecum's own built-in
-  `kanagawa-dragon.toml` and will drift if upstream edits it. Re-copy to
-  resync. Do not trim it to a partial file: partials merge over the built-in
-  **`ansi`** defaults, not over kanagawa-dragon, so a two-line file loses the
-  rest of the palette. `--theme kanagawa-dragon` selects the same theme per
-  run without this file at all; the file exists only to make it the default.
+  `theme.toml` here is the one line `base = "kanagawa-dragon"`: `base` names a
+  built-in and the rest of the file merges over *that* (not over `ansi`), so
+  there is no palette to copy and nothing to drift out of sync with upstream.
+  Add a `[palette]` or `[elements.*]` table below the `base` line only for
+  slots you actually want different from upstream. `--theme kanagawa-dragon`
+  selects the same theme per run without this file at all; the file exists only
+  to make it the default.
 
 ## Kanagawa Dragon theme
 
