@@ -162,6 +162,7 @@ genuinely escalates out of the muted range rather than staying inside it.
 | opencode | `opencode/.config/opencode/themes/kanagawa-dragon.json` — vendored, because its built-in `kanagawa` is Wave |
 | bat | `bat/.config/bat/themes/kanagawa-dragon.tmTheme`, from upstream `extras/tmTheme` |
 | lazygit | `gui.theme` hand-ported (no official lazygit port) |
+| yazi | `yazi/.config/yazi/theme.toml` hand-ported (no loop: the supported `kanagawa.yazi` flavor is Wave, and its dragon fork keeps Wave leftovers — see the header comment). Code previews reuse the bat vendored `.tmTheme` via `syntect_theme` |
 | zsh | `LS_COLORS` hand-ported (vivid has no Kanagawa) |
 | tmux, tig, hunk, vigia | hand-ported inline |
 | holodeck | built-in — `"theme": "kanagawa-dragon"` (added upstream) |

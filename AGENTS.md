@@ -13,7 +13,7 @@ One directory per tool = one Stow package. The path *inside* the package mirrors
 where the file lands under `$HOME` (`zsh/.zshrc` → `~/.zshrc`,
 `nvim/.config/nvim/init.lua` → `~/.config/nvim/init.lua`).
 
-Packages: `zsh git nvim tmux ghostty sublime lazygit tig herdr opencode hunk vigia bat
+Packages: `zsh git nvim tmux ghostty sublime lazygit tig yazi herdr opencode hunk vigia bat
 claude holodeck vademecum`, plus the
 OS-overlay packages `git-macos`/`git-linux` and `ghostty-macos`/`ghostty-linux`.
 
@@ -124,6 +124,14 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   `themes/kanagawa-dragon.tmTheme` and bat only picks it up from a compiled
   cache: run `bat cache --build` after stowing or after editing it. See the
   theme trap in the Kanagawa Dragon section about the `--theme` value.
+- **yazi** — only `theme.toml` is tracked; yazi's own keymap/yazi.toml stay on
+  defaults. The theme is hand-ported (both kanagawa flavors in the wild are
+  Wave or drag Wave leftovers), and `mgr.syntect_theme` points at
+  `$HOME/.config/bat/themes/kanagawa-dragon.tmTheme`, reusing the bat package's
+  vendored tmTheme for code previews. Two traps: it must stay an absolute path
+  (26.x rejects relative ones, though `$HOME` is env-expanded), and a bad path
+  silently falls back to yazi's built-in dark theme — same silent failure as
+  bat's `--theme`.
 - **herdr** — only `config.toml` is tracked. Logs, `session.json`,
   `release-notes.json` and `.plugins.lock` are runtime state; leave them out.
 - **holodeck** — only `config.json` is tracked. `url-history.json` next to it

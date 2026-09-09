@@ -1,0 +1,159 @@
+#:schema https://yazi-rs.github.io/schemas/theme.json
+# Yazi — Kanagawa Dragon. Hand-ported from the semantic roles in docs/palette.md.
+#
+# There is no maintained kanagawa flavor that is true Dragon: the supported
+# `kanagawa.yazi` is the Wave variant, and its kanagawa-dragon fork still keeps
+# Wave leftovers (sumiInk0 #16161d as a dark bg, carpYellow #e6c384,
+# waveRed #e46876, "#ff5d62" for write perms), so — like lazygit and tig —
+# this block is assembled here rather than copied from upstream.
+#
+# Chrome decisions:
+# - The manager border is the accent (yellow #c4b28a), matching lazygit's
+#   activeBorderColor; every dialog border drops to the muted accent #544d3f.
+# - Mode/tab chips: normal = accent yellow, select = violet, unset = blue;
+#   text on a filled chip is bg_m3 #0d0c0c, as in tig's cursor/title rows.
+# - Directory rows and the cwd field are the accent, matching LS_COLORS and
+#   tig (`di` and `directory` are yellow across the repo).
+# - The status bar is bg_m2, the palette's "panels, status bars" role.
+# - `syntect_theme` reuses the .tmTheme vendored for bat, so code previews
+#   carry the same grammar as a running `bat`. The value must be an absolute
+#   path; yazi expands $HOME. Any load error falls back silently to its
+#   built-in dark theme (same trap as bat's --theme), so check the path if a
+#   preview renders monochrome.
+#
+# Only the chrome is themed; the [icon] table keeps the built-in preset's
+# brand-coloured glyphs.
+
+[mgr]
+cwd = { fg = "#c4b28a" }
+
+# Find
+find_keyword  = { fg = "#dca561", bold = true, italic = true }
+find_position = { fg = "#c5c9c5", bg = "#2d4f67", bold = true, italic = true }
+
+# Marker
+marker_copied   = { fg = "#76946a", bg = "#76946a" }
+marker_cut      = { fg = "#c34043", bg = "#c34043" }
+marker_marked   = { fg = "#8992a7", bg = "#8992a7" }
+marker_selected = { fg = "#c4b28a", bg = "#c4b28a" }
+
+# Count
+count_copied   = { fg = "#0d0c0c", bg = "#76946a" }
+count_cut      = { fg = "#0d0c0c", bg = "#c34043" }
+count_selected = { fg = "#0d0c0c", bg = "#c4b28a" }
+
+# Border
+border_style = { fg = "#c4b28a" }
+
+# Code preview — the bat package's vendored Dragon tmTheme
+syntect_theme = "$HOME/.config/bat/themes/kanagawa-dragon.tmTheme"
+
+[tabs]
+active   = { fg = "#0d0c0c", bg = "#c4b28a", bold = true }
+inactive = { fg = "#9e9b93", bg = "#282727" }
+
+[mode]
+normal_main = { fg = "#0d0c0c", bg = "#c4b28a", bold = true }
+normal_alt  = { fg = "#c4b28a", bg = "#12120f" }
+
+select_main = { fg = "#0d0c0c", bg = "#8992a7", bold = true }
+select_alt  = { fg = "#8992a7", bg = "#12120f" }
+
+unset_main = { fg = "#0d0c0c", bg = "#8ba4b0", bold = true }
+unset_alt  = { fg = "#8ba4b0", bg = "#12120f" }
+
+[status]
+overall = { bg = "#12120f" }
+
+# Permissions
+perm_sep   = { fg = "#7a8382" }
+perm_type  = { fg = "#8a9a7b" }
+perm_read  = { fg = "#c4b28a" }
+perm_write = { fg = "#c4746e" }
+perm_exec  = { fg = "#87a987" }
+
+# Progress
+progress_label  = { fg = "#9e9b93", bold = true }
+progress_normal = { fg = "#0d0c0c", bg = "#76946a" }
+progress_error  = { fg = "#0d0c0c", bg = "#c34043" }
+
+[which]
+cols            = 3
+mask            = { bg = "#0d0c0c" }
+cand            = { fg = "#8ba4b0" }
+rest            = { fg = "#7a8382" }
+desc            = { fg = "#9e9b93" }
+separator_style = { fg = "#7a8382" }
+
+[confirm]
+border = { fg = "#544d3f" }
+title  = { fg = "#c4b28a" }
+body   = {}
+list   = {}
+
+btn_yes = { reversed = true }
+btn_no  = {}
+
+[spot]
+border = { fg = "#544d3f" }
+title  = { fg = "#c4b28a" }
+
+tbl_col  = { fg = "#8ba4b0" }
+tbl_cell = { fg = "#c4b28a", reversed = true }
+
+[notify]
+title_info  = { fg = "#8a9a7b" }
+title_warn  = { fg = "#dca561" }
+title_error = { fg = "#c34043" }
+
+[pick]
+border   = { fg = "#544d3f" }
+active   = { fg = "#c4b28a", bold = true }
+inactive = {}
+
+[input]
+border   = { fg = "#544d3f" }
+title    = { fg = "#c4b28a" }
+value    = {}
+selected = { reversed = true }
+
+[cmp]
+border   = { fg = "#544d3f" }
+active   = { reversed = true }
+inactive = {}
+
+[tasks]
+border  = { fg = "#544d3f" }
+title   = { fg = "#c4b28a" }
+hovered = { fg = "#c4b28a", bold = true }
+
+[help]
+on      = { fg = "#8ea4a2" }
+run     = { fg = "#a292a3" }
+desc    = { fg = "#737c73" }
+hovered = { reversed = true, bold = true }
+footer  = { fg = "#0d0c0c", bg = "#c5c9c5" }
+
+[filetype]
+rules = [
+	# Images
+	{ mime = "image/*", fg = "#a292a3" },
+	# Media
+	{ mime = "{audio,video}/*", fg = "#a292a3" },
+	# Archives
+	{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "#b6927b" },
+	# Documents
+	{ mime = "application/{pdf,doc,rtf}", fg = "#6a9589" },
+	# Virtual file system
+	{ mime = "vfs/{absent,stale}", fg = "#737c73" },
+	# Broken links
+	{ url = "*", is = "orphan", fg = "#c34043" },
+	# Executables
+	{ url = "*", is = "exec", fg = "#87a987" },
+	# Dummy files
+	{ url = "*", is = "dummy", bg = "#c34043" },
+	{ url = "*/", is = "dummy", bg = "#c34043" },
+	# Fallback: directories are the accent, everything else the foreground
+	{ url = "*/", fg = "#c4b28a" },
+	{ url = "*", fg = "#c5c9c5" },
+]

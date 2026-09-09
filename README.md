@@ -20,6 +20,7 @@ ghostty  Ghostty terminal
 sublime  Sublime Text (Kanagawa Dragon scheme, LSP-SourceKit)
 lazygit  lazygit
 tig      tig
+yazi     yazi
 herdr    herdr
 opencode OpenCode
 hunk     hunk
