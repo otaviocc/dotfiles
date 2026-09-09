@@ -48,6 +48,7 @@ When the user requests a code snippet image:
 | `code` (positional) | — | Swift code as a string |
 | `-f, --file` | — | Read code from a file instead |
 | `-o, --output` | `code_snippet.png` | Output PNG path |
+| `--font` | auto-detect | Path to a monospace `.ttf`/`.otf` to render with |
 | `--no-border` | off | Disable the orange border background |
 | `--scale` | `2` | Resolution multiplier: 1 normal, 2 retina 2x, 3 retina 3x, 4 ultra |
 | `--dpi` | `144` | DPI metadata written into the PNG |
@@ -70,4 +71,7 @@ When the user requests a code snippet image:
 
 - Swift syntax highlighting only (hardcoded to Pygments' `SwiftLexer`)
 - Fixed dark color theme; no light mode
-- Uses system monospace fonts (Menlo, Monaco, Courier New, or fallback)
+- Picks a monospace font automatically: known macOS/Linux paths first, then
+  `fc-match monospace`. Errors out if none is found — pass `--font` to override.
+  The chosen face differs between machines, so output is not pixel-identical
+  across them; pin `--font` if that matters.
