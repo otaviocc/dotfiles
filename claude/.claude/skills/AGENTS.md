@@ -13,7 +13,6 @@ are noted below.
 | `organize-tv` | `organize-tv/scripts/organize-tv.py` | Organize TV episodes into Jellyfin `TV Shows/Title (year)/Season NN/` layout |
 | `organize-kids-shows` | `organize-kids-shows/scripts/organize-kids-shows.py` | Same as organize-tv but tailored for kids shows (bare-number episodes, no editions) |
 | `flac-to-alac` | `flac-to-alac/scripts/flac-to-alac.py` | Convert FLAC files to ALAC (.m4a) via ffmpeg (preserves artwork, verifies lossless) |
-| `organize-music` | `organize-music/scripts/organize-music.py` | Organize music files into Artist/Album/Track structure via audio tags |
 | `add-episode-titles` | `add-episode-titles/scripts/add-episode-titles.py` | Backfill episode titles into organized TV filenames via TVMaze |
 | `brrr` | none (curl only) | Send a push notification to the user's devices via the Brrr API |
 | `stash-cli` | none (drives the `stash` binary) | Save, search, tag, import/export bookmarks in the self-hosted Stash manager |
@@ -91,10 +90,6 @@ python3 flac-to-alac/scripts/flac-to-alac.py --root /path/to/music
 python3 flac-to-alac/scripts/flac-to-alac.py --root /path/to/music --apply
 python3 flac-to-alac/scripts/flac-to-alac.py --root /path/to/music --apply --keep-original
 
-# Organize music (requires pip install mutagen)
-python3 organize-music/scripts/organize-music.py --root /path/to/music
-python3 organize-music/scripts/organize-music.py --root /path/to/music --apply --albumartist
-
 # Add episode titles (requires network access to api.tvmaze.com)
 python3 add-episode-titles/scripts/add-episode-titles.py --root /path/to/tv
 python3 add-episode-titles/scripts/add-episode-titles.py --root /path/to/tv --apply
@@ -118,6 +113,3 @@ python3 add-episode-titles/scripts/add-episode-titles.py --root /path/to/tv --ap
   artwork, writes atomically via a temp file, and **only deletes a source FLAC
   after verifying the conversion is lossless**. `--no-verify` will not delete
   anything unless paired with `--force-delete`.
-- `organize-music` requires `mutagen` (`pip install mutagen`) for reading audio
-  metadata tags, and exits with an install hint rather than a traceback if it is
-  missing.
