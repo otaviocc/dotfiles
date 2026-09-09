@@ -166,7 +166,7 @@ genuinely escalates out of the muted range rather than staying inside it.
 | zsh | `LS_COLORS` hand-ported (vivid has no Kanagawa) |
 | tmux, tig, hunk, vigia | hand-ported inline |
 | holodeck | built-in — `"theme": "kanagawa-dragon"` (added upstream) |
-| Claude Code | `claude/.claude/themes/kanagawa-dragon.json` |
+| Claude Code | theme: `claude/.claude/themes/kanagawa-dragon.json`; statusline: `claude/.claude/statusline.py` emits truecolor escapes for the hexes inline (comment/whitespace/yellow/violet + the vcs_changed→vcs_removed heat ramp) |
 | Sublime Text | `sublime/.config/sublime-text/Packages/User/kanagawa-dragon.sublime-color-scheme` — hand-ported. ST4 ships no Kanagawa and does not load `.tmTheme` color schemes in its default theme, so this is a native `.sublime-color-scheme` built from Dragon's own `syn` table (keyword=violet, operator/preproc/regex=red), not a transcription of bat's old Wave-derived tmTheme |
 
 **The one real gap: herdr ships a single `kanagawa` and it is the Wave

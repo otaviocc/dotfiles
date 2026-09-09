@@ -137,6 +137,16 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
 - **holodeck** — only `config.json` is tracked. `url-history.json` next to it
   is runtime state; leave it out. The file is strict JSON (serde_json), so it
   takes no comments — document choices here or in the README, not inline.
+- **claude** — the package tracks exactly three things: `~/.claude/themes/`,
+  `~/.claude/skills/`, and `~/.claude/statusline.py`. Each needs its own `!`
+  negation in `.gitignore` (the blanket `/claude/.claude/*` ignore is there so a
+  stray `git add` can't commit `settings.json`, which holds API tokens).
+  `settings.json` itself is never tracked, so wiring the statusline is a
+  per-machine bootstrap step — add
+  `"statusLine": { "type": "command", "command": "~/.claude/statusline.py" }`
+  by hand. The script is Python 3 stdlib-only, reads Claude Code's status JSON
+  on stdin, and uses truecolor escapes from `docs/palette.md` directly (never
+  ANSI bright-black — Dragon maps that to a light grey).
 - **skills** — personal agent skills live in the `claude` package at
   `claude/.claude/skills/`, stowed to `~/.claude/skills/`, which both Claude Code
   and opencode read natively. Skill-specific rules live in
@@ -206,9 +216,10 @@ Traps worth knowing:
 - **`LS_COLORS` is not from `vivid generate <name>`** — vivid has no Kanagawa.
   It is vivid's `gruvbox-dark` output with the palette remapped role-by-role;
   see the header of `zsh/.config/zsh/ls_colors.zsh`.
-- **The `claude` package tracks `~/.claude/themes/` and `~/.claude/skills/`
-  only.** `settings.json` selects the theme but also holds API tokens — never
-  add it to the repo; the rest of `~/.claude` is session/runtime state.
+- **The `claude` package tracks `~/.claude/themes/`, `~/.claude/skills/` and
+  `~/.claude/statusline.py` only.** `settings.json` selects the theme and wires
+  the statusline but also holds API tokens — never add it to the repo; the rest
+  of `~/.claude` is session/runtime state.
 
 ## Commit messages
 

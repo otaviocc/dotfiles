@@ -26,7 +26,7 @@ opencode OpenCode
 hunk     hunk
 vigia    vigia
 bat      bat
-claude   Claude Code themes + shared agent skills
+claude   Claude Code theme + statusline + shared agent skills
 holodeck holodeck
 vademecum vademecum
 ```
@@ -73,3 +73,9 @@ if absent:
 2. `git clone ... ~/.dotfiles && cd ~/.dotfiles && ./install.sh`
 3. Create `~/.zshrc.local` and/or `~/.gitconfig.local.machine` as needed
    (see "Per-machine overrides").
+4. Claude Code's `~/.claude/settings.json` is not tracked (it holds API
+   tokens). Set `"theme": "custom:kanagawa-dragon"` and wire the statusline:
+
+   ```json
+   "statusLine": { "type": "command", "command": "~/.claude/statusline.py" }
+   ```
