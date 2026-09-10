@@ -15,6 +15,7 @@ are noted below.
 | `flac-to-alac` | `flac-to-alac/scripts/flac-to-alac.py` | Convert FLAC files to ALAC (.m4a) via ffmpeg (preserves artwork, verifies lossless) |
 | `add-episode-titles` | `add-episode-titles/scripts/add-episode-titles.py` | Backfill episode titles into organized TV filenames via TVMaze |
 | `brrr` | none (curl only) | Send a push notification to the user's devices via the Brrr API |
+| `hunk` | none (shells out to the `hunk` binary) | Load Hunk's own review skill (`hunk skill path`) and use it for a code review |
 | `stash-cli` | none (drives the `stash` binary) | Save, search, tag, import/export bookmarks in the self-hosted Stash manager |
 | `code-snippet-image` | `code-snippet-image/scripts/generate_code_image.py` | Generate macOS-style code snippet images from Swift code (dark theme, warm palette, retina-ready PNG); requires Pillow + Pygments |
 | `jellyfin-library-cards` | `jellyfin-library-cards/scripts/generate_card.py` | Generate Jellyfin library card artwork (Fredoka, purple-to-cyan gradient, transparent PNG); font bundled in `assets/`; requires Pillow |
