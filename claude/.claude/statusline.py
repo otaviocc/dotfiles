@@ -4,7 +4,12 @@
 Reads the status JSON from stdin (schema documented in Claude Code's
 `statusLine` help) and prints one line:
 
-    Opus 5 · high  ·  .dotfiles master  ·  5h 47%  ·  wk 12%  ·  ctx 71%
+    Opus 5 · high  ·  .dotfiles master  ·  5h 47% 2h13m  ·  wk 12% 3d4h  ·  ctx 71%
+
+Each usage percentage carries a countdown to its window reset. Claude Code
+re-runs this on every message and tool call, but not on a timer, so a countdown
+can read stale while the session sits idle -- `refreshInterval` would fix that,
+and it lives in the untracked per-machine `settings.json`.
 
 Segments drop out silently when their input is missing:
   - `effort` is absent on models without reasoning effort.
@@ -23,6 +28,7 @@ import json
 import os
 import re
 import sys
+import time
 
 # Kanagawa Dragon, from docs/palette.md.
 COMMENT = "#737c73"  # comment      -- labels, dim text
@@ -125,14 +131,42 @@ def _limit(window):
     return pct
 
 
-def seg_rate(data, key, label):
+def _countdown(window):
+    """Compact time left until a rate-limit window resets, or None."""
+    if not window:
+        return None
+    try:
+        left = float(window.get("resets_at")) - time.time()
+    except (TypeError, ValueError):
+        return None
+    if left <= 0:
+        return None
+    minutes = int(left // 60)
+    if minutes < 1:
+        return "<1m"
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
+    if days:
+        return f"{days}d{hours}h" if hours else f"{days}d"
+    if hours:
+        return f"{hours}h{minutes}m" if minutes else f"{hours}h"
+    return f"{minutes}m"
+
+
+def seg_rate(data, key, label, resets=True):
     limits = data.get("rate_limits")
     if not limits:
         return None
-    pct = _limit(limits.get(key))
+    window = limits.get(key)
+    pct = _limit(window)
     if pct is None:
         return None
-    return fg(COMMENT, f"{label} ") + fg(heat(pct), f"{pct:.0f}%")
+    out = fg(COMMENT, f"{label} ") + fg(heat(pct), f"{pct:.0f}%")
+    if resets:
+        left = _countdown(window)
+        if left:
+            out += fg(COMMENT, f" {left}")
+    return out
 
 
 def seg_ctx(data):
@@ -142,17 +176,21 @@ def seg_ctx(data):
     return fg(COMMENT, "ctx ") + fg(heat(pct), f"{pct:.0f}%")
 
 
-def main():
-    data = json.load(sys.stdin)
-
+def build(data, resets=True):
     builders = [
         seg_model,
         seg_dir,
-        lambda d: seg_rate(d, "five_hour", "5h"),
-        lambda d: seg_rate(d, "seven_day", "wk"),
+        lambda d: seg_rate(d, "five_hour", "5h", resets),
+        lambda d: seg_rate(d, "seven_day", "wk", resets),
         seg_ctx,
     ]
-    segments = [s for s in (b(data) for b in builders) if s]
+    return [s for s in (b(data) for b in builders) if s]
+
+
+def main():
+    data = json.load(sys.stdin)
+
+    segments = build(data)
     if not segments:
         return
 
@@ -167,8 +205,11 @@ def main():
         columns = int(os.environ.get("COLUMNS", "0"))
     except ValueError:
         columns = 0
-    # Drop dir+branch, then model, when the line overflows -- the usage
-    # numbers are the point.
+    # Shed the reset countdowns, then dir+branch, then model, when the line
+    # overflows -- the usage numbers are the point.
+    if columns and visible_len(line) > columns:
+        segments = build(data, resets=False)
+        line = render(segments)
     for drop in (seg_dir, seg_model):
         if columns and visible_len(line) > columns and len(segments) > 1:
             dropped = drop(data)
