@@ -16,7 +16,6 @@ are noted below.
 | `add-episode-titles` | `add-episode-titles/scripts/add-episode-titles.py` | Backfill episode titles into organized TV filenames via TVMaze |
 | `brrr` | none (curl only) | Send a push notification to the user's devices via the Brrr API |
 | `hunk` | none (shells out to the `hunk` binary) | Load Hunk's own review skill (`hunk skill path`) and use it for a code review |
-| `stash-cli` | none (drives the `stash` binary) | Save, search, tag, import/export bookmarks in the self-hosted Stash manager |
 | `code-snippet-image` | `code-snippet-image/scripts/generate_code_image.py` | Generate macOS-style code snippet images from Swift code (dark theme, warm palette, retina-ready PNG); requires Pillow + Pygments |
 | `jellyfin-library-cards` | `jellyfin-library-cards/scripts/generate_card.py` | Generate Jellyfin library card artwork (Fredoka, purple-to-cyan gradient, transparent PNG); font bundled in `assets/`; requires Pillow |
 
@@ -26,17 +25,19 @@ nothing to set up by hand.
 
 ## Skills NOT in this repo
 
-`~/.config/opencode/skills/` (opencode-only, on the macOS machine) also contains
-skills that this repo does **not** track, so they will not survive a bootstrap
-onto a new machine:
+Other skill directories on the macOS machine hold skills this repo does **not**
+track, so they will not survive a bootstrap onto a new machine:
 
 | Skill | Where it actually lives |
 |-------|-------------------------|
+| `stash-cli` | the Stash project itself (`CLI`'s own skill); deliberately untracked here so the docs never drift from the binary |
+| `twg`, `twg-*` (13 skills) | installed into `~/.agents/skills/` by the `twg` CLI; Atlassian-licensed, so they must not be committed. `twg setup` reinstalls them |
 | `supacode-cli`, `supacode-deeplinks` | real directories, installed by Supacode itself |
-| `swift-concurrency`, `swift-testing-expert`, `swiftui-expert-skill`, `xcode-disk-cleanup` | symlinks into `~/.agents/skills/` |
+| `swift-concurrency`, `swift-testing-expert`, `swiftui-expert-skill`, `xcode-disk-cleanup` | symlinks into `~/.agents/skills/`, installed as Claude Code plugins |
 
-If any of those should be version-controlled, move them into this directory and
-let stow link them like the rest.
+Everything tool-installed lands in `~/.claude/skills/` as a real directory
+alongside this package's symlinks, which is why `~/.claude/skills/` is left as a
+real directory rather than folded into a single stow symlink.
 
 ## Conventions
 
