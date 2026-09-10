@@ -53,29 +53,62 @@ ensure_stow() {
 
 # Move any real file/dir that a package would try to symlink over into
 # $BACKUP_DIR, preserving the relative path, so stow doesn't refuse to link.
+backup_target() {
+  local rel="$1" target="$2" what="file"
+  # A package entry can be a directory symlink (sublime-macos points its whole
+  # Packages/User at the base package), so the thing being moved aside is
+  # sometimes a populated directory. Say so -- it is a much bigger move than a
+  # single file, and the log is the only warning before it happens.
+  [ -L "$target" ] || { [ -d "$target" ] && what="directory"; }
+  mkdir -p "$BACKUP_DIR/$(dirname "$rel")"
+  log "Backing up existing $what ~/$rel -> $BACKUP_DIR/$rel"
+  mv "$target" "$BACKUP_DIR/$rel"
+}
+
 backup_conflicts() {
   local package="$1"
   local pkg_dir="$DOTFILES_DIR/$package"
   [ -d "$pkg_dir" ] || return 0
 
+  local src rel target link resolved
   while IFS= read -r -d '' src; do
-    local rel="${src#"$pkg_dir"/}"
-    local target="$HOME/$rel"
-    [ -e "$target" ] || continue
-    # If an ancestor directory of $target is already a symlink (Stow folded
-    # this subtree into the package on a previous run), $target resolves
-    # straight back into $src even though the leaf itself isn't a symlink.
-    # That's not a real conflict -- skip it, or we'd "back up" (i.e. delete)
-    # the package's own source file out from under the repo.
-    if [ "$(readlink -f -- "$target" 2>/dev/null)" = "$(readlink -f -- "$src" 2>/dev/null)" ]; then
+    rel="${src#"$pkg_dir"/}"
+    target="$HOME/$rel"
+    # -e alone is false for a dangling symlink, which is very much a conflict.
+    [ -e "$target" ] || [ -L "$target" ] || continue
+
+    if [ ! -L "$target" ]; then
+      # A real file. It may still be the package's own file seen through a
+      # directory symlink an earlier run folded into place, in which case
+      # $target resolves straight back to $src -- backing that up would delete
+      # the source out from under the repo.
+      if [ "$(readlink -f -- "$target" 2>/dev/null)" = "$(readlink -f -- "$src" 2>/dev/null)" ]; then
+        continue
+      fi
+      backup_target "$rel" "$target"
       continue
     fi
-    if [ ! -L "$target" ]; then
-      mkdir -p "$BACKUP_DIR/$(dirname "$rel")"
-      log "Backing up existing ~/$rel -> $BACKUP_DIR/$rel"
-      mv "$target" "$BACKUP_DIR/$rel"
-    fi
-  done < <(find "$pkg_dir" -type f -print0)
+
+    # A symlink. Stow only owns *relative* links pointing inside the stow dir;
+    # it refuses anything else ("Ignoring an absolute symlink" / "existing
+    # target is not owned by stow") and aborts the whole run. Note that an
+    # absolute link can resolve to exactly the right file and still abort the
+    # run, so where it points is not the question -- how it points is.
+    link="$(readlink -- "$target")"
+    resolved="$(readlink -f -- "$target" 2>/dev/null || true)"
+    case "$link" in
+      /*) backup_target "$rel" "$target" ;;
+      *)
+        case "$resolved" in
+          "$DOTFILES_DIR"/*) : ;;
+          *) backup_target "$rel" "$target" ;;
+        esac
+        ;;
+    esac
+  # -type l matters: the OS-overlay packages (git-macos, ghostty-macos, ...)
+  # are made *entirely* of pre-committed relative symlinks, which a bare
+  # -type f scan walks straight past, so their conflicts went undetected.
+  done < <(find "$pkg_dir" \( -type f -o -type l \) ! -name .DS_Store -print0)
 }
 
 stow_package() {
@@ -83,7 +116,10 @@ stow_package() {
   [ -d "$DOTFILES_DIR/$package" ] || { echo "Unknown package: $package" >&2; return 1; }
   backup_conflicts "$package"
   log "Stowing $package"
-  stow -d "$DOTFILES_DIR" -t "$HOME" -R "$package"
+  # Finder scatters .DS_Store inside the packages. They are gitignored, so they
+  # never surface in `git status`, but stow would cheerfully symlink them into
+  # $HOME on top of the real ones.
+  stow -d "$DOTFILES_DIR" -t "$HOME" --ignore='\.DS_Store' -R "$package"
 }
 
 main() {
