@@ -227,13 +227,30 @@ def render_code_image(code, output_path, font_path, with_border=True,
         total_height = code_height + border_padding * 2
         img = Image.new('RGB', (total_width, total_height), COLORS['orange_bg'])
         
-        # Create rounded rectangle for window with anti-aliasing
+        # Build the window on its own RGBA layer, chrome included, so the
+        # rounded corners stay transparent and let the border colour through.
         window_img = Image.new('RGBA', (code_width, code_height), (0, 0, 0, 0))
         window_draw = ImageDraw.Draw(window_img)
+        # Inclusive coordinates, so the far edges are width-1/height-1 --
+        # using the full extent overflows the layer and clips the bottom and
+        # right corner arcs by a pixel.
         window_draw.rounded_rectangle(
-            [0, 0, code_width, code_height],
+            [0, 0, code_width - 1, code_height - 1],
             radius=corner_radius,
             fill=COLORS['background']
+        )
+        # The chrome shares the window's top corner radius, then has its own
+        # bottom corners squared off again so it meets the code area in a
+        # straight line. Drawing it as a plain rectangle instead would paint
+        # over the window's rounded top corners and square them off.
+        window_draw.rounded_rectangle(
+            [0, 0, code_width - 1, chrome_height],
+            radius=corner_radius,
+            fill=COLORS['window_chrome']
+        )
+        window_draw.rectangle(
+            [0, chrome_height - corner_radius, code_width - 1, chrome_height],
+            fill=COLORS['window_chrome']
         )
         img.paste(window_img, (border_padding, border_padding), window_img)
         
@@ -241,16 +258,16 @@ def render_code_image(code, output_path, font_path, with_border=True,
         offset_x = border_padding
         offset_y = border_padding
     else:
+        # No border, so the window itself has square corners and a plain
+        # chrome bar matches it.
         img = Image.new('RGB', (code_width, code_height), COLORS['background'])
         draw = ImageDraw.Draw(img)
+        draw.rectangle(
+            [0, 0, code_width, chrome_height],
+            fill=COLORS['window_chrome']
+        )
         offset_x = 0
         offset_y = 0
-    
-    # Draw window chrome
-    draw.rectangle(
-        [offset_x, offset_y, offset_x + code_width, offset_y + chrome_height],
-        fill=COLORS['window_chrome']
-    )
     
     # Draw traffic lights
     draw_traffic_lights(
