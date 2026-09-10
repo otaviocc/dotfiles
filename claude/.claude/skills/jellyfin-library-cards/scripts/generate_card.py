@@ -18,8 +18,11 @@ Defaults were reverse-engineered from reference Jellyfin library cards:
     box (not the canvas) -- so short and long strings both start fully
     purple and end fully cyan.
   - Colors: #AA5CC3 (purple) -> #00A4DC (cyan, Jellyfin's brand blue)
-  - Horizontal text margin: ~10% of canvas width on each side; font size
-    is auto-fit to that available width (and capped by available height).
+  - Horizontal text margin: ~10% of canvas width on each side.
+  - Font size: a fixed 300 (--font-size), shrunk only when the name is too
+    long to fit the available width. A shared size is what makes a set of
+    cards look like a set; sizing each name to fill the width instead would
+    render "Kids" nearly three times taller than "Collections".
 """
 
 import argparse
@@ -36,6 +39,7 @@ DEFAULT_START_COLOR = "#AA5CC3"  # purple
 DEFAULT_END_COLOR = "#00A4DC"    # Jellyfin brand cyan
 DEFAULT_WEIGHT = 600             # Fredoka SemiBold
 DEFAULT_MARGIN_FRAC = 0.10       # horizontal margin as fraction of width
+DEFAULT_FONT_SIZE = 300          # shared across a card set; see fit_font_size
 
 
 def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
@@ -61,13 +65,22 @@ def fit_font_size(
     weight: int,
     max_width: int,
     max_height: int,
-    start_size: int = 800,
+    max_size: int = DEFAULT_FONT_SIZE,
     min_size: int = 20,
-) -> tuple[ImageFont.FreeTypeFont, tuple[int, int, int, int]]:
-    """Binary-search the largest font size whose rendered text bbox fits
-    within (max_width, max_height)."""
-    lo, hi = min_size, start_size
-    best_font, best_bbox = None, None
+) -> ImageFont.FreeTypeFont:
+    """Binary-search the largest font size <= max_size whose text still fits.
+
+    The cap is what keeps a card set consistent: every name renders at the
+    same size unless it is too long for the canvas, in which case it shrinks
+    just enough to fit. Fitting each name to the full available width instead
+    would tie glyph size to name length -- "Kids" would come out nearly three
+    times taller than "Collections".
+
+    Width is the advance width and height comes from the font's own
+    ascent/descent, so neither depends on which glyphs a name happens to use.
+    """
+    lo, hi = min_size, max_size
+    best_font = None
 
     dummy_img = Image.new("RGBA", (10, 10))
     draw = ImageDraw.Draw(dummy_img)
@@ -75,18 +88,17 @@ def fit_font_size(
     while lo <= hi:
         mid = (lo + hi) // 2
         font = load_font(font_path, mid, weight)
-        bbox = draw.textbbox((0, 0), text, font=font)
-        w = bbox[2] - bbox[0]
-        h = bbox[3] - bbox[1]
-        if w <= max_width and h <= max_height:
-            best_font, best_bbox = font, bbox
+        ascent, descent = font.getmetrics()
+        if draw.textlength(text, font=font) <= max_width \
+                and ascent + descent <= max_height:
+            best_font = font
             lo = mid + 1
         else:
             hi = mid - 1
 
     if best_font is None:
         raise ValueError("Could not fit text at any size >= min_size")
-    return best_font, best_bbox
+    return best_font
 
 
 def make_horizontal_gradient(width: int, height: int, start_rgb, end_rgb) -> Image.Image:
@@ -111,6 +123,7 @@ def generate_card(
     start_color: str = DEFAULT_START_COLOR,
     end_color: str = DEFAULT_END_COLOR,
     margin_frac: float = DEFAULT_MARGIN_FRAC,
+    font_size: int = DEFAULT_FONT_SIZE,
 ) -> str:
     start_rgb = hex_to_rgb(start_color)
     end_rgb = hex_to_rgb(end_color)
@@ -119,26 +132,33 @@ def generate_card(
     max_text_w = width - 2 * margin_x
     max_text_h = int(height * 0.6)  # keep generous vertical breathing room
 
-    font, bbox = fit_font_size(text, font_path, weight, max_text_w, max_text_h)
-    text_w = bbox[2] - bbox[0]
-    text_h = bbox[3] - bbox[1]
+    font = fit_font_size(text, font_path, weight, max_text_w, max_text_h,
+                         font_size)
 
-    # Render the text as a black-on-transparent mask, tightly cropped.
-    mask_img = Image.new("RGBA", (text_w + 4, text_h + 4), (0, 0, 0, 0))
+    # Draw the mask on a full-size canvas, positioned by the font's own metrics
+    # ("mm" centres the advance width and the ascent/descent box). Centring on
+    # the ink box instead would let a descender or a missing cap shift the
+    # baseline from one card to the next.
+    mask_img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     mask_draw = ImageDraw.Draw(mask_img)
-    mask_draw.text((-bbox[0] + 2, -bbox[1] + 2), text, font=font, fill=(0, 0, 0, 255))
+    mask_draw.text((width // 2, height // 2), text, font=font,
+                   fill=(0, 0, 0, 255), anchor="mm")
     alpha = mask_img.split()[3]
 
-    # Build the gradient across the text's own bounding box.
-    gradient = make_horizontal_gradient(mask_img.width, mask_img.height, start_rgb, end_rgb)
-    gradient_rgba = gradient.convert("RGBA")
-    gradient_rgba.putalpha(alpha)
+    ink = alpha.getbbox()
+    if ink is None:
+        raise ValueError(f"{text!r} renders no visible glyphs")
 
-    # Composite onto the full transparent canvas, centered.
+    # Gradient still spans the TEXT's own ink box, so whatever the name's
+    # length its leftmost pixel is fully start_color and its rightmost fully
+    # end_color.
+    gradient = make_horizontal_gradient(ink[2] - ink[0], ink[3] - ink[1],
+                                        start_rgb, end_rgb)
+    gradient_rgba = gradient.convert("RGBA")
+    gradient_rgba.putalpha(alpha.crop(ink))
+
     canvas = Image.new("RGBA", (width, height), (0, 0, 0, 0))
-    paste_x = (width - gradient_rgba.width) // 2
-    paste_y = (height - gradient_rgba.height) // 2
-    canvas.alpha_composite(gradient_rgba, (paste_x, paste_y))
+    canvas.alpha_composite(gradient_rgba, (ink[0], ink[1]))
 
     os.makedirs(os.path.dirname(os.path.abspath(output_path)) or ".", exist_ok=True)
     canvas.save(output_path)
@@ -158,6 +178,10 @@ def main():
     parser.add_argument("--end-color", default=DEFAULT_END_COLOR, help="Hex color, right side")
     parser.add_argument("--margin-frac", type=float, default=DEFAULT_MARGIN_FRAC,
                          help="Horizontal margin as a fraction of width (each side)")
+    parser.add_argument("--font-size", type=int, default=DEFAULT_FONT_SIZE,
+                         help="Font size shared across a card set; a name too "
+                              "long for the canvas shrinks below it "
+                              f"(default: {DEFAULT_FONT_SIZE})")
     args = parser.parse_args()
 
     try:
@@ -171,6 +195,7 @@ def main():
             start_color=args.start_color,
             end_color=args.end_color,
             margin_frac=args.margin_frac,
+            font_size=args.font_size,
         )
     except ValueError as exc:
         print(f"Error: {exc}", file=sys.stderr)

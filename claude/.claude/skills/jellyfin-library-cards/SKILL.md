@@ -19,9 +19,15 @@ engineered from Otávio's existing card set to match exactly.
   at their leftmost pixel to fully cyan at their rightmost pixel.
   - Start (left): `#AA5CC3` (purple)
   - End (right): `#00A4DC` (cyan — Jellyfin's own brand blue)
-- **Layout**: text is centered on the canvas, auto-sized to the largest
-  font size that fits within a horizontal margin (default 10% of width on
-  each side) and a vertical cap (60% of height).
+- **Layout**: text is centered on the canvas using the font's own metrics,
+  so every card shares one baseline regardless of which glyphs the name uses.
+- **Font size**: a fixed `300` for every card, shrunk only when a name is too
+  wide for the horizontal margin (default 10% of width per side) or the
+  vertical cap (60% of height). The shared size is what makes a set look like
+  a set -- sizing each name to fill the available width instead ties letter
+  height to name length, rendering "Kids" nearly three times taller than
+  "Collections". Names beyond ~10 characters shrink to fit: "Collections"
+  lands at 283, "Documentaries" at 210.
 
 ## Usage
 
@@ -56,9 +62,18 @@ report the saved file path so the user can find it.
 | `--start-color` | `#AA5CC3` | Hex color at the left edge of the text |
 | `--end-color` | `#00A4DC` | Hex color at the right edge of the text |
 | `--margin-frac` | `0.10` | Horizontal margin as a fraction of width per side |
+| `--font-size` | `300` | Size shared across a card set; a name too long for the canvas shrinks below it |
 
 ## Notes
 
+- Cards are only consistent with each other if they share `--font-size`. When
+  adding one card to an existing set, leave the flag alone; when changing it,
+  regenerate the whole set.
+- A name too long for the default still shrinks, so a set containing one long
+  name is not perfectly uniform. For uniformity across such a set, pass every
+  card the size the longest name fits at (`--font-size 210` for
+  "Documentaries", `244` for "Home Videos"), or widen the text area with a
+  smaller `--margin-frac`.
 - If the user wants a different look (color pair, font, diagonal gradient,
   icon, etc.), adjust the script's parameters rather than generating the
   image any other way — the whole point of this skill is deterministic,
