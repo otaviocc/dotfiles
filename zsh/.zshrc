@@ -44,6 +44,7 @@ autoload -Uz compinit
 compinit
 zstyle ':completion:*' menu select
 setopt globdots  # include hidden files in TAB completion and globbing
+zstyle ':completion:*' matcher-list '' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}'  # case-insensitive, exact case first
 
 # --- Prompt / VCS info ---------------------------------------------------
 autoload -Uz vcs_info
