@@ -1,4 +1,12 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "lsp": true
+  "lsp": true,
+
+  // The shared skills live in the `claude` package, stowed to ~/.claude/skills.
+  // opencode's own docs claim that directory is auto-loaded; as of 1.18.29 it
+  // is not (verified with `opencode debug skill`), so register it explicitly.
+  // A leading ~ is expanded; $HOME is not.
+  "skills": {
+    "paths": ["~/.claude/skills"]
+  }
 }

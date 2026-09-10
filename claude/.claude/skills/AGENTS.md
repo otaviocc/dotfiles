@@ -20,8 +20,17 @@ are noted below.
 | `jellyfin-library-cards` | `jellyfin-library-cards/scripts/generate_card.py` | Generate Jellyfin library card artwork (Fredoka, purple-to-cyan gradient, transparent PNG); font bundled in `assets/`; requires Pillow |
 
 These live in the `claude` package at `claude/.claude/skills/`, stowed to
-`~/.claude/skills/`. Both Claude Code and opencode read that directory natively —
-nothing to set up by hand.
+`~/.claude/skills/`. Claude Code reads that directory natively. opencode does
+**not**, despite its own bundled docs listing `~/.claude/skills` under "External
+skills (auto-loaded)" — as of 1.18.29 nothing there is picked up, symlinked or
+not. The `opencode` package registers the directory explicitly instead:
+
+```jsonc
+"skills": { "paths": ["~/.claude/skills"] }
+```
+
+A leading `~` is expanded; `$HOME` is not. Verify with `opencode debug skill`,
+which prints every skill it can see and where each was loaded from.
 
 ## Skills NOT in this repo
 
