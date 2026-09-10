@@ -31,7 +31,6 @@ track, so they will not survive a bootstrap onto a new machine:
 | Skill | Where it actually lives |
 |-------|-------------------------|
 | `stash-cli` | the Stash project itself (`CLI`'s own skill); deliberately untracked here so the docs never drift from the binary |
-| `twg`, `twg-*` (13 skills) | installed into `~/.agents/skills/` by the `twg` CLI; Atlassian-licensed, so they must not be committed. `twg setup` reinstalls them |
 | `supacode-cli`, `supacode-deeplinks` | real directories, installed by Supacode itself |
 | `swift-concurrency`, `swift-testing-expert`, `swiftui-expert-skill`, `xcode-disk-cleanup` | symlinks into `~/.agents/skills/`, installed as Claude Code plugins |
 
