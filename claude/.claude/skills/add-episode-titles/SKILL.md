@@ -28,21 +28,19 @@ This works even when the episode already has a title — if the year is absent, 
 
 ## Prerequisites
 
-- Python 3 (stdlib only, no pip dependencies)
+- The `acervo` binary (`cargo install --git https://github.com/otaviocc/acervo`), on `PATH`
 - Network access to `api.tvmaze.com`
 
 ## Usage
 
-Paths below are relative to this skill's directory.
-
 ```bash
-python3 scripts/add-episode-titles.py --root /path/to/tv
+acervo titles --root /path/to/tv
 ```
 
-The script defaults to **dry-run** — it shows what would be renamed without changing anything. Review the output, then confirm with the user before applying.
+The command defaults to **dry-run** — it shows what would be renamed without changing anything. Review the output, then confirm with the user before applying.
 
 ```bash
-python3 scripts/add-episode-titles.py --root /path/to/tv --apply
+acervo titles --root /path/to/tv --apply
 ```
 
 ## Flags

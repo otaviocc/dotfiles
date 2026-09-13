@@ -19,20 +19,18 @@ Handles show folders (with or without Season subfolders) and loose episode files
 
 ## Prerequisites
 
-- Python 3 (stdlib only, no pip dependencies)
+- The `acervo` binary (`cargo install --git https://github.com/otaviocc/acervo`), on `PATH`
 
 ## Usage
 
-Paths below are relative to this skill's directory.
-
 ```bash
-python3 scripts/organize-tv.py --root /path/to/tv
+acervo tv --root /path/to/tv
 ```
 
-The script defaults to **dry-run** — it shows what would be moved without changing anything. Review the output, then confirm with the user before applying.
+The command defaults to **dry-run** — it shows what would be moved without changing anything. Review the output, then confirm with the user before applying.
 
 ```bash
-python3 scripts/organize-tv.py --root /path/to/tv --apply
+acervo tv --root /path/to/tv --apply
 ```
 
 ## Flags
@@ -61,7 +59,7 @@ python3 scripts/organize-tv.py --root /path/to/tv --apply
 - A language code a subtitle already carries (`... - s01e01.it.srt`) is recognised across the full ISO code list, so it is paired with its episode rather than misfiled as a special. Without `--sub-lang` the code is dropped from the new name; pass `--sub-lang` to set one explicitly.
 - Nothing is overwritten. Two files that resolve to the same destination are reported before anything moves, and the larger one wins — this is the usual outcome when a library holds two quality copies of one episode.
 - Case-only renames (`show (2019)` → `Show (2019)`) work correctly on case-insensitive filesystems.
-- Moves use `shutil.move`, so a library spanning multiple mounts works.
+- Moves fall back to copy+delete across filesystems, so a library spanning multiple mounts works.
 - Empty leftover folders are removed after a successful `--apply`.
 
 ## Related

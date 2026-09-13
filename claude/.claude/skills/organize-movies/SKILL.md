@@ -18,20 +18,18 @@ Handles both release folders (containing video + subtitles, including a nested `
 
 ## Prerequisites
 
-- Python 3 (stdlib only, no pip dependencies)
+- The `acervo` binary (`cargo install --git https://github.com/otaviocc/acervo`), on `PATH`
 
 ## Usage
 
-Paths below are relative to this skill's directory.
-
 ```bash
-python3 scripts/organize-movies.py --root /path/to/movies
+acervo movies --root /path/to/movies
 ```
 
-The script defaults to **dry-run** — it shows what would be moved without changing anything. Review the output, then confirm with the user before applying.
+The command defaults to **dry-run** — it shows what would be moved without changing anything. Review the output, then confirm with the user before applying.
 
 ```bash
-python3 scripts/organize-movies.py --root /path/to/movies --apply
+acervo movies --root /path/to/movies --apply
 ```
 
 ## Flags
@@ -56,6 +54,6 @@ python3 scripts/organize-movies.py --root /path/to/movies --apply
 - Without `--sub-lang`, a language code already present on a subtitle (`2_English.srt` → `.english.srt`) is preserved, which keeps multi-language subtitle sets distinguishable. `--sub-lang` overrides that for every subtitle.
 - The release year is the last year-like token before the quality tail, so titles containing a number are safe (`Blade Runner 2049 2017` → year 2017).
 - Nothing is overwritten. Two files that resolve to the same destination are reported before anything moves, and the larger one wins.
-- Case-only renames work correctly on case-insensitive filesystems, and moves use `shutil.move` so a library spanning multiple mounts works.
+- Case-only renames work correctly on case-insensitive filesystems, and moves fall back to copy+delete so a library spanning multiple mounts works.
 - Files with no detectable year are reported and left alone.
 - Empty leftover folders are removed after a successful `--apply`.
