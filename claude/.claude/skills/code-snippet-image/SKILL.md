@@ -1,77 +1,101 @@
 ---
 name: code-snippet-image
-description: Generate macOS-style code snippet images with Swift syntax highlighting. Warm color palette with a dark background, window chrome, and traffic lights. Use when the user asks to create, generate, or convert code into a shareable image, or wants a visual representation of Swift code for documentation, presentations, or social media.
+description: Generate code snippet images with syntax highlighting for 220+ languages - a macOS-style window on a colored, gradient, or image background. Use when the user asks to create, generate, or convert code into a shareable image, or wants a visual representation of code for documentation, presentations, or social media.
 ---
 
 # Code Snippet Image Generator
 
-Generate shareable code snippet images with macOS-style window chrome and Swift
-syntax highlighting. Warm color palette on a dark background, optimized for
-retina and high-DPI displays.
+Renders a code snippet to a PNG or SVG using `snapcode`, a Rust binary. Defaults
+to the warm palette this skill has always used: dark window, orange field,
+traffic lights, 2x retina.
 
 ## Quick Start
 
 ```bash
-# From a string
-python3 scripts/generate_code_image.py 'print("Hello, World!")' -o output.png
-
 # From a file
-python3 scripts/generate_code_image.py -f code.swift -o output.png
-```
+snapcode snippet.swift -o ~/Desktop/snippet.png
 
-The script produces a PNG with:
-- 2x retina resolution by default (144 DPI)
-- macOS-style window chrome with traffic lights
-- Dark background (#1a1a1a) and warm syntax colors
-- Automatic sizing to fit the code content
+# From a string, via stdin
+printf 'let x = 1\n' | snapcode - --lang swift -o ~/Desktop/snippet.png
+```
 
 ## Workflow
 
 When the user requests a code snippet image:
 
-1. Extract or receive the Swift code from the request
-2. Save it to a temporary file or pass it as a string
-3. Run the script:
-   ```bash
-   # Retina (recommended)
-   python3 scripts/generate_code_image.py -f /tmp/snippet.swift -o ~/Desktop/snippet.png --scale 2
+1. Write the code to a temp file with the right extension — `/tmp/snippet.swift`,
+   `/tmp/snippet.rs`. The extension drives language detection, so this is
+   preferable to piping.
+2. Run `snapcode /tmp/snippet.swift -o <output>.png`.
+3. Tell the user the output path.
 
-   # Ultra-high quality
-   python3 scripts/generate_code_image.py -f /tmp/snippet.swift -o ~/Desktop/snippet.png --scale 3
-   ```
-4. Tell the user the output path
+Use `--lang` only when the language cannot be inferred from the filename.
 
-## Script Options
+## Options
 
 | Flag | Default | Purpose |
 |---|---|---|
-| `code` (positional) | — | Swift code as a string |
-| `-f, --file` | — | Read code from a file instead |
-| `-o, --output` | `code_snippet.png` | Output PNG path |
-| `--font` | auto-detect | Path to a monospace `.ttf`/`.otf` to render with |
-| `--no-border` | off | Disable the orange border background |
-| `--scale` | `2` | Resolution multiplier: 1 normal, 2 retina 2x, 3 retina 3x, 4 ultra |
+| `-o, --output` | input name + `.png` | Output path; `.svg` extension emits SVG, `-` writes stdout |
+| `--lang` | detected | Language override (`snapcode languages` lists them) |
+| `--theme` | `warm` | Window chrome: `warm`, `midnight`, `paper` |
+| `--syntax-theme` | `warm` | Token colors; 30+ bundled (`snapcode themes`) |
+| `--scale` | `2` | 1 normal, 2 retina, 3+ print |
 | `--dpi` | `144` | DPI metadata written into the PNG |
+| `--bg` | theme | Color, `linear:<angle>:<c1>,<c2>`, `radial:<c1>,<c2>`, or an image path |
+| `--line-numbers` | off | Show a gutter |
+| `--highlight-lines` | — | e.g. `3-5,9` — emphasize those, dim the rest |
+| `--diff` | off | Render leading `+`/`-` as diff backgrounds |
+| `--title` | filename | Titlebar text; `--no-titlebar` removes the bar |
+| `--copy` | off | Also copy the image to the clipboard |
+| `--no-shadow`, `--border`, `--padding`, `--margin`, `--radius` | | Window geometry |
+
+Run `snapcode --help` for the full list.
+
+## Common Recipes
+
+```bash
+# Emphasize the lines being discussed
+snapcode api.swift --line-numbers --highlight-lines 12-18 -o out.png
+
+# A diff, on the light theme
+snapcode change.diff --diff --theme paper --line-numbers -o out.png
+
+# Gradient background, no titlebar, straight to the clipboard
+snapcode snippet.rs --bg 'linear:135:#1e3a8a,#701a75' --no-titlebar --copy -o out.png
+
+# Vector output for a slide deck
+snapcode snippet.ts -o out.svg
+```
 
 ## Quality Guide
 
-| Setting | Use case | Typical size |
-|---|---|---|
-| `--scale 1 --dpi 72` | Web thumbnails, quick preview | ~25 KB |
-| `--scale 2` (default) | Most uses, retina displays, presentations | ~50–60 KB |
-| `--scale 3 --dpi 216` | Ultra-high-res displays, print | ~90–100 KB |
-| `--scale 4 --dpi 288` | Professional print, large-format | ~150 KB+ |
+| Setting | Use case |
+|---|---|
+| `--scale 1 --dpi 72` | Web thumbnails, quick preview |
+| `--scale 2` (default) | Most uses: retina displays, presentations, social |
+| `--scale 3 --dpi 216` | Large format, high-res displays |
+| SVG output | Slides and docs where it may be scaled arbitrarily |
+
+## Interactive Mode
+
+If the user wants to tune the look rather than specify it, suggest
+`snapcode tui <file>`: a settings form with a live preview in the terminal, in
+the colors of the theme being edited. Theme, syntax theme, and language open a
+searchable list (`enter`); everything else steps with left/right. Pressing `p`
+quits and prints the equivalent command line.
+
+## Notes
+
+- 220+ languages via `syntect`, detected from the file extension.
+- The font is embedded in the binary, so output is pixel-identical across
+  machines. `--font "Family"` uses a system font instead.
+- Image backgrounds are not embedded in SVG output; snapcode says so when it
+  drops one.
 
 ## Dependencies
 
-- **Pillow** (`pip install Pillow`) — image rendering
-- **Pygments** (`pip install Pygments`) — Swift tokenization
+`snapcode` on `PATH`. If it is missing, build it:
 
-## Limitations
-
-- Swift syntax highlighting only (hardcoded to Pygments' `SwiftLexer`)
-- Fixed dark color theme; no light mode
-- Picks a monospace font automatically: known macOS/Linux paths first, then
-  `fc-match monospace`. Errors out if none is found — pass `--font` to override.
-  The chosen face differs between machines, so output is not pixel-identical
-  across them; pin `--font` if that matters.
+```bash
+cargo install --path ~/Developer/snapcode/crates/snapcode-cli
+```
