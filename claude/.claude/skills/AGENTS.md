@@ -17,8 +17,6 @@ needed. Exceptions are noted below.
 | `add-episode-titles` | `acervo titles` (see [otaviocc/acervo](https://github.com/otaviocc/acervo)) | Backfill episode titles into organized TV filenames via TVMaze |
 | `brrr` | none (curl only) | Send a push notification to the user's devices via the Brrr API |
 | `hunk` | none (shells out to the `hunk` binary) | Load Hunk's own review skill (`hunk skill path`) and use it for a code review |
-| `code-snippet-image` | `code-snippet-image/scripts/generate_code_image.py` | Generate macOS-style code snippet images from Swift code (dark theme, warm palette, retina-ready PNG); requires Pillow + Pygments |
-| `jellyfin-library-cards` | `jellyfin-library-cards/scripts/generate_card.py` | Generate Jellyfin library card artwork (Fredoka, purple-to-cyan gradient, transparent PNG); font bundled in `assets/`; requires Pillow |
 
 `organize-movies`, `organize-tv` and `add-episode-titles` used to be Python
 scripts here, byte-identical in their filesystem logic to `organize-kids-shows`
