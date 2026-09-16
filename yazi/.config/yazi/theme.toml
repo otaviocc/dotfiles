@@ -1,159 +1,155 @@
-#:schema https://yazi-rs.github.io/schemas/theme.json
-# Yazi — Kanagawa Dragon. Hand-ported from the semantic roles in docs/palette.md.
+# yazi theme — Catppuccin Mocha (mauve accent).
 #
-# There is no maintained kanagawa flavor that is true Dragon: the supported
-# `kanagawa.yazi` is the Wave variant, and its kanagawa-dragon fork still keeps
-# Wave leftovers (sumiInk0 #16161d as a dark bg, carpYellow #e6c384,
-# waveRed #e46876, "#ff5d62" for write perms), so — like lazygit and tig —
-# this block is assembled here rather than copied from upstream.
+# Vendored from catppuccin/yazi (themes/mocha/catppuccin-mocha-mauve.toml),
+# with exactly two deliberate changes from upstream:
 #
-# Chrome decisions:
-# - The manager border is the accent (yellow #c4b28a), matching lazygit's
-#   activeBorderColor; every dialog border drops to the muted accent #544d3f.
-# - Mode/tab chips: normal = accent yellow, select = violet, unset = blue;
-#   text on a filled chip is bg_m3 #0d0c0c, as in tig's cursor/title rows.
-# - Directory rows and the cwd field are the accent, matching LS_COLORS and
-#   tig (`di` and `directory` are yellow across the repo).
-# - The status bar is bg_m2, the palette's "panels, status bars" role.
-# - `syntect_theme` reuses the .tmTheme vendored for bat, so code previews
-#   carry the same grammar as a running `bat`. The value must be an absolute
-#   path; yazi expands $HOME. Any load error falls back silently to its
-#   built-in dark theme (same trap as bat's --theme), so check the path if a
-#   preview renders monochrome.
+#   1. `syntect_theme` is repointed at the bat package's vendored tmTheme
+#      rather than upstream's own copy, so code previews and `bat` stay in
+#      sync from one file. Upstream ships it as a `~/`-prefixed path; yazi 26.x
+#      rejects relative paths and does NOT expand `~`, but it does expand
+#      environment variables, so it must be written with $HOME. A bad path
+#      fails silently — yazi falls back to its built-in dark theme rather than
+#      erroring, the same trap as bat's `--theme`.
+#   2. Upstream's `[icon]` section is dropped. Only theme.toml is tracked in
+#      this repo and the icon preset is left on yazi's built-in default.
 #
-# Only the chrome is themed; the [icon] table keeps the built-in preset's
-# brand-coloured glyphs.
+# Everything else is upstream verbatim. The previous Kanagawa version had to be
+# hand-ported because both kanagawa flavors in the wild are Wave or drag Wave
+# leftovers; Catppuccin needs no such work. Palette: see docs/palette.md.
+
+[app]
+overall = { bg = "#1e1e2e" }
 
 [mgr]
-cwd = { fg = "#c4b28a" }
+cwd = { fg = "#94e2d5" }
 
-# Find
-find_keyword  = { fg = "#dca561", bold = true, italic = true }
-find_position = { fg = "#c5c9c5", bg = "#2d4f67", bold = true, italic = true }
+find_keyword  = { fg = "#f9e2af", italic = true }
+find_position = { fg = "#f5c2e7", bg = "reset", italic = true }
 
-# Marker
-marker_copied   = { fg = "#76946a", bg = "#76946a" }
-marker_cut      = { fg = "#c34043", bg = "#c34043" }
-marker_marked   = { fg = "#8992a7", bg = "#8992a7" }
-marker_selected = { fg = "#c4b28a", bg = "#c4b28a" }
+marker_copied   = { fg = "#a6e3a1", bg = "#a6e3a1" }
+marker_cut      = { fg = "#f38ba8", bg = "#f38ba8" }
+marker_marked   = { fg = "#94e2d5", bg = "#94e2d5" }
+marker_selected = { fg = "#cba6f7", bg = "#cba6f7" }
 
-# Count
-count_copied   = { fg = "#0d0c0c", bg = "#76946a" }
-count_cut      = { fg = "#0d0c0c", bg = "#c34043" }
-count_selected = { fg = "#0d0c0c", bg = "#c4b28a" }
+count_copied   = { fg = "#1e1e2e", bg = "#a6e3a1" }
+count_cut      = { fg = "#1e1e2e", bg = "#f38ba8" }
+count_selected = { fg = "#1e1e2e", bg = "#cba6f7" }
 
-# Border
-border_style = { fg = "#c4b28a" }
+border_symbol = "│"
+border_style  = { fg = "#7f849c" }
 
-# Code preview — the bat package's vendored Dragon tmTheme
-syntect_theme = "$HOME/.config/bat/themes/kanagawa-dragon.tmTheme"
+syntect_theme = "$HOME/.config/bat/themes/catppuccin-mocha.tmTheme"
 
 [tabs]
-active   = { fg = "#0d0c0c", bg = "#c4b28a", bold = true }
-inactive = { fg = "#9e9b93", bg = "#282727" }
+active   = { fg = "#1e1e2e", bg = "#cdd6f4", bold = true }
+inactive = { fg = "#cdd6f4", bg = "#45475a" }
 
 [mode]
-normal_main = { fg = "#0d0c0c", bg = "#c4b28a", bold = true }
-normal_alt  = { fg = "#c4b28a", bg = "#12120f" }
+normal_main = { fg = "#1e1e2e", bg = "#cba6f7", bold = true }
+normal_alt  = { fg = "#cba6f7", bg = "#313244"}
 
-select_main = { fg = "#0d0c0c", bg = "#8992a7", bold = true }
-select_alt  = { fg = "#8992a7", bg = "#12120f" }
+select_main = { fg = "#1e1e2e", bg = "#a6e3a1", bold = true }
+select_alt  = { fg = "#a6e3a1", bg = "#313244"}
 
-unset_main = { fg = "#0d0c0c", bg = "#8ba4b0", bold = true }
-unset_alt  = { fg = "#8ba4b0", bg = "#12120f" }
+unset_main  = { fg = "#1e1e2e", bg = "#f2cdcd", bold = true }
+unset_alt   = { fg = "#f2cdcd", bg = "#313244"}
+
+[indicator]
+parent = { fg = "#1e1e2e", bg = "#cdd6f4" }
+current = { fg = "#1e1e2e", bg = "#cba6f7" }
+preview = { fg = "#1e1e2e", bg = "#cdd6f4" }
 
 [status]
-overall = { bg = "#12120f" }
+sep_left  = { open = "", close = "" }
+sep_right = { open = "", close = "" }
 
-# Permissions
-perm_sep   = { fg = "#7a8382" }
-perm_type  = { fg = "#8a9a7b" }
-perm_read  = { fg = "#c4b28a" }
-perm_write = { fg = "#c4746e" }
-perm_exec  = { fg = "#87a987" }
+progress_label  = { fg = "#ffffff", bold = true }
+progress_normal = { fg = "#a6e3a1", bg = "#45475a" }
+progress_error  = { fg = "#f9e2af", bg = "#f38ba8" }
 
-# Progress
-progress_label  = { fg = "#9e9b93", bold = true }
-progress_normal = { fg = "#0d0c0c", bg = "#76946a" }
-progress_error  = { fg = "#0d0c0c", bg = "#c34043" }
-
-[which]
-cols            = 3
-mask            = { bg = "#0d0c0c" }
-cand            = { fg = "#8ba4b0" }
-rest            = { fg = "#7a8382" }
-desc            = { fg = "#9e9b93" }
-separator_style = { fg = "#7a8382" }
-
-[confirm]
-border = { fg = "#544d3f" }
-title  = { fg = "#c4b28a" }
-body   = {}
-list   = {}
-
-btn_yes = { reversed = true }
-btn_no  = {}
-
-[spot]
-border = { fg = "#544d3f" }
-title  = { fg = "#c4b28a" }
-
-tbl_col  = { fg = "#8ba4b0" }
-tbl_cell = { fg = "#c4b28a", reversed = true }
-
-[notify]
-title_info  = { fg = "#8a9a7b" }
-title_warn  = { fg = "#dca561" }
-title_error = { fg = "#c34043" }
-
-[pick]
-border   = { fg = "#544d3f" }
-active   = { fg = "#c4b28a", bold = true }
-inactive = {}
+perm_type  = { fg = "#89b4fa" }
+perm_read  = { fg = "#f9e2af" }
+perm_write = { fg = "#f38ba8" }
+perm_exec  = { fg = "#a6e3a1" }
+perm_sep   = { fg = "#7f849c" }
 
 [input]
-border   = { fg = "#544d3f" }
-title    = { fg = "#c4b28a" }
+border   = { fg = "#cba6f7" }
+title    = {}
 value    = {}
 selected = { reversed = true }
 
-[cmp]
-border   = { fg = "#544d3f" }
-active   = { reversed = true }
+[pick]
+border   = { fg = "#cba6f7" }
+active   = { fg = "#f5c2e7" }
 inactive = {}
 
+[confirm]
+border     = { fg = "#cba6f7" }
+title      = { fg = "#cba6f7" }
+body       = {}
+list       = {}
+btn_yes    = { reversed = true }
+btn_no     = {}
+
+[cmp]
+border = { fg = "#cba6f7" }
+
 [tasks]
-border  = { fg = "#544d3f" }
-title   = { fg = "#c4b28a" }
-hovered = { fg = "#c4b28a", bold = true }
+border  = { fg = "#cba6f7" }
+title   = {}
+hovered = { fg = "#f5c2e7", bold = true }
+
+[which]
+border          = { fg = "#cba6f7" }
+mask            = {}
+cand            = { fg = "#94e2d5" }
+rest            = { fg = "#9399b2" }
+desc            = { fg = "#f5c2e7" }
+separator       = "  "
+separator_style = { fg = "#585b70" }
 
 [help]
-on      = { fg = "#8ea4a2" }
-run     = { fg = "#a292a3" }
-desc    = { fg = "#737c73" }
-hovered = { reversed = true, bold = true }
-footer  = { fg = "#0d0c0c", bg = "#c5c9c5" }
+border  = { fg = "#cba6f7" }
+chord   = { fg = "#94e2d5" }
+action  = { fg = "#9399b2" }
+hovered = { bg = "#585b70", bold = true }
+
+[notify]
+title_info  = { fg = "#94e2d5" }
+title_warn  = { fg = "#f9e2af" }
+title_error = { fg = "#f38ba8" }
 
 [filetype]
 rules = [
-	# Images
-	{ mime = "image/*", fg = "#a292a3" },
 	# Media
-	{ mime = "{audio,video}/*", fg = "#a292a3" },
+	{ mime = "**/image/*", fg = "#f9e2af" },
+	{ mime = "**/{audio,video}/*", fg = "#f5c2e7" },
+
 	# Archives
-	{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "#b6927b" },
+	{ mime = "**/application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "#f38ba8" },
+
 	# Documents
-	{ mime = "application/{pdf,doc,rtf}", fg = "#6a9589" },
+	{ mime = "**/application/{pdf,doc,rtf}", fg = "#89dceb" },
+
 	# Virtual file system
-	{ mime = "vfs/{absent,stale}", fg = "#737c73" },
-	# Broken links
-	{ url = "*", is = "orphan", fg = "#c34043" },
-	# Executables
-	{ url = "*", is = "exec", fg = "#87a987" },
-	# Dummy files
-	{ url = "*", is = "dummy", bg = "#c34043" },
-	{ url = "*/", is = "dummy", bg = "#c34043" },
-	# Fallback: directories are the accent, everything else the foreground
-	{ url = "*/", fg = "#c4b28a" },
-	{ url = "*", fg = "#c5c9c5" },
+	{ mime = "vfs/{absent,stale}", fg = "#45475a" },
+
+	# Special file
+	{ url = "*", is = "orphan", bg = "#f38ba8" },
+	{ url = "*", is = "exec"  , fg = "#a6e3a1" },
+
+	# Dummy file
+	{ url = "*", is = "dummy", bg = "#f38ba8" },
+	{ url = "*/", is = "dummy", bg = "#f38ba8" },
+
+	# Fallback
+	{ url = "*/", fg = "#cba6f7" },
 ]
+
+[spot]
+border = { fg = "#cba6f7" }
+title  = { fg = "#cba6f7" }
+tbl_cell = { fg = "#cba6f7", reversed = true }
+tbl_col = { bold = true }
+

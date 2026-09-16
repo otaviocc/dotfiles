@@ -17,8 +17,8 @@ Segments drop out silently when their input is missing:
     window disappears once its `resets_at` has passed.
   - `context_window.used_percentage` is null until the first API response.
 
-Colours are Kanagawa Dragon (docs/palette.md). Truecolor escapes only -- never
-ANSI bright-black, which Dragon maps to a *light* grey (see AGENTS.md).
+Colours are Catppuccin Mocha (docs/palette.md). Truecolor escapes only, so the
+line does not depend on how the terminal maps the ANSI slots.
 
 stdlib only; any unexpected input prints nothing and exits 0 so a bad payload
 can never wedge the TUI.
@@ -30,13 +30,13 @@ import re
 import sys
 import time
 
-# Kanagawa Dragon, from docs/palette.md.
-COMMENT = "#737c73"  # comment      -- labels, dim text
-WHITESPACE = "#625e5a"  # whitespace   -- separators
-YELLOW = "#c4b28a"  # yellow       -- accent: model, branch
-VIOLET = "#8992a7"  # violet       -- directory (mirrors the zsh prompt)
-VCS_CHANGED = "#dca561"  # vcs_changed  -- warning heat
-VCS_REMOVED = "#c34043"  # vcs_removed  -- critical heat
+# Catppuccin Mocha, from docs/palette.md.
+OVERLAY1 = "#7f849c"  # overlay1  -- labels, dim text
+SURFACE2 = "#585b70"  # surface2  -- separators
+MAUVE = "#cba6f7"  # mauve     -- accent: model, branch
+LAVENDER = "#b4befe"  # lavender  -- directory (mirrors the zsh prompt)
+YELLOW = "#f9e2af"  # yellow    -- warning heat
+RED = "#f38ba8"  # red       -- critical heat
 
 RESET = "\x1b[0m"
 _ESCAPE_RE = re.compile(r"\x1b\[[0-9;]*m")
@@ -53,12 +53,12 @@ def fg(hexcolor, text, bold=False):
 def heat(pct):
     """Colour for a usage percentage -- the 'Mixed heat' ramp in palette.md."""
     if pct >= 95:
-        return VCS_REMOVED
+        return RED
     if pct >= 80:
-        return VCS_CHANGED
-    if pct >= 60:
         return YELLOW
-    return COMMENT
+    if pct >= 60:
+        return MAUVE
+    return OVERLAY1
 
 
 def visible_len(text):
@@ -70,10 +70,10 @@ def seg_model(data):
     name = model.get("display_name")
     if not name:
         return None
-    out = fg(YELLOW, name, bold=True)
+    out = fg(MAUVE, name, bold=True)
     level = (data.get("effort") or {}).get("level")
     if level:
-        out += fg(COMMENT, f" · {level}")
+        out += fg(OVERLAY1, f" · {level}")
     return out
 
 
@@ -115,10 +115,10 @@ def seg_dir(data):
     if not current:
         return None
     name = os.path.basename(current.rstrip("/")) or current
-    out = fg(VIOLET, name)
+    out = fg(LAVENDER, name)
     label = workspace.get("git_worktree") or _branch(current)
     if label:
-        out += " " + fg(YELLOW, label)
+        out += " " + fg(MAUVE, label)
     return out
 
 
@@ -161,11 +161,11 @@ def seg_rate(data, key, label, resets=True):
     pct = _limit(window)
     if pct is None:
         return None
-    out = fg(COMMENT, f"{label} ") + fg(heat(pct), f"{pct:.0f}%")
+    out = fg(OVERLAY1, f"{label} ") + fg(heat(pct), f"{pct:.0f}%")
     if resets:
         left = _countdown(window)
         if left:
-            out += fg(COMMENT, f" {left}")
+            out += fg(OVERLAY1, f" {left}")
     return out
 
 
@@ -173,7 +173,7 @@ def seg_ctx(data):
     pct = (data.get("context_window") or {}).get("used_percentage")
     if pct is None:
         return None
-    return fg(COMMENT, "ctx ") + fg(heat(pct), f"{pct:.0f}%")
+    return fg(OVERLAY1, "ctx ") + fg(heat(pct), f"{pct:.0f}%")
 
 
 def build(data, resets=True):
@@ -194,7 +194,7 @@ def main():
     if not segments:
         return
 
-    sep = fg(WHITESPACE, "  ·  ")
+    sep = fg(SURFACE2, "  ·  ")
 
     def render(segs):
         return sep.join(segs)

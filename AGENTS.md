@@ -120,18 +120,22 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   breakage look language-specific rather than systemic. This happened once
   already: the links pointed into the old LazyVim plugin tree and broke when
   it was deleted.
-- **bat** — Kanagawa is not built into bat, so the theme is vendored as
-  `themes/kanagawa-dragon.tmTheme` and bat only picks it up from a compiled
-  cache: run `bat cache --build` after stowing or after editing it. See the
-  theme trap in the Kanagawa Dragon section about the `--theme` value.
+- **bat** — Catppuccin is not built into bat, so the theme is vendored as
+  `themes/catppuccin-mocha.tmTheme` (copied verbatim from `catppuccin/bat`) and
+  bat only picks it up from a compiled cache: run `bat cache --build` after
+  stowing or after editing it. See the theme trap in the Catppuccin Mocha
+  section about the `--theme` value.
 - **yazi** — only `theme.toml` is tracked; yazi's own keymap/yazi.toml stay on
-  defaults. The theme is hand-ported (both kanagawa flavors in the wild are
-  Wave or drag Wave leftovers), and `mgr.syntect_theme` points at
-  `$HOME/.config/bat/themes/kanagawa-dragon.tmTheme`, reusing the bat package's
-  vendored tmTheme for code previews. Two traps: it must stay an absolute path
-  (26.x rejects relative ones, though `$HOME` is env-expanded), and a bad path
-  silently falls back to yazi's built-in dark theme — same silent failure as
-  bat's `--theme`.
+  defaults. The theme is vendored from `catppuccin/yazi` (`mocha-mauve`) with
+  exactly two changes, both documented in its header: upstream's `[icon]`
+  section is dropped (the icon preset stays on yazi's default), and
+  `mgr.syntect_theme` points at
+  `$HOME/.config/bat/themes/catppuccin-mocha.tmTheme`, reusing the bat
+  package's vendored tmTheme for code previews. Two traps on that path: it must
+  stay absolute (26.x rejects relative ones and does not expand `~`, though it
+  does expand `$HOME` — upstream ships it as `~/...`, which is why it cannot be
+  copied verbatim), and a bad path silently falls back to yazi's built-in dark
+  theme — same silent failure as bat's `--theme`.
 - **herdr** — only `config.toml` is tracked. Logs, `session.json`,
   `release-notes.json` and `.plugins.lock` are runtime state; leave them out.
 - **holodeck** — only `config.json` is tracked. `url-history.json` next to it
@@ -145,8 +149,8 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   per-machine bootstrap step — add
   `"statusLine": { "type": "command", "command": "~/.claude/statusline.py" }`
   by hand. The script is Python 3 stdlib-only, reads Claude Code's status JSON
-  on stdin, and uses truecolor escapes from `docs/palette.md` directly (never
-  ANSI bright-black — Dragon maps that to a light grey).
+  on stdin, and uses truecolor escapes from `docs/palette.md` directly, so it
+  does not depend on how the terminal maps the ANSI slots.
 - **skills** — personal agent skills live in the `claude` package at
   `claude/.claude/skills/`, stowed to `~/.claude/skills/`, which both Claude Code
   and opencode read natively. Skill-specific rules live in
@@ -157,69 +161,93 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
 
 - **vademecum** — the theme is the whole config; there is no "default theme by
   name" setting. `~/.config/vademecum/theme.toml` *is* the default theme, so
-  `theme.toml` here is the one line `base = "kanagawa-dragon"`: `base` names a
+  `theme.toml` here is the one line `base = "catppuccin-mocha"`: `base` names a
   built-in and the rest of the file merges over *that* (not over `ansi`), so
   there is no palette to copy and nothing to drift out of sync with upstream.
   Add a `[palette]` or `[elements.*]` table below the `base` line only for
-  slots you actually want different from upstream. `--theme kanagawa-dragon`
+  slots you actually want different from upstream. `--theme catppuccin-mocha`
   selects the same theme per run without this file at all; the file exists only
   to make it the default.
 
-## Kanagawa Dragon theme
+## Catppuccin Mocha theme
 
 **`docs/palette.md` is the source of truth for every color in this repo.**
-Variant is **Dragon**, accent is **yellow** `#c4b28a`.
+Flavor is **Mocha**, accent is **mauve** `#cba6f7`.
 
-Almost nothing here is invented: diff row backgrounds come from Kanagawa's own
-`diff` table, muted diff signs from its `vcs` table, and every syntax slot from
-its `syn` table (keyword=violet, operator/preproc=red, type=aqua, fun=blue,
-identifier=yellow, constant=orange, number=pink, string=green). Dragon sets
-`syn.variable = "none"`, so variables inherit the plain foreground. Only the
-word-level and gutter diff steps are extrapolated, by mixing the matching `vcs`
-colour into `bg`.
+Nothing here is invented. Syntax slots are Catppuccin's own
+[style guide](https://github.com/catppuccin/catppuccin/blob/main/docs/style-guide.md)
+(keyword=mauve, string=green, operator=sky, comment/punctuation=overlay2,
+constant+number=peach, function=blue, type/class/attribute=yellow,
+parameter=maroon, builtin=red, escape/regex=pink). Catppuccin names no variable
+colour, so variables inherit the plain foreground.
+
+Catppuccin publishes no diff-background table — the style guide only says a
+selection is "Overlay 2 at 20–30% opacity", which a terminal cannot do. The four
+row and word backgrounds come from `catppuccin/delta`, the one upstream port
+that resolves that into opaque hex. They follow an exact rule (row = colour 20%
+into `base`, word = 35%), so the moved-row and gutter steps are extrapolated
+with the same rule rather than guessed.
+
+**Most tools now take an upstream port rather than a hand-transcription.** Only
+four are hand-ported — tmux, tig, hunk and vigia — and each says so in its own
+header. Prefer re-copying upstream over editing a vendored file by hand.
 
 Traps worth knowing:
 
-- **herdr's base is Wave, corrected by `[theme.custom]`.** Its built-in
-  `kanagawa` is the Wave variant; all 19 tokens of its `CustomThemeColors`
-  struct are overridden to Dragon in `config.toml`. Colours herdr derives
-  outside those 19 still come from Wave. `herdr config check` does not validate
-  colour values — a bad hex silently falls back — and `herdr server
-  reload-config` applies changes without a restart.
-- **Kanagawa Dragon sets ANSI 8 ("bright black") to a LIGHT grey** `#a6a69c`,
-  unlike almost every other dark theme. Anything that assumes bright-black is a
-  dark background breaks. That is why the Claude Code theme overrides
-  `userMessageBackground`, `userMessageBackgroundHover`,
-  `composerSidebarBackground` and `memoryBackgroundColor`: its `dark-ansi` base
-  maps three of them to `ansi:blackBright`, which rendered user messages as
-  light-on-light. Watch for the same trap in any other ANSI-based theme.
-- **opencode uses a vendored theme, not its built-in.** opencode's own
-  `kanagawa` is Wave (its bundled defs are `sumiInk*`/`fujiWhite`), so a Dragon
-  theme is vendored at `opencode/.config/opencode/themes/kanagawa-dragon.json`.
-  opencode loads global themes from `<config>/themes/<name>.json`; the file's
-  50 theme keys mirror its built-in kanagawa exactly, and every value is a
-  reference into `defs`.
-- **nvim needs a plugin spec.** Nothing ships kanagawa, so `init.lua` adds
-  `rebelot/kanagawa.nvim` to `vim.pack.add` and calls
-  `require("kanagawa").setup{ theme = "dragon" }` followed by
-  `colorscheme kanagawa-dragon` immediately after, so the theme is applied
-  before the first buffer is drawn. There is no vendored `colors/` directory.
-  Commit `nvim-pack-lock.json` after any plugin change.
-- **bat's `--theme` is the .tmTheme *filename*** (`kanagawa-dragon`), not the
-  plist's `name` key. A wrong value is silent — bat prints its Monokai default
-  rather than erroring. The vendored file is upstream's *Wave* tmTheme remapped
-  to Dragon, because upstream ships no Dragon tmTheme.
+- **Six tools select the theme purely by name**: ghostty (`Catppuccin Mocha`),
+  herdr (`catppuccin`), opencode, holodeck, vademecum (`catppuccin-mocha`) and
+  bat. Nothing to keep in sync in those files beyond the string.
+- **herdr's built-in `catppuccin` is Mocha, but that cannot be proven
+  statically.** herdr stores its colours non-textually; the flavour is inferred
+  from it pairing with `catppuccin-latte` and from Mocha being the only dark
+  Catppuccin hexes in the binary. Check by eye that its background matches
+  Ghostty's `#1e1e2e`. This replaced a 19-token `[theme.custom]` block that
+  existed only because herdr's `kanagawa` was the Wave variant — do not
+  reintroduce an override without a reason. `herdr config check` validates the
+  TOML but NOT colour values: a typo'd hex reports "config: ok" and silently
+  falls back. `herdr server reload-config` applies changes without a restart.
+- **opencode uses its built-in `catppuccin-mocha`.** It previously needed a
+  vendored 90-line theme because its bundled `kanagawa` was Wave; that file is
+  gone. `opencode/.config/opencode/themes/` no longer exists, so a re-stow is
+  needed to clear the old symlink.
+- **nvim needs a plugin spec, with an explicit `name`.** `init.lua` adds
+  `catppuccin/nvim` to `vim.pack.add` **with `name = "catppuccin"`** — the repo
+  is called `nvim`, so without that override vim.pack installs it as `nvim` and
+  `require("catppuccin")` fails. `setup{ flavour = "mocha" }` and
+  `colorscheme catppuccin` run immediately after, so the theme is applied before
+  the first buffer is drawn. The colorscheme resolves to `catppuccin-mocha`.
+  Commit `nvim-pack-lock.json` after any plugin change, and never hand-edit it —
+  use `vim.pack.del()` to drop a plugin so the lock entry goes with it.
+- **bat's `--theme` is the .tmTheme *filename*** (`catppuccin-mocha`), not the
+  plist's `name` key (which is `Catppuccin Mocha`). A wrong value is silent —
+  bat prints its Monokai default rather than erroring.
 - **tmux hex must stay lowercase.** `#F`/`#I`/`#W`/`#S`/`#T`/`#P`/`#H`/`#D` are
-  legacy format specifiers.
-- **tig's 256-colour values are hand-picked, not computed.** Nearest-RGB sends
-  Dragon's low-chroma palette onto the greyscale ramp. Don't "correct" them.
-- **`LS_COLORS` is not from `vivid generate <name>`** — vivid has no Kanagawa.
-  It is vivid's `gruvbox-dark` output with the palette remapped role-by-role;
-  see the header of `zsh/.config/zsh/ls_colors.zsh`.
+  legacy format specifiers, so `bg=#CBA6F7` expands to nonsense. The accent
+  beginning with a literal `C` makes this easier than usual to hit.
+- **tig's 256-colour values are hand-picked, not computed.** Nearest-RGB
+  collides `overlay1`/`overlay2`, `subtext0`/`subtext1` and `teal`/`sky`, which
+  would collapse distinct roles. `docs/palette.md`'s 256 column is a starting
+  point; tig's own header table is the authority for that file.
+- **`LS_COLORS` *is* `vivid generate catppuccin-mocha`**, verbatim. vivid ships
+  a Mocha theme, so the role-by-role gruvbox remap the previous palette needed
+  is gone — regenerate rather than edit. Note it colours directories blue, not
+  the accent; `LSCOLORS` (BSD `/bin/ls` only) was re-slotted to match.
+- **Claude Code's theme carries no background overrides any more.** It used to
+  override `userMessageBackground`, `userMessageBackgroundHover`,
+  `composerSidebarBackground` and `memoryBackgroundColor`, purely because the
+  previous theme mapped ANSI bright-black to a *light* grey and the `dark-ansi`
+  base rendered user messages light-on-light. Mocha maps bright-black to
+  `surface2` `#585b70`, a normal dark grey, so those four slots now inherit the
+  ANSI base and follow Ghostty's Catppuccin Mocha palette. **Don't reintroduce
+  them without a rendering problem to point at** — but if some other ANSI-based
+  theme ever shows light-on-light text, this is the knob. The seven `*Shimmer`
+  values are `colour 40% into text` and are recorded in `docs/palette.md` rather
+  than left as orphan hexes.
 - **The `claude` package tracks `~/.claude/themes/`, `~/.claude/skills/` and
-  `~/.claude/statusline.py` only.** `settings.json` selects the theme and wires
-  the statusline but also holds API tokens — never add it to the repo; the rest
-  of `~/.claude` is session/runtime state.
+  `~/.claude/statusline.py` only.** `settings.json` selects the theme
+  (`"theme": "custom:catppuccin-mocha"`) and wires the statusline but also holds
+  API tokens — never add it to the repo; the rest of `~/.claude` is
+  session/runtime state.
 
 ## Commit messages
 

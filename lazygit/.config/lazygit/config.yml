@@ -4,40 +4,36 @@ gui:
   showBottomLine: false
   showListFooter: false
   portraitMode: 'always'
-  # Kanagawa Dragon — hand-ported. kanagawa.nvim ships no lazygit extra (its
-  # extras/ covers terminals, tmTheme, base16 and editors only), so unlike the
-  # previous two themes this block is assembled here from the semantic roles in
-  # docs/palette.md rather than copied from upstream.
-  #
-  # `selectedLineBgColor` is Dragon's own `bg_visual` (waveBlue1 #223249), the
-  # one cool colour in an otherwise warm theme — upstream uses it for exactly
-  # this and nothing else in the palette gives a selected row enough contrast.
+  # Catppuccin Mocha, mauve accent — copied verbatim from catppuccin/lazygit
+  # (themes-mergable/mocha/mauve.yml). The previous Kanagawa theme had to be
+  # assembled here by hand from docs/palette.md because kanagawa.nvim ships no
+  # lazygit extra; Catppuccin has an official port, so nothing below is this
+  # repo's invention. Keep it that way — re-copy rather than hand-edit.
   theme:
     activeBorderColor:
-      - '#c4b28a'
+      - '#cba6f7'
       - bold
     inactiveBorderColor:
-      - '#625e5a'
+      - '#a6adc8'
     searchingActiveBorderColor:
-      - '#dca561'
-      - bold
+      - '#f9e2af'
     optionsTextColor:
-      - '#8ba4b0'
+      - '#89b4fa'
     selectedLineBgColor:
-      - '#223249'
+      - '#313244'
     inactiveViewSelectedLineBgColor:
-      - '#282727'
+      - '#6c7086'
     cherryPickedCommitFgColor:
-      - '#c4b28a'
+      - '#cba6f7'
     cherryPickedCommitBgColor:
-      - '#282727'
+      - '#45475a'
     markedBaseCommitFgColor:
-      - '#8ba4b0'
+      - '#89b4fa'
     markedBaseCommitBgColor:
-      - '#dca561'
+      - '#f9e2af'
     unstagedChangesColor:
-      - '#c34043'
+      - '#f38ba8'
     defaultFgColor:
-      - '#c5c9c5'
+      - '#cdd6f4'
   authorColors:
-    '*': '#8992a7'
+    '*': '#b4befe'

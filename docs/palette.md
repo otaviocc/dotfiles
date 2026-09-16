@@ -1,184 +1,188 @@
-# Kanagawa Dragon — the palette this repo draws with
+# Catppuccin Mocha — the palette this repo draws with
 
 The single source of truth for every color in these dotfiles. Upstream is
-[rebelot/kanagawa.nvim](https://github.com/rebelot/kanagawa.nvim): the names in
-the second column are its own, from `lua/kanagawa/colors.lua`, and the role each
-one plays is the `dragon` block of `lua/kanagawa/themes.lua`. Nothing here is
-invented — even the diff backgrounds are upstream's.
+[catppuccin/palette](https://github.com/catppuccin/palette): the names below are
+Catppuccin's own, and the role each one plays is its
+[style guide](https://github.com/catppuccin/catppuccin/blob/main/docs/style-guide.md).
+Nothing here is invented — even the diff backgrounds come from an upstream port.
 
-**Variant: Dragon.** Kanagawa ships three (Wave, Dragon, Lotus). Dragon is the
-darkest and the warmest: its background is `#181616` — R24 G22 B22, warm-neutral
-rather than the blue-violet `#1e1e2e` of Catppuccin or the `#1a1b26` of Tokyo
-Night. Every neutral in the theme leans warm, which is the point.
+**Flavor: Mocha.** Catppuccin ships four (Latte, Frappé, Macchiato, Mocha).
+Mocha is the darkest: its background is `#1e1e2e` — R30 G30 B46, blue-violet
+rather than warm-neutral. Every neutral in the theme leans blue, which is the
+character of the theme and not something to correct.
 
-**Accent: `yellow` (`dragonYellow`, `#c4b28a`).** Kanagawa declares no single
-accent the way Catppuccin parameterizes one, so this is a choice made here: it
-is the closest thing in the palette to the warm sandy `#FFC799` that the old
-Vesper setup used as its accent. Swapping it for `orange` (`#b6927b`) or `blue`
-(`#8ba4b0`) is a one-line change per tool.
+**Accent: `mauve` (`#cba6f7`).** Catppuccin parameterizes a single accent and
+mauve is its default — it is what the official nvim, lazygit, yazi and Sublime
+ports ship unless told otherwise, so choosing it means those ports drop in
+verbatim with no accent rewiring. Swapping it for `peach` (`#fab387`) or `blue`
+(`#89b4fa`) is a one-line change in the ports that parameterize it, and a
+find-and-replace in the hand-ported tools.
 
 ## The palette
 
 `RGB` is the decimal form zsh's `LS_COLORS` needs (`38;2;r;g;b`). `256` is the
-nearest xterm-256 index, for tig, which has no truecolor.
+nearest xterm-256 index, computed — see the warning under the table before using
+it for tig.
 
-| Name | Upstream name | Hex | RGB | 256 |
-|---|---|---|---|---|
-| `bg` | `dragonBlack3` | `#181616` | `24;22;22` | `color233` |
-| `bg_m1` | `dragonBlack2` | `#1d1c19` | `29;28;25` | `color234` |
-| `bg_m2` | `dragonBlack1` | `#12120f` | `18;18;15` | `color233` |
-| `bg_m3` | `dragonBlack0` | `#0d0c0c` | `13;12;12` | `color232` |
-| `bg_p1` | `dragonBlack4` | `#282727` | `40;39;39` | `color235` |
-| `bg_p2` | `dragonBlack5` | `#393836` | `57;56;54` | `color237` |
-| `whitespace` | `dragonBlack6` | `#625e5a` | `98;94;90` | `color59` |
-| `border` | `sumiInk6` | `#54546d` | `84;84;109` | `color59` |
-| `selection` | `waveBlue1` | `#223249` | `34;50;73` | `color236` |
-| `search` | `waveBlue2` | `#2d4f67` | `45;79;103` | `color239` |
-| `comment` | `dragonAsh` | `#737c73` | `115;124;115` | `color243` |
-| `special` | `dragonGray3` | `#7a8382` | `122;131;130` | `color244` |
-| `punct` | `dragonGray2` | `#9e9b93` | `158;155;147` | `color247` |
-| `param` | `dragonGray` | `#a6a69c` | `166;166;156` | `color247` |
-| `fg_dim` | `oldWhite` | `#c8c093` | `200;192;147` | `color180` |
-| `fg` | `dragonWhite` | `#c5c9c5` | `197;201;197` | `color251` |
-| `red` | `dragonRed` | `#c4746e` | `196;116;110` | `color173` |
-| `green` | `dragonGreen2` | `#8a9a7b` | `138;154;123` | `color245` |
-| `green_br` | `dragonGreen` | `#87a987` | `135;169;135` | `color108` |
-| `yellow` | `dragonYellow` | `#c4b28a` | `196;178;138` | `color180` |
-| `orange` | `dragonOrange` | `#b6927b` | `182;146;123` | `color138` |
-| `orange2` | `dragonOrange2` | `#b98d7b` | `185;141;123` | `color138` |
-| `blue` | `dragonBlue2` | `#8ba4b0` | `139;164;176` | `color109` |
-| `pink` | `dragonPink` | `#a292a3` | `162;146;163` | `color247` |
-| `aqua` | `dragonAqua` | `#8ea4a2` | `142;164;162` | `color247` |
-| `violet` | `dragonViolet` | `#8992a7` | `137;146;167` | `color103` |
-| `teal` | `dragonTeal` | `#949fb5` | `148;159;181` | `color109` |
-| `error` | `samuraiRed` | `#e82424` | `232;36;36` | `color160` |
-| `warning` | `roninYellow` | `#ff9e3b` | `255;158;59` | `color215` |
-| `ok` | `springGreen` | `#98bb6c` | `152;187;108` | `color107` |
-| `info` | `dragonBlue` | `#658594` | `101;133;148` | `color66` |
-| `hint` | `waveAqua1` | `#6a9589` | `106;149;137` | `color66` |
-| `diff_add` | `winterGreen` | `#2b3328` | `43;51;40` | `color236` |
-| `diff_delete` | `winterRed` | `#43242b` | `67;36;43` | `color236` |
-| `diff_change` | `winterBlue` | `#252535` | `37;37;53` | `color235` |
-| `diff_text` | `winterYellow` | `#49443c` | `73;68;60` | `color238` |
-| `vcs_added` | `autumnGreen` | `#76946a` | `118;148;106` | `color101` |
-| `vcs_removed` | `autumnRed` | `#c34043` | `195;64;67` | `color131` |
-| `vcs_changed` | `autumnYellow` | `#dca561` | `220;165;97` | `color179` |
+| Name | Hex | RGB | 256 |
+|---|---|---|---|
+| `base` | `#1e1e2e` | `30;30;46` | `color235` |
+| `mantle` | `#181825` | `24;24;37` | `color234` |
+| `crust` | `#11111b` | `17;17;27` | `color233` |
+| `surface0` | `#313244` | `49;50;68` | `color237` |
+| `surface1` | `#45475a` | `69;71;90` | `color239` |
+| `surface2` | `#585b70` | `88;91;112` | `color241` |
+| `overlay0` | `#6c7086` | `108;112;134` | `color243` |
+| `overlay1` | `#7f849c` | `127;132;156` | `color103` |
+| `overlay2` | `#9399b2` | `147;153;178` | `color103` |
+| `subtext0` | `#a6adc8` | `166;173;200` | `color146` |
+| `subtext1` | `#bac2de` | `186;194;222` | `color146` |
+| `text` | `#cdd6f4` | `205;214;244` | `color189` |
+| `rosewater` | `#f5e0dc` | `245;224;220` | `color224` |
+| `flamingo` | `#f2cdcd` | `242;205;205` | `color224` |
+| `pink` | `#f5c2e7` | `245;194;231` | `color218` |
+| `mauve` | `#cba6f7` | `203;166;247` | `color183` |
+| `red` | `#f38ba8` | `243;139;168` | `color211` |
+| `maroon` | `#eba0ac` | `235;160;172` | `color181` |
+| `peach` | `#fab387` | `250;179;135` | `color216` |
+| `yellow` | `#f9e2af` | `249;226;175` | `color223` |
+| `green` | `#a6e3a1` | `166;227;161` | `color151` |
+| `teal` | `#94e2d5` | `148;226;213` | `color116` |
+| `sky` | `#89dceb` | `137;220;235` | `color116` |
+| `sapphire` | `#74c7ec` | `116;199;236` | `color117` |
+| `blue` | `#89b4fa` | `137;180;250` | `color111` |
+| `lavender` | `#b4befe` | `180;190;254` | `color147` |
 
 Two things to know about this palette:
 
-- **`selection` and `search` are the only blue in Dragon.** `waveBlue1`
-  `#223249` and `waveBlue2` `#2d4f67` are borrowed from the Wave variant, and
-  upstream uses them for `bg_visual` / `bg_search` even in Dragon. They are kept
-  rather than warmed, because they are what gives a selected row enough contrast
-  against a background this dark — but they *are* the one cool note in an
-  otherwise warm theme.
-- **`error`, `warning` and `ok` are much more saturated than everything else**
-  (`samuraiRed #e82424`, `roninYellow #ff9e3b`, `springGreen #98bb6c`). That is
-  deliberate upstream: Dragon's ordinary syntax colors are deliberately muted,
-  so diagnostics need the extra punch to read as alarming. Don't "fix" them to
-  match the muted accents.
+- **The 256 column has collisions and is a starting point, not an answer.**
+  Nearest-RGB collapses `overlay1`/`overlay2` onto `color103`,
+  `subtext0`/`subtext1` onto `color146`, `teal`/`sky` onto `color116` and
+  `rosewater`/`flamingo` onto `color224`. tig is the only consumer and it needs
+  roles to stay *distinguishable* more than it needs them accurate, so
+  `tig/.config/tig/config` hand-picks around these. Its table is the authority
+  for tig; this one is the authority for everything else.
+- **Mocha has exactly one shade per hue.** Unlike the previous theme there is no
+  muted/saturated pair to draw a ramp from, so the three-step ramps below walk
+  between hues instead of between shades of one.
 
 ## Semantic roles
 
 | Role | Color |
 |---|---|
-| Editor / terminal background | `bg` — Ghostty's built-in Kanagawa Dragon sets the terminal bg to `#181616`, so every vendored background must agree |
-| Panels, status bars | `bg_m2` — one step darker than content |
-| Darkest level; text on an accent chip | `bg_m3` |
-| Selection, highlighted row | `selection` |
-| Secondary panel, cherry-picked commit bg | `bg_p1` |
-| Borders, dividers | `whitespace` (warm grey) |
-| Foreground text | `fg` |
-| Dimmed / secondary text | `comment` |
-| Slightly brighter dim text | `punct` |
-| **Accent** — active border, current window, focus | `yellow` |
-| Added / staged / success | `vcs_added` |
-| Removed / error | `vcs_removed` |
-| Modified / warning | `vcs_changed` |
-| Authors, refs, chunk headers | `violet` |
+| Editor / terminal background | `base` — Ghostty's built-in Catppuccin Mocha sets the terminal bg to `#1e1e2e`, so every vendored background must agree |
+| Panels, status bars | `mantle` — one step darker than content |
+| Darkest level | `crust` |
+| Text on an accent chip | `base` (style guide: "text on accents: Base") |
+| Selection, highlighted row | `surface0` |
+| Secondary panel, cherry-picked commit bg | `surface1` |
+| Borders, dividers | `surface2` |
+| Foreground text | `text` |
+| Dimmed / secondary text | `overlay1` |
+| Slightly brighter dim text | `overlay2` |
+| **Accent** — active border, current window, focus | `mauve` |
+| Added / staged / success | `green` |
+| Removed / error | `red` |
+| Modified / warning | `yellow` |
+| Links | `blue` |
+| Authors, refs, chunk headers | `lavender` |
 
-Syntax slots follow Dragon's own `syn` table rather than translating whatever
-theme came before — the point of a port is to look like the thing it ports:
+Syntax slots are the style guide's own table, verbatim:
 
-| Syntax role | Color | Upstream key |
-|---|---|---|
-| Keywords, statements | `violet` | `syn.keyword`, `syn.statement` |
-| Operators, preprocessor, regex | `red` | `syn.operator`, `syn.preproc` |
-| Types | `aqua` | `syn.type` |
-| Functions | `blue` | `syn.fun` |
-| Identifiers | `yellow` | `syn.identifier` |
-| Constants | `orange` | `syn.constant` |
-| Numbers | `pink` | `syn.number` |
-| Strings | `green` | `syn.string` |
-| Parameters | `param` | `syn.parameter` |
-| Punctuation | `punct` | `syn.punct` |
-| Comments | `comment` | `syn.comment` |
+| Syntax role | Color |
+|---|---|
+| Keywords | `mauve` |
+| Strings | `green` |
+| Symbols, atoms, builtins | `red` |
+| Escape sequences, regex | `pink` |
+| Comments | `overlay2` |
+| Constants, numbers | `peach` |
+| Operators | `sky` |
+| Braces, delimiters, punctuation | `overlay2` |
+| Methods, functions | `blue` |
+| Parameters | `maroon` |
+| Classes, types, annotations, attributes | `yellow` |
+| Enum variants | `teal` |
+| Properties (JSON keys) | `blue` |
+| Macros | `rosewater` |
 
-Note Dragon sets `syn.variable = "none"` — variables deliberately inherit the
-plain foreground rather than getting a color of their own.
+Note there is no dedicated variable color: variables take the plain `text`
+foreground.
 
 ## Derived shades
 
-Unlike the previous two themes, almost nothing needs deriving: Kanagawa ships
-real diff *backgrounds* in its `diff` table and real sign *foregrounds* in its
-`vcs` table, so the row level is upstream's verbatim (✓). Only the word-level
-and gutter steps are extrapolated, by mixing the matching `vcs` color into `bg`.
+Catppuccin publishes no diff-background table — the style guide only says a
+selection is "Overlay 2 at 20–30% opacity", which a terminal cannot do. The
+four row and word backgrounds below are taken from
+[catppuccin/delta](https://github.com/catppuccin/delta), the one upstream port
+that resolves that guidance into opaque hex (✓).
+
+Those four turn out to follow an exact formula: **a row is its color 20% into
+`base`, a word-level highlight is 35%.** That formula reproduces all four delta
+values to the last digit, so the remaining shades are extrapolated with it
+rather than invented from scratch.
 
 | Purpose | Source | Hex |
 |---|---|---|
-| Added row background | `diff_add` (`winterGreen`) | `#2b3328` ✓ |
-| Removed row background | `diff_delete` (`winterRed`) | `#43242b` ✓ |
-| Moved-added row background | `diff_change` (`winterBlue`) | `#252535` ✓ |
-| Moved-removed row background | `diff_text` (`winterYellow`) | `#49443c` ✓ |
-| Added word (intra-line) highlight | `vcs_added` 35% into `bg` | `#394233` |
-| Removed word (intra-line) highlight | `vcs_removed` 35% into `bg` | `#542526` |
-| Added gutter | `vcs_added` 22% into `bg` | `#2d3228` |
-| Removed gutter | `vcs_removed` 22% into `bg` | `#3e1f20` |
-| Accent, muted (note borders) | `yellow` 35% into `bg` | `#544d3f` |
-| Muted added sign / badge | `vcs_added` (`autumnGreen`) | `#76946a` ✓ |
-| Muted removed sign / badge | `vcs_removed` (`autumnRed`) | `#c34043` ✓ |
-| Muted changed sign / badge | `vcs_changed` (`autumnYellow`) | `#dca561` ✓ |
+| Added row background | `green` 20% into `base` | `#394545` ✓ |
+| Removed row background | `red` 20% into `base` | `#493447` ✓ |
+| Added word (intra-line) highlight | `green` 35% into `base` | `#4e6356` ✓ |
+| Removed word (intra-line) highlight | `red` 35% into `base` | `#694559` ✓ |
+| Moved-added row background | `blue` 20% into `base` | `#333c57` |
+| Moved-removed row background | `yellow` 20% into `base` | `#4a4548` |
+| Added gutter | `green` 22% into `base` | `#3c4947` |
+| Removed gutter | `red` 22% into `base` | `#4d3649` |
+| Accent, muted (note borders) | `mauve` 35% into `base` | `#5b4e74` |
+| Muted added sign / badge | `green` | `#a6e3a1` ✓ |
+| Muted removed sign / badge | `red` | `#f38ba8` ✓ |
+| Muted changed sign / badge | `yellow` | `#f9e2af` ✓ |
 
-Three-step ramps walk along real palette entries instead of blending:
+Claude Code's theme also needs a lighter "shimmer" twin for seven colors. Those
+follow one rule too — **the color 40% into `text`** — so they are recorded here
+rather than left as orphan hexes in the theme file the way the last palette left
+them:
+
+| Shimmer of | Hex |
+|---|---|
+| `mauve` (also `rainbow_violet`) | `#ccb9f6` |
+| `pink` (also `permission`) | `#e5caec` |
+| `peach` (also `fastMode`, `rainbow_orange`) | `#e8c1b3` |
+| `red` | `#e4a9c6` |
+| `yellow` | `#e7ddcb` |
+| `green` | `#b6dec2` |
+| `blue` | `#a4c2f8` |
+| `lavender` | `#bec8fa` |
+
+Three-step ramps walk along real palette entries instead of blending. Because
+Mocha has one shade per hue, each step moves hue rather than saturation —
+cooler and paler at the bottom, warmer and more alarming at the top:
 
 | Ramp | cool → warm → hot |
 |---|---|
-| Added heat | `green #8a9a7b` → `green_br #87a987` → `ok #98bb6c` |
-| Removed heat | `red #c4746e` → `vcs_removed #c34043` → `error #e82424` |
-| Mixed heat | `orange #b6927b` → `vcs_changed #dca561` → `warning #ff9e3b` |
-| Accent pulse | `yellow #c4b28a` → `vcs_changed #dca561` → `fg_dim #c8c093` |
-| Track (behind any ramp) | `bg_p2 #393836` |
-
-Each ramp deliberately ends on one of the saturated diagnostic colors, so "hot"
-genuinely escalates out of the muted range rather than staying inside it.
+| Added heat | `teal #94e2d5` → `green #a6e3a1` → `yellow #f9e2af` |
+| Removed heat | `flamingo #f2cdcd` → `maroon #eba0ac` → `red #f38ba8` |
+| Mixed heat | `sapphire #74c7ec` → `peach #fab387` → `red #f38ba8` |
+| Accent pulse | `lavender #b4befe` → `mauve #cba6f7` → `pink #f5c2e7` |
+| Track (behind any ramp) | `surface1 #45475a` |
 
 ## Where the copies live
 
 | Tool | How it gets the palette |
 |---|---|
-| Ghostty | built-in — `theme = "Kanagawa Dragon"` |
-| Neovim | the `kanagawa.nvim` plugin — `colorscheme = "kanagawa-dragon"` |
-| herdr | built-in — `name = "kanagawa"` (**Wave**, not Dragon — see below) |
-| opencode | `opencode/.config/opencode/themes/kanagawa-dragon.json` — vendored, because its built-in `kanagawa` is Wave |
-| bat | `bat/.config/bat/themes/kanagawa-dragon.tmTheme`, from upstream `extras/tmTheme` |
-| lazygit | `gui.theme` hand-ported (no official lazygit port) |
-| yazi | `yazi/.config/yazi/theme.toml` hand-ported (no loop: the supported `kanagawa.yazi` flavor is Wave, and its dragon fork keeps Wave leftovers — see the header comment). Code previews reuse the bat vendored `.tmTheme` via `syntect_theme` |
-| zsh | `LS_COLORS` hand-ported (vivid has no Kanagawa) |
-| tmux, tig, hunk, vigia | hand-ported inline |
-| holodeck | built-in — `"theme": "kanagawa-dragon"` (added upstream) |
-| Claude Code | theme: `claude/.claude/themes/kanagawa-dragon.json`; statusline: `claude/.claude/statusline.py` emits truecolor escapes for the hexes inline (comment/whitespace/yellow/violet + the vcs_changed→vcs_removed heat ramp) |
-| Sublime Text | `sublime/.config/sublime-text/Packages/User/kanagawa-dragon.sublime-color-scheme` — hand-ported. ST4 ships no Kanagawa and does not load `.tmTheme` color schemes in its default theme, so this is a native `.sublime-color-scheme` built from Dragon's own `syn` table (keyword=violet, operator/preproc/regex=red), not a transcription of bat's old Wave-derived tmTheme |
+| Ghostty | built-in — `theme = "Catppuccin Mocha"` |
+| Neovim | the `catppuccin/nvim` plugin — `flavour = "mocha"` |
+| herdr | built-in — `name = "catppuccin"` |
+| opencode | built-in — `"theme": "catppuccin-mocha"` |
+| bat | `bat/.config/bat/themes/catppuccin-mocha.tmTheme`, vendored from `catppuccin/bat` verbatim |
+| lazygit | `gui.theme` from `catppuccin/lazygit`, the `mocha/mauve` variant |
+| yazi | `yazi/.config/yazi/theme.toml`, vendored from `catppuccin/yazi` (`mocha-mauve`). Code previews reuse the bat vendored `.tmTheme` via `syntect_theme` |
+| zsh | `LS_COLORS` from `vivid generate catppuccin-mocha` |
+| Sublime Text | `sublime/.../User/catppuccin-mocha.sublime-color-scheme`, vendored from `catppuccin/sublime-text` verbatim |
+| tmux, tig, hunk, vigia | hand-ported inline — no upstream port this repo can consume |
+| holodeck | built-in — `"theme": "catppuccin-mocha"` |
+| vademecum | built-in — `base = "catppuccin-mocha"` |
+| Claude Code | theme: `claude/.claude/themes/catppuccin-mocha.json`; statusline: `claude/.claude/statusline.py` emits truecolor escapes for the hexes inline |
 
-**The one real gap: herdr ships a single `kanagawa` and it is the Wave
-variant** (herdr stores its colors non-textually so the variant could not be read out of
-the binary, but Wave is Kanagawa's default and herdr exposes no variant
-switch). Wave's background is `#1F1F28` — noticeably purple next to Dragon's
-warm `#181616`, so that pane reads cooler than everything around it. Fixing it
-means a `[theme.custom]` block in herdr's config, which is not done here.
-
-opencode had the identical problem — its bundled `kanagawa` defines
-`sumiInk0: #1F1F28` and `fujiWhite`, so it is unambiguously Wave — and *was*
-fixed, by vendoring a Dragon theme into
-`opencode/.config/opencode/themes/kanagawa-dragon.json`. opencode loads global
-themes from `<config>/themes/<name>.json`, and the vendored file mirrors the
-50 theme keys of its built-in kanagawa exactly.
+The hand-ported four are the only places a value is transcribed by hand.
+**tmux's** official port is a TPM plugin and this repo runs no tmux plugin
+manager; **tig**, **hunk** and **vigia** have no Catppuccin port at all.

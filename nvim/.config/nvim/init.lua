@@ -71,7 +71,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 -- `vim.pack` records revisions in nvim-pack-lock.json, which is tracked in
 -- this repo. Never hand-edit that file; see `:h vim.pack-lockfile`.
 vim.pack.add({
-    { src = "https://github.com/rebelot/kanagawa.nvim" },
+    { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
     { src = "https://github.com/nvim-lua/plenary.nvim" },
     { src = "https://github.com/echasnovski/mini.nvim" },
     -- Deliberately unpinned: the 0.1.8 tag predates Neovim 0.12 and calls
@@ -89,15 +89,19 @@ vim.pack.add({
 })
 
 -- Color scheme -------------------------------------------------------------
--- Dragon is the warm, near-monochrome variant; see docs/palette.md, the
--- source of truth for every colour in this repo. Deliberately opaque, like
--- every other tool here, rather than transparent.
+-- Mocha is the darkest flavour; see docs/palette.md, the source of truth for
+-- every colour in this repo. Deliberately opaque, like every other tool here,
+-- rather than transparent.
+--
+-- The repo is packaged as `catppuccin/nvim`, so `name = "catppuccin"` above
+-- pins the plugin directory to what `require("catppuccin")` expects — without
+-- it vim.pack installs it as `nvim` and the require fails.
 vim.o.background = "dark"
-require("kanagawa").setup({
-    theme = "dragon",
-    background = { dark = "dragon" },
+require("catppuccin").setup({
+    flavour = "mocha",
+    background = { dark = "mocha" },
 })
-vim.cmd.colorscheme("kanagawa-dragon")
+vim.cmd.colorscheme("catppuccin")
 
 -- mini.nvim ----------------------------------------------------------------
 -- One plugin, several independent modules. Set up before oil and telescope so
