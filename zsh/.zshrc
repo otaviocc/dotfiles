@@ -257,18 +257,19 @@ bindkey '^[[H' beginning-of-line
 bindkey '^[[F' end-of-line
 bindkey '^[[3~' delete-char
 
-# --- Kanagawa Dragon theme (colors, prompt, LS_COLORS) --------------------
-# Palette: bg #181616, bg_m3 #0d0c0c, fg #c5c9c5, comment #737c73,
-# yellow #c4b28a (accent), orange #b6927b, red #c4746e, violet #8992a7.
+# --- Catppuccin Mocha theme (colors, prompt, LS_COLORS) -------------------
+# Palette: base #1e1e2e, text #cdd6f4, overlay1 #7f849c, mauve #cba6f7
+# (accent), lavender #b4befe, peach #fab387, red #f38ba8.
 # The full table lives in docs/palette.md.
-# Upstream: https://github.com/rebelot/kanagawa.nvim
+# Upstream: https://github.com/catppuccin/palette
 #
 # `ls` colors. Two variables, because the two `ls` implementations disagree:
 #
 #   LS_COLORS  GNU ls, eza, fd, zsh completion. Truecolor, 677 rules,
-#              vendored in .config/zsh/ls_colors.zsh. vivid has no Kanagawa,
-#              so that file is vivid's gruvbox-dark output with the palette
-#              remapped to Dragon — see its header.
+#              vendored in .config/zsh/ls_colors.zsh. That file is now genuine
+#              `vivid generate catppuccin-mocha` output — vivid ships a Mocha
+#              theme, so the role-by-role remap the previous palette needed is
+#              gone.
 #   LSCOLORS   BSD /bin/ls only, and it ignores LS_COLORS entirely. 8 ANSI
 #              colours, no per-extension rules — it can't express the palette,
 #              it just picks slots the terminal theme has already coloured.
@@ -276,22 +277,22 @@ bindkey '^[[3~' delete-char
 # macOS aliases ls -> gls (see .zshrc.macos) so the truecolor set is what you
 # actually see on both machines; LSCOLORS is only the fallback for an explicit
 # /bin/ls. Its slot order is dir, symlink, socket, pipe, executable, block,
-# char, setuid, setgid, sticky-dir, other-writable-dir — kept in step with the
-# remapped set: warm-yellow dirs, blue links, pink sockets and pipes, green
-# executables.
+# char, setuid, setgid, sticky-dir, other-writable-dir — kept in step with
+# vivid's Mocha output, which colours directories blue (not the accent),
+# symlinks and sockets pink, and executables red.
 export CLICOLOR=YES
-export LSCOLORS="DxExFxFxCxEgEdAbAgAcAd"
+export LSCOLORS="ExFxFxExBxEgEdAbAgAcAd"
 [ -r "$HOME/.config/zsh/ls_colors.zsh" ] && source "$HOME/.config/zsh/ls_colors.zsh"
 
 # Completion list colors (uses LS_COLORS above)
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*:descriptions' format '%F{#8992a7}-- %d --%f'
+zstyle ':completion:*:descriptions' format '%F{#b4befe}-- %d --%f'
 
 # VCS / prompt colors
-zstyle ':vcs_info:git:*' formats '%F{#c4b28a}%b%f '
+zstyle ':vcs_info:git:*' formats '%F{#cba6f7}%b%f '
 
 setopt PROMPT_SUBST
-PROMPT=$'%F{#8992a7}%~%f ${vcs_info_msg_0_}\n%F{#737c73}$%f '
+PROMPT=$'%F{#b4befe}%~%f ${vcs_info_msg_0_}\n%F{#7f849c}$%f '
 
 # --- GPG -----------------------------------------------------------------
 export GPG_TTY=$(tty)

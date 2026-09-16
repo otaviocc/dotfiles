@@ -17,7 +17,7 @@ git      global git config
 nvim     Neovim (single-file config on vim.pack)
 tmux     tmux
 ghostty  Ghostty terminal
-sublime  Sublime Text (Kanagawa Dragon scheme, LSP-SourceKit)
+sublime  Sublime Text (Catppuccin Mocha scheme, LSP-SourceKit)
 lazygit  lazygit
 tig      tig
 yazi     yazi
@@ -74,7 +74,7 @@ if absent:
 3. Create `~/.zshrc.local` and/or `~/.gitconfig.local.machine` as needed
    (see "Per-machine overrides").
 4. Claude Code's `~/.claude/settings.json` is not tracked (it holds API
-   tokens). Set `"theme": "custom:kanagawa-dragon"` and wire the statusline:
+   tokens). Set `"theme": "custom:catppuccin-mocha"` and wire the statusline:
 
    ```json
    "statusLine": { "type": "command", "command": "~/.claude/statusline.py" }

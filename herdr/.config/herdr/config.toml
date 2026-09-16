@@ -9,7 +9,7 @@ onboarding = false
 # Built-in themes: catppuccin, terminal, tokyo-night, dracula, nord,
 #                  gruvbox, one-dark, solarized, kanagawa, rose-pine,
 #                  vesper
-name = "kanagawa"
+name = "catppuccin"
 auto_switch = false
 
 # Follow host terminal light/dark appearance and switch Herdr UI themes.
@@ -17,43 +17,21 @@ auto_switch = false
 # dark_name = "catppuccin"
 # light_name = "catppuccin-latte"
 
-# herdr's built-in `kanagawa` is the *Wave* variant (background #1F1F28,
-# noticeably purple next to Dragon's warm #181616), and herdr ships no Dragon.
-# So `kanagawa` is used only as the base and every colour token it exposes is
-# overridden below with Dragon's own values from docs/palette.md.
+# herdr's built-in `catppuccin` is Mocha (it pairs with `catppuccin-latte`,
+# and the only Catppuccin hexes in the binary are Mocha's and Latte's). herdr
+# stores its colours non-textually, so the flavour cannot be read out of the
+# binary — confirm by eye that its background matches Ghostty's #1e1e2e.
 #
-# The token names are Catppuccin-flavoured (mauve, peach, surface0/1,
-# overlay0/1, subtext0) but they are generic slots — this is herdr's
-# CustomThemeColors struct, and these 19 are all of it. Any colour herdr
-# derives outside those tokens still comes from Wave, so a little purple may
-# survive in corners; the base stays `kanagawa` rather than `vesper` so that
-# anything left over is at least Kanagawa-family.
+# This used to carry a 19-token [theme.custom] block, because herdr's built-in
+# `kanagawa` is the Wave variant and this repo was on Dragon. Catppuccin needs
+# no such correction, so the override is gone: every colour, including the ones
+# herdr derives outside the 19 tokens it exposes, now comes from one flavour.
 #
-# `herdr config check` validates the TOML but NOT colour values: a typo'd hex
-# here reports "config: ok" and silently falls back to the base theme's colour
-# for that token. Verified by feeding it accent = "#not-a-color" — no
-# diagnostic. So check colours by eye, not by exit code. `herdr server
-# reload-config` applies changes to a running server without a restart.
-[theme.custom]
-accent        = "#c4b28a"   # dragonYellow — this setup's accent
-panel_bg      = "#181616"   # dragonBlack3, matches ghostty's background
-sidebar_bg    = "#12120f"   # dragonBlack1, chrome one step darker
-active_row_bg = "#282727"   # dragonBlack4 — warm, so the sidebar stays warm
-selection_bg  = "#223249"   # waveBlue1, Dragon's own bg_visual
-surface0      = "#282727"   # dragonBlack4
-surface1      = "#393836"   # dragonBlack5
-surface_dim   = "#1d1c19"   # dragonBlack2
-overlay0      = "#625e5a"   # dragonBlack6
-overlay1      = "#7a8382"   # dragonGray3
-text          = "#c5c9c5"   # dragonWhite
-subtext0      = "#9e9b93"   # dragonGray2
-mauve         = "#8992a7"   # dragonViolet
-green         = "#8a9a7b"   # dragonGreen2
-yellow        = "#c4b28a"   # dragonYellow
-red           = "#c4746e"   # dragonRed
-blue          = "#8ba4b0"   # dragonBlue2
-teal          = "#8ea4a2"   # dragonAqua
-peach         = "#b6927b"   # dragonOrange
+# If a [theme.custom] block is ever needed again, note that `herdr config check`
+# validates the TOML but NOT colour values: a typo'd hex reports "config: ok"
+# and silently falls back to the base theme's colour for that token. Check
+# colours by eye, not by exit code. `herdr server reload-config` applies changes
+# to a running server without a restart.
 [terminal]
 # Executable used for new interactive panes.
 # Empty means $SHELL, then /bin/sh.
