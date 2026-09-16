@@ -32,9 +32,29 @@ case "$OS" in
 esac
 
 ALL_PACKAGES=(zsh git nvim tmux ghostty sublime lazygit tig yazi herdr opencode hunk vigia bat claude holodeck vademecum)
+
+# Packages with no Linux counterpart at all. These are ordinary packages, not
+# the `*-macos` symlink overlays: `sublime` exists on both machines and only
+# its *path* differs, whereas Xcode simply does not exist on Fedora, so
+# stowing it there would create an empty ~/Library/Developer tree. They are
+# appended to the default set on Darwin and skipped with a note on Linux,
+# including when named explicitly.
+DARWIN_ONLY_PACKAGES=(xcode)
+if [ "$OS_SUFFIX" = "macos" ]; then
+  ALL_PACKAGES+=("${DARWIN_ONLY_PACKAGES[@]}")
+fi
+
 PACKAGES=("${@:-${ALL_PACKAGES[@]}}")
 
 log() { printf '==> %s\n' "$1"; }
+
+is_darwin_only() {
+  local p
+  for p in "${DARWIN_ONLY_PACKAGES[@]}"; do
+    [ "$p" = "$1" ] && return 0
+  done
+  return 1
+}
 
 ensure_stow() {
   if command -v stow >/dev/null 2>&1; then
@@ -126,6 +146,10 @@ main() {
   ensure_stow
 
   for package in "${PACKAGES[@]}"; do
+    if [ "$OS_SUFFIX" != "macos" ] && is_darwin_only "$package"; then
+      log "Skipping $package (macOS only)"
+      continue
+    fi
     stow_package "$package"
 
     overlay="${package}-${OS_SUFFIX}"

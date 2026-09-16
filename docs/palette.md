@@ -181,6 +181,7 @@ cooler and paler at the bottom, warmer and more alarming at the top:
 | tmux, tig, hunk, vigia | hand-ported inline — no upstream port this repo can consume |
 | holodeck | built-in — `"theme": "catppuccin-mocha"` |
 | vademecum | built-in — `base = "catppuccin-mocha"` |
+| Xcode | `xcode/Library/.../FontAndColorThemes/Catppuccin Mocha+.{xccolortheme,xcworkspacecolortheme}` — hand-ported, and **pre-compensated**: Xcode re-derives a theme rather than rendering it literally, so the stored values are `L -0.043, C x1.25` off the palette in order to *render* as it. See AGENTS.md |
 | Claude Code | theme: `claude/.claude/themes/catppuccin-mocha.json`; statusline: `claude/.claude/statusline.py` emits truecolor escapes for the hexes inline |
 
 The hand-ported four are the only places a value is transcribed by hand.
