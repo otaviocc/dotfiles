@@ -29,6 +29,7 @@ bat      bat
 claude   Claude Code theme + statusline + shared agent skills
 holodeck holodeck
 vademecum vademecum
+xcode    Xcode colour themes (macOS only)
 ```
 
 ## Usage

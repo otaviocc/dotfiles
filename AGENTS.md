@@ -14,7 +14,7 @@ where the file lands under `$HOME` (`zsh/.zshrc` → `~/.zshrc`,
 `nvim/.config/nvim/init.lua` → `~/.config/nvim/init.lua`).
 
 Packages: `zsh git nvim tmux ghostty sublime lazygit tig yazi herdr opencode hunk vigia bat
-claude holodeck vademecum`, plus the
+claude holodeck vademecum`, plus `xcode` (macOS only) and the
 OS-overlay packages `git-macos`/`git-linux` and `ghostty-macos`/`ghostty-linux`.
 
 ## Commands
@@ -29,9 +29,9 @@ OS-overlay packages `git-macos`/`git-linux` and `ghostty-macos`/`ghostty-linux`.
 - **Adding a new file** to an existing package requires `./install.sh <pkg>` to
   create the new symlink.
 - A new package must be appended to `ALL_PACKAGES` in `install.sh:34`, or
-  a bare `./install.sh` will silently skip it. Overlay packages are the
-  exception: they are derived as `${package}-${OS_SUFFIX}` (`install.sh:95`) and
-  must **not** be listed.
+  a bare `./install.sh` will silently skip it. Two exceptions: overlay packages
+  are derived as `${package}-${OS_SUFFIX}` and must **not** be listed, and
+  macOS-only packages go in `DARWIN_ONLY_PACKAGES` instead.
 - Never create symlinks with `ln`. Stow owns every symlink in `$HOME`, including
   the `*.local` OS-selection ones.
 - `install.sh` **moves** any real (non-symlink) file that collides into
@@ -60,6 +60,14 @@ Pick the right one; they are not interchangeable.
    ../../../../../sublime/.config/sublime-text/Packages/User`). The committed
    relative target is counted from inside the repo package; stow re-creates it
    at `$HOME`.
+
+There is also a **third, simpler case**: a package with no Linux counterpart at
+all. `xcode` is the only one. It is an ordinary package listed in
+`DARWIN_ONLY_PACKAGES`, appended to the default set on Darwin and skipped with a
+log line on Linux even when named explicitly. Do not confuse this with the
+`*-macos` overlays: `sublime` exists on both machines and only its *path*
+differs, whereas Xcode does not exist on Fedora at all, so stowing it there
+would create an empty `~/Library/Developer` tree.
 
 If you add a third overlay, note that `.gitignore` ignores `*.local` globally —
 you must add an explicit `!` negation for the new symlink or git will not track
@@ -158,6 +166,39 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   On the macOS machine `~/.config/opencode/skills/` still holds a few
   opencode-only skills this repo does not track (Supacode's own, and symlinks
   into `~/.agents/skills/`) — don't assume everything there is version-controlled.
+
+- **xcode** — tracks exactly two files, both Xcode colour themes, under
+  `~/Library/Developer/Xcode/UserData/FontAndColorThemes/`. Everything else in
+  `UserData/` is runtime state; leave it out. Two traps:
+
+  **The hex values in these files are deliberately NOT the Catppuccin ones.**
+  Xcode does not render a theme's colours literally — it derives a "recipe" from
+  them and regenerates against its own contrast curve, which lifts lightness and
+  drains chroma. Measured off a screenshot (converted out of the display's ICC
+  profile into sRGB), the shift is **L +0.043, C x0.8**, hue untouched. Both
+  files are therefore pre-compensated by the inverse, **L -0.043, C x1.25**, so
+  that what lands on screen is true Catppuccin Mocha. `background` is stored as
+  `#141327` and renders as `#1e1e2e`; `keyword` is stored as `#c292f7` and
+  renders as `#cba6f7`. Do not "correct" them back to the palette — that is what
+  produced the washed-out look in the first place. Re-derive with the script in
+  the commit that added this package if the shift ever changes.
+
+  The two files are the same theme in Xcode's two formats: `.xccolortheme` is
+  the classic plist, `.xcworkspacecolortheme` is the Xcode 27 recipe format
+  (JSON, **not** a plist — `plutil` accepts both, so a plist here lints clean
+  and fails silently). The recipe stores OKLCh (`lightness`/`chroma`/`hue` in
+  radians); despite `"gamut": "P3"` the numbers are **sRGB-relative**. Xcode 26.6
+  already runs the recipe engine, so both files matter on both versions. They
+  agree slot for slot.
+
+  The upstream `catppuccin/xcode` themes sit next to these as untracked real
+  files; `Catppuccin Mocha` is kept unmodified as a reference to compare against.
+  Theme *selection* lives in
+  `UserData/XcodeSettings/<user>.xcodesettings/UserDefaults/XcodeDefaults.plist`,
+  not in `~/Library/Preferences/com.apple.dt.Xcode.plist`, which is a stale
+  shadow — editing the latter does nothing. Opening Xcode 27 re-runs a theme
+  migration that pins a `savedRecipe` UUID and can silently re-theme Xcode 26,
+  since both share one preferences domain.
 
 - **vademecum** — the theme is the whole config; there is no "default theme by
   name" setting. `~/.config/vademecum/theme.toml` *is* the default theme, so
