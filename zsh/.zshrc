@@ -106,6 +106,10 @@ alias l="ls -lh"
 alias la="ls -a"
 alias lla="ls -lhaF"
 
+if command -v vademecum &> /dev/null; then
+    alias vm="vademecum --minimap"
+fi
+
 # --- Directory navigation ---------------------------------------------------
 
 # Change to Developer directory
