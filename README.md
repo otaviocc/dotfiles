@@ -17,7 +17,7 @@ git      global git config
 nvim     Neovim (single-file config on vim.pack)
 tmux     tmux
 ghostty  Ghostty terminal
-sublime  Sublime Text (Catppuccin Mocha scheme, LSP-SourceKit)
+sublime  Sublime Text (Default+ scheme, LSP-SourceKit)
 lazygit  lazygit
 tig      tig
 yazi     yazi
@@ -29,8 +29,17 @@ bat      bat
 claude   Claude Code theme + statusline + shared agent skills
 holodeck holodeck
 vademecum vademecum
-xcode    Xcode colour themes (macOS only)
+xcode    Xcode colour theme (macOS only)
 ```
+
+Everything is themed **Default+**, a dark colourscheme that began as an Xcode
+Font & Color Theme. Its canonical palette is documented in
+[`docs/palette.md`](docs/palette.md); the upstream every port is generated or
+copied from is `~/Developer/default-plus`.
+
+Default+ does not follow the usual terminal convention: **comments are green
+and strings are red**, which is Xcode's own role assignment and the thing that
+distinguishes it from Apple's stock dark theme. That is deliberate.
 
 ## Usage
 
@@ -75,7 +84,7 @@ if absent:
 3. Create `~/.zshrc.local` and/or `~/.gitconfig.local.machine` as needed
    (see "Per-machine overrides").
 4. Claude Code's `~/.claude/settings.json` is not tracked (it holds API
-   tokens). Set `"theme": "custom:catppuccin-mocha"` and wire the statusline:
+   tokens). Set `"theme": "custom:default-plus"` and wire the statusline:
 
    ```json
    "statusLine": { "type": "command", "command": "~/.claude/statusline.py" }

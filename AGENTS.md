@@ -90,8 +90,12 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   `ghostty/.config/ghostty/config.ghostty`. Do not "fix" the filename. It ends
   with `config-file = ?config.local`; the `?` keeps Ghostty from erroring before
   `install.sh` has run.
-- **nvim** — a hand-written single-file config: everything lives in
-  `init.lua`, on Neovim's built-in `vim.pack` manager. There is no distro and
+- **nvim** — a hand-written config: everything lives in `init.lua`, on
+  Neovim's built-in `vim.pack` manager. The colorscheme is the one exception:
+  Default+ has no upstream Neovim plugin, so `colors/default-plus.lua` is
+  vendored from `~/Developer/default-plus-nvim`. Re-copy it rather than
+  editing it here, and note that `vim.pack.add` therefore lists **no theme
+  plugin at all** — a `require("<theme>").setup{}` call would be a mistake. There is no distro and
   no plugin-manager bootstrap, so there is no upstream to re-diff against —
   edit `init.lua` directly. **Requires Neovim >= 0.12** for `vim.pack`,
   `vim.lsp.enable`, the `lsp/` directory and `vim.opt.winborder`; it will not
@@ -128,21 +132,23 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   breakage look language-specific rather than systemic. This happened once
   already: the links pointed into the old LazyVim plugin tree and broke when
   it was deleted.
-- **bat** — Catppuccin is not built into bat, so the theme is vendored as
-  `themes/catppuccin-mocha.tmTheme` (copied verbatim from `catppuccin/bat`) and
-  bat only picks it up from a compiled cache: run `bat cache --build` after
-  stowing or after editing it. See the theme trap in the Catppuccin Mocha
-  section about the `--theme` value.
+- **bat** — Default+ is not built into bat, so the theme is vendored as
+  `themes/default-plus.tmTheme` and bat only picks it up from a compiled
+  cache: run `bat cache --build` after stowing or after editing it. See the
+  theme trap in the Default+ section about the `--theme` value. The file is
+  hand-written here — there is no upstream tmTheme to re-copy — so its scope
+  list is the only place a missing scope can be fixed. Known limitation: the
+  bundled Swift grammar does not emit `entity.name.type`/`entity.name.function`
+  for plain declarations, so a `struct Foo` name renders as plain text rather
+  than teal. That is the grammar, not the theme.
 - **yazi** — only `theme.toml` is tracked; yazi's own keymap/yazi.toml stay on
-  defaults. The theme is vendored from `catppuccin/yazi` (`mocha-mauve`) with
-  exactly two changes, both documented in its header: upstream's `[icon]`
-  section is dropped (the icon preset stays on yazi's default), and
-  `mgr.syntect_theme` points at
-  `$HOME/.config/bat/themes/catppuccin-mocha.tmTheme`, reusing the bat
-  package's vendored tmTheme for code previews. Two traps on that path: it must
-  stay absolute (26.x rejects relative ones and does not expand `~`, though it
-  does expand `$HOME` — upstream ships it as `~/...`, which is why it cannot be
-  copied verbatim), and a bad path silently falls back to yazi's built-in dark
+  defaults. The theme is hand-written (Default+ has no yazi flavor at all) and
+  the `[icon]` table is deliberately absent, so the icon preset stays on
+  yazi's default. `mgr.syntect_theme` points at
+  `$HOME/.config/bat/themes/default-plus.tmTheme`, reusing the bat package's
+  vendored tmTheme for code previews. Two traps on that path: it must stay
+  absolute (26.x rejects relative ones and does not expand `~`, though it does
+  expand `$HOME`), and a bad path silently falls back to yazi's built-in dark
   theme — same silent failure as bat's `--theme`.
 - **herdr** — only `config.toml` is tracked. Logs, `session.json`,
   `release-notes.json` and `.plugins.lock` are runtime state; leave them out.
@@ -167,128 +173,136 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   opencode-only skills this repo does not track (Supacode's own, and symlinks
   into `~/.agents/skills/`) — don't assume everything there is version-controlled.
 
-- **xcode** — tracks exactly two files, both Xcode colour themes, under
+- **xcode** — macOS only, listed in `DARWIN_ONLY_PACKAGES`. Tracks exactly one
+  file, `Default+.xccolortheme`, under
   `~/Library/Developer/Xcode/UserData/FontAndColorThemes/`. Everything else in
-  `UserData/` is runtime state; leave it out. Two traps:
+  `UserData/` is runtime state; leave it out.
 
-  **The hex values in these files are deliberately NOT the Catppuccin ones.**
-  Xcode does not render a theme's colours literally — it derives a "recipe" from
-  them and regenerates against its own contrast curve, which lifts lightness and
-  drains chroma. Measured off a screenshot (converted out of the display's ICC
-  profile into sRGB), the shift is **L +0.043, C x0.8**, hue untouched. Both
-  files are therefore pre-compensated by the inverse, **L -0.043, C x1.25**, so
-  that what lands on screen is true Catppuccin Mocha. `background` is stored as
-  `#141327` and renders as `#1e1e2e`; `keyword` is stored as `#c292f7` and
-  renders as `#cba6f7`. Do not "correct" them back to the palette — that is what
-  produced the washed-out look in the first place. Re-derive with the script in
-  the commit that added this package if the shift ever changes.
+  **This file is the source of truth for the whole repo's palette** — it is not
+  a port, it is the original. `docs/palette.md` is derived from it, and
+  upstream's `bin/build.py --check` re-reads it and fails if they disagree.
+  Unlike the Catppuccin package this replaces, the values are **not**
+  pre-compensated for Xcode's rendering: this targets Xcode 26 and the classic
+  plist, which it renders directly.
 
-  The two files are the same theme in Xcode's two formats: `.xccolortheme` is
-  the classic plist, `.xcworkspacecolortheme` is the Xcode 27 recipe format
-  (JSON, **not** a plist — `plutil` accepts both, so a plist here lints clean
-  and fails silently). The recipe stores OKLCh (`lightness`/`chroma`/`hue` in
-  radians); despite `"gamut": "P3"` the numbers are **sRGB-relative**. Xcode 26.6
-  already runs the recipe engine, so both files matter on both versions. They
-  agree slot for slot.
+  Two traps:
 
-  The upstream `catppuccin/xcode` themes sit next to these as untracked real
-  files; `Catppuccin Mocha` is kept unmodified as a reference to compare against.
+  Xcode 27's second format, `.xcworkspacecolortheme` (JSON, OKLCh, **not** a
+  plist — `plutil` accepts both, so a plist there lints clean and fails
+  silently), is out of scope. An unfinished `Default+.xcworkspacecolortheme`
+  sits in `UserData/` on the macOS machine; it is deliberately untracked and is
+  **not** a source of anything. Do not read values out of it.
+
   Theme *selection* lives in
-  `UserData/XcodeSettings/<user>.xcodesettings/UserDefaults/XcodeDefaults.plist`,
-  not in `~/Library/Preferences/com.apple.dt.Xcode.plist`, which is a stale
-  shadow — editing the latter does nothing. Opening Xcode 27 re-runs a theme
-  migration that pins a `savedRecipe` UUID and can silently re-theme Xcode 26,
-  since both share one preferences domain.
+  `UserData/XcodeSettings/<user>.xcodesettings/UserDefaults/XcodeDefaults.plist`
+  (`XCFontAndColorCurrentDarkTheme`), not in
+  `~/Library/Preferences/com.apple.dt.Xcode.plist`, which is a stale shadow —
+  editing the latter does nothing.
 
 - **vademecum** — the theme is the whole config; there is no "default theme by
-  name" setting. `~/.config/vademecum/theme.toml` *is* the default theme, so
-  `theme.toml` here is the one line `base = "catppuccin-mocha"`: `base` names a
-  built-in and the rest of the file merges over *that* (not over `ansi`), so
-  there is no palette to copy and nothing to drift out of sync with upstream.
-  Add a `[palette]` or `[elements.*]` table below the `base` line only for
-  slots you actually want different from upstream. `--theme catppuccin-mocha`
-  selects the same theme per run without this file at all; the file exists only
-  to make it the default.
+  name" setting. `~/.config/vademecum/theme.toml` *is* the default theme.
+  Under the previous palettes this was a single `base = "<built-in>"` line,
+  because vademecum shipped those themes. It ships no Default+, so the file
+  now spells out all 15 `[palette]` slots plus the three `code_block` elements.
+  `base = "ansi"` remains underneath because `ansi` asserts nothing — every
+  slot it defines defers to the terminal, which ghostty already themes — so
+  anything vademecum derives outside the 15 still lands in-theme. It validates
+  keys: an unknown one under `[palette]` is a hard error naming the key, which
+  is how the slot list was recovered. `--list-themes` and `--list-syntax-themes`
+  print what it knows. **`syntax_theme` takes a name, not a path**, so unlike
+  yazi it cannot reuse the bat package's tmTheme: fenced code blocks inside
+  Markdown are *not* Default+, and `base16-ocean.dark` is the least discordant
+  of its seven built-ins.
 
-## Catppuccin Mocha theme
+## Default+ theme
 
-**`docs/palette.md` is the source of truth for every color in this repo.**
-Flavor is **Mocha**, accent is **mauve** `#cba6f7`.
+**`docs/palette.md` is the source of truth for every colour in this repo**, and
+its own source is the `xcode` package's `Default+.xccolortheme`.
 
-Nothing here is invented. Syntax slots are Catppuccin's own
-[style guide](https://github.com/catppuccin/catppuccin/blob/main/docs/style-guide.md)
-(keyword=mauve, string=green, operator=sky, comment/punctuation=overlay2,
-constant+number=peach, function=blue, type/class/attribute=yellow,
-parameter=maroon, builtin=red, escape/regex=pink). Catppuccin names no variable
-colour, so variables inherit the plain foreground.
+Unlike Kanagawa, Catppuccin and Vesper before it, Default+ is not a published
+palette with community ports. It is a personal theme, so the standing "prefer
+re-copying upstream over editing a vendored file by hand" rule needed an
+upstream to point at. That upstream is **`~/Developer/default-plus`**
+(`palette.yaml` + `bin/build.py`), with satellites `default-plus-nvim`,
+`default-plus-obsidian` and `default-plus-vscode`.
 
-Catppuccin publishes no diff-background table — the style guide only says a
-selection is "Overlay 2 at 20–30% opacity", which a terminal cannot do. The four
-row and word backgrounds come from `catppuccin/delta`, the one upstream port
-that resolves that into opaque hex. They follow an exact rule (row = colour 20%
-into `base`, word = 35%), so the moved-row and gutter steps are extrapolated
-with the same rule rather than guessed.
+Workflow for any colour change:
 
-**Most tools now take an upstream port rather than a hand-transcription.** Only
-four are hand-ported — tmux, tig, hunk and vigia — and each says so in its own
-header. Prefer re-copying upstream over editing a vendored file by hand.
+1. change it in Xcode;
+2. copy the theme to `~/Developer/default-plus/xcode/`;
+3. run `bin/build.py` there — `--check` re-reads the plist and recomputes every
+   derived blend, `--generate` rewrites the mechanical ports, `--validate`
+   fails on any port using a colour outside the palette;
+4. re-copy the affected files here, and regenerate `docs/palette.md`.
 
-Traps worth knowing:
+Run upstream's validator across the satellites too:
 
-- **Six tools select the theme purely by name**: ghostty (`Catppuccin Mocha`),
-  herdr (`catppuccin`), opencode, holodeck, vademecum (`catppuccin-mocha`) and
-  bat. Nothing to keep in sync in those files beyond the string.
-- **herdr's built-in `catppuccin` is Mocha, but that cannot be proven
-  statically.** herdr stores its colours non-textually; the flavour is inferred
-  from it pairing with `catppuccin-latte` and from Mocha being the only dark
-  Catppuccin hexes in the binary. Check by eye that its background matches
-  Ghostty's `#1e1e2e`. This replaced a 19-token `[theme.custom]` block that
-  existed only because herdr's `kanagawa` was the Wave variant — do not
-  reintroduce an override without a reason. `herdr config check` validates the
-  TOML but NOT colour values: a typo'd hex reports "config: ok" and silently
-  falls back. `herdr server reload-config` applies changes without a restart.
-- **opencode uses its built-in `catppuccin-mocha`.** It previously needed a
-  vendored 90-line theme because its bundled `kanagawa` was Wave; that file is
-  gone. `opencode/.config/opencode/themes/` no longer exists, so a re-stow is
-  needed to clear the old symlink.
-- **nvim needs a plugin spec, with an explicit `name`.** `init.lua` adds
-  `catppuccin/nvim` to `vim.pack.add` **with `name = "catppuccin"`** — the repo
-  is called `nvim`, so without that override vim.pack installs it as `nvim` and
-  `require("catppuccin")` fails. `setup{ flavour = "mocha" }` and
-  `colorscheme catppuccin` run immediately after, so the theme is applied before
-  the first buffer is drawn. The colorscheme resolves to `catppuccin-mocha`.
-  Commit `nvim-pack-lock.json` after any plugin change, and never hand-edit it —
-  use `vim.pack.del()` to drop a plugin so the lock entry goes with it.
-- **bat's `--theme` is the .tmTheme *filename*** (`catppuccin-mocha`), not the
-  plist's `name` key (which is `Catppuccin Mocha`). A wrong value is silent —
-  bat prints its Monokai default rather than erroring.
+```sh
+cd ~/Developer/default-plus
+bin/build.py --validate --also ../default-plus-nvim ../default-plus-obsidian ../default-plus-vscode
+```
+
+### The one thing to not "fix"
+
+**Comments are green and strings are red.** That is Xcode's own role assignment
+and the single thing that distinguishes Default+ from Apple's stock dark theme.
+Every TUI/editor port in the wild gets this backwards, because the terminal
+convention is grey comments and green strings. It was backwards in this repo's
+own ports until it was corrected deliberately. Identifiers you declare share
+one teal; SDK members are purple and SDK types light purple — that split is
+project-vs-system, reproduced through treesitter's `.builtin` captures and the
+LSP `defaultLibrary` modifier.
+
+### Traps worth knowing
+
+- **Nothing selects the theme purely by name any more.** Under Catppuccin, six
+  tools did. Default+ is nobody else's built-in, so every tool now carries a
+  vendored or hand-written palette — except holodeck, which *is* a built-in
+  there because holodeck is one of this user's own projects
+  (`~/Developer/holodeck`, `crates/holodeck-tui/src/theme.rs`,
+  `Theme::default_plus`, and its default). Change the palette and that Rust
+  constructor has to change with it; its unit test pins the hexes.
+- **ANSI normal and bright are distinct**, so anything that promotes bold to
+  bright must be off: ghostty `bold-is-bright = false`, Apple Terminal
+  `UseBrightBold = false`. Both are set by upstream's generator.
+- **Apple Terminal rewrites ANSI foregrounds** when `DynamicANSIForegroundColors`
+  is true, silently overriding the palette. The generator pins it false; the
+  live profile had it on.
+- **Apple Terminal cannot be stowed.** Profiles live in the `com.apple.Terminal`
+  preferences domain, not a file in `$HOME`; the `.terminal` file is an import
+  artifact. It stays upstream, imported by hand.
+- **bat's `--theme` is the .tmTheme *filename*** (`default-plus`), not the
+  plist's `name` key (`Default+`). A wrong value is silent — bat prints its
+  Monokai default rather than erroring. Run `bat cache --build` after any edit.
 - **tmux hex must stay lowercase.** `#F`/`#I`/`#W`/`#S`/`#T`/`#P`/`#H`/`#D` are
-  legacy format specifiers, so `bg=#CBA6F7` expands to nonsense. The accent
-  beginning with a literal `C` makes this easier than usual to hit.
-- **tig's 256-colour values are hand-picked, not computed.** Nearest-RGB
-  collides `overlay1`/`overlay2`, `subtext0`/`subtext1` and `teal`/`sky`, which
-  would collapse distinct roles. `docs/palette.md`'s 256 column is a starting
-  point; tig's own header table is the authority for that file.
-- **`LS_COLORS` *is* `vivid generate catppuccin-mocha`**, verbatim. vivid ships
-  a Mocha theme, so the role-by-role gruvbox remap the previous palette needed
-  is gone — regenerate rather than edit. Note it colours directories blue, not
-  the accent; `LSCOLORS` (BSD `/bin/ls` only) was re-slotted to match.
-- **Claude Code's theme carries no background overrides any more.** It used to
-  override `userMessageBackground`, `userMessageBackgroundHover`,
-  `composerSidebarBackground` and `memoryBackgroundColor`, purely because the
-  previous theme mapped ANSI bright-black to a *light* grey and the `dark-ansi`
-  base rendered user messages light-on-light. Mocha maps bright-black to
-  `surface2` `#585b70`, a normal dark grey, so those four slots now inherit the
-  ANSI base and follow Ghostty's Catppuccin Mocha palette. **Don't reintroduce
-  them without a rendering problem to point at** — but if some other ANSI-based
-  theme ever shows light-on-light text, this is the knob. The seven `*Shimmer`
-  values are `colour 40% into text` and are recorded in `docs/palette.md` rather
-  than left as orphan hexes.
-- **The `claude` package tracks `~/.claude/themes/`, `~/.claude/skills/` and
-  `~/.claude/statusline.py` only.** `settings.json` selects the theme
-  (`"theme": "custom:catppuccin-mocha"`) and wires the statusline but also holds
-  API tokens — never add it to the repo; the rest of `~/.claude` is
-  session/runtime state.
+  legacy format specifiers, so `bg=#35B0D8` expands to nonsense. The one
+  uppercase hex in `tmux.conf` is the counter-example inside that comment.
+- **tig's 256-colour values are hand-picked, not computed.** Nearest-RGB puts
+  the selection colour on the grey ramp right next to `muted`, collapsing two
+  distinct roles. `docs/palette.md`'s 256 column is a starting point; the table
+  in upstream's `bin/build.py` (`TIG_256`) is the authority.
+- **vademecum's `syntax_theme` takes a name, not a path**, so fenced code inside
+  Markdown is not Default+. yazi's `syntect_theme` *does* take a path and reuses
+  bat's tmTheme — but it must stay absolute, and a bad path falls back silently.
+- **`LS_COLORS` is vivid's filetype database with the palette substituted role
+  by role**, because vivid ships no Default+. Under Catppuccin this was a plain
+  `vivid generate catppuccin-mocha`; it cannot be now. The 17-colour
+  substitution table is committed in the file's own header this time, rather
+  than left in a commit message as the Kanagawa one was. Directories are
+  `declaration` `#35B0D8`, and `LSCOLORS` (BSD `/bin/ls` only) now agrees with
+  it — the two used to disagree.
+- **`herdr config check` does not validate colours.** A typo'd hex reports
+  "config: ok" and silently falls back. `herdr server reload-config` applies
+  changes without a restart.
+- **Claude Code's theme carries no background overrides.** Default+ maps ANSI
+  bright-black to `#515B70`, a normal dark blue-grey, so the `dark-ansi` base
+  renders user messages correctly without them. If some future palette ever
+  shows light-on-light text, that is the knob. The seven `*Shimmer` values are
+  `colour 40% toward foreground` and are recorded in `docs/palette.md`.
+- **Xcode's `markup.code` slot is corrected, not copied.** Apple ships the light
+  theme's magenta `#AA0D91` there in both stock dark and light themes; at
+  2.71:1 on `#171717` it is the only slot failing WCAG AA. It is the one value
+  in `palette.yaml` deliberately not bound to the Xcode file.
 
 ## Commit messages
 

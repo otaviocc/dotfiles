@@ -14,154 +14,127 @@ cursor_line            = "row"
 transparent_background = false
 
 # ---------------------------------------------------------------------------
-# Catppuccin Mocha theme (accent: mauve #cba6f7)
-# Palette: https://github.com/catppuccin/palette — the full table is in
-# docs/palette.md. Names below are upstream's own.
+# Default+ theme (accent: declaration #35B0D8)
+# Vendored from ~/Developer/default-plus (hunk/theme.toml). The full palette
+# is in docs/palette.md; re-copy from upstream rather than editing here.
 #
-# There is no Catppuccin port for hunk, so unlike bat/yazi/lazygit/Sublime this
-# block is transcribed by hand. `base = "dark-plus"` below is only a syntax
-# fallback: hunk bundles a subset of shiki's themes and ships no Catppuccin, but
-# every scope that matters is overridden in [custom_theme.syntax_scopes].
+# Syntax scopes follow Xcode's own role assignment, which is NOT the usual
+# terminal convention: comments are GREEN (#2EA85B) and strings are RED
+# (#FC4651). Identifiers you declare share one teal (#56D0B3); SDK members
+# are purple (#AB64FF) and SDK types light purple (#D0A8FF).
 #
-# base       = "#1e1e2e"  (also Ghostty's terminal background)
-# mantle     = "#181825"
-# crust      = "#11111b"
-# surface0   = "#313244"
-# surface1   = "#45475a"
-# surface2   = "#585b70"
-# overlay1   = "#7f849c"
-# overlay2   = "#9399b2"
-# subtext0   = "#a6adc8"
-# text       = "#cdd6f4"
-# red        = "#f38ba8"
-# maroon     = "#eba0ac"
-# green      = "#a6e3a1"
-# teal       = "#94e2d5"
-# sky        = "#89dceb"
-# yellow     = "#f9e2af"
-# peach      = "#fab387"
-# mauve      = "#cba6f7"
-# lavender   = "#b4befe"
-# blue       = "#89b4fa"
-# pink       = "#f5c2e7"
-# rosewater  = "#f5e0dc"
-#
-# Catppuccin publishes no diff-background table, so the row and word-level
-# backgrounds come from catppuccin/delta — the one upstream port that resolves
-# the style guide's "green at 20% opacity" into opaque hex. Those values follow
-# an exact rule (row = colour 20% into base, word = 35%), and the moved-row and
-# gutter steps are extrapolated with the same rule. See docs/palette.md.
+# Default+ ships no diff table of its own, so every row and word-level
+# background is its accent composited over the background at a fixed
+# opacity — 20% for a row, 35% for a word highlight, 50% for a muted sign.
+# Those are recomputed by upstream's bin/build.py --check.
 # ---------------------------------------------------------------------------
 
 [custom_theme]
 base  = "dark-plus"
-label = "Catppuccin Mocha"
+label = "Default+"
 
 # UI shell
-background  = "#1e1e2e"
-panel       = "#181825"
-panelAlt    = "#313244"
-border      = "#585b70"
-accent      = "#cba6f7"
-accentMuted = "#5b4e74"
-text        = "#cdd6f4"
-muted       = "#7f849c"
+background  = "#171717"
+panel       = "#111111"
+panelAlt    = "#242424"
+border      = "#4C4C4C"
+accent      = "#35B0D8"
+accentMuted = "#266478"
+text        = "#FFFFFF"
+muted       = "#8E8E8E"
 
-# Diff row backgrounds — from catppuccin/delta (colour 20% into base)
-addedBg        = "#394545"
-removedBg      = "#493447"
-movedAddedBg   = "#333c57"
-movedRemovedBg = "#4a4548"
-contextBg      = "#1e1e2e"
+# Diff row backgrounds
+addedBg        = "#1C3425"
+removedBg      = "#452023"
+movedAddedBg   = "#1D363E"
+movedRemovedBg = "#352645"
+contextBg      = "#171717"
 
-# Word-level (intra-line) highlights — colour 35% into base
-addedContentBg   = "#4e6356"
-removedContentBg = "#694559"
-contextContentBg = "#313244"
+# Word-level (intra-line) highlights
+addedContentBg   = "#1F4A2F"
+removedContentBg = "#67272B"
+contextContentBg = "#2F2F2F"
 
 # Gutter
-lineNumberBg     = "#181825"
-lineNumberFg     = "#585b70"
-addedSignColor   = "#a6e3a1"
-removedSignColor = "#f38ba8"
+lineNumberBg     = "#111111"
+lineNumberFg     = "#4C4C4C"
+addedSignColor   = "#226039"
+removedSignColor = "#8A2E34"
 
 # Selection
-selectedHunk = "#313244"
+selectedHunk = "#515B70"
 
 # File status badges
-badgeAdded   = "#a6e3a1"
-badgeRemoved = "#f38ba8"
-badgeNeutral = "#7f849c"
+badgeAdded   = "#226039"
+badgeRemoved = "#8A2E34"
+badgeNeutral = "#8E8E8E"
 
-fileNew       = "#a6e3a1"
-fileDeleted   = "#f38ba8"
-fileRenamed   = "#cba6f7"
-fileModified  = "#f9e2af"
-fileUntracked = "#7f849c"
+fileNew       = "#226039"
+fileDeleted   = "#8A2E34"
+fileRenamed   = "#35B0D8"
+fileModified  = "#7C5A3E"
+fileUntracked = "#8E8E8E"
 
 # Agent notes
-noteBorder          = "#cba6f7"
-noteBackground      = "#181825"
-noteTitleBackground = "#333c57"
-noteTitleText       = "#cdd6f4"
+noteBorder          = "#35B0D8"
+noteBackground      = "#111111"
+noteTitleBackground = "#1D363E"
+noteTitleText       = "#FFFFFF"
 
 [custom_theme.syntax_scopes]
-# Slots follow Catppuccin's style guide: keyword=mauve, string=green,
-# operator=sky, comment/punctuation=overlay2, constant+number=peach,
-# function=blue, type/class/attribute=yellow, parameter=maroon, builtin=red,
-# escape/regex=pink. Catppuccin names no variable colour, so variables inherit
-# the plain foreground.
+# Comments  ->  GREEN (xcode.syntax.comment) — the Default+ signature
+"comment"                        = "#2EA85B"
+"punctuation.definition.comment" = "#2EA85B"
 
-# Comments
-"comment"                        = "#7f849c"
-"punctuation.definition.comment" = "#7f849c"
+# Strings  ->  RED (xcode.syntax.string)
+"string"                        = "#FC4651"
+"string.quoted"                 = "#FC4651"
+"punctuation.definition.string" = "#FC4651"
 
-# Keywords / control flow  →  mauve
-"keyword"              = "#cba6f7"
-"keyword.control"      = "#cba6f7"
-"keyword.operator"     = "#89dceb"
-"storage"              = "#cba6f7"
-"storage.type"         = "#f9e2af"
+# Keywords / storage  ->  magenta (xcode.syntax.keyword)
+"keyword"          = "#F2248C"
+"keyword.control"  = "#F2248C"
+"storage"          = "#F2248C"
+"storage.type"     = "#F2248C"
 
-# Functions  →  blue
-"entity.name.function" = "#89b4fa"
-"support.function"     = "#89b4fa"
-"meta.function-call"   = "#89b4fa"
+# Operators  ->  plain (Xcode leaves operators in the foreground colour)
+"keyword.operator" = "#FFFFFF"
 
-# Types / classes  →  yellow
-"entity.name.type"     = "#f9e2af"
-"entity.name.class"    = "#f9e2af"
-"support.type"         = "#f9e2af"
-"support.class"        = "#f9e2af"
+# Project identifiers: types, classes and functions you define  ->  teal
+"entity.name.function" = "#56D0B3"
+"entity.name.type"     = "#56D0B3"
+"entity.name.class"    = "#56D0B3"
+"meta.function-call"   = "#56D0B3"
+"variable"             = "#56D0B3"
+"variable.other"       = "#56D0B3"
 
-# Strings  →  green
-"string"                        = "#a6e3a1"
-"string.quoted"                 = "#a6e3a1"
-"punctuation.definition.string" = "#a6e3a1"
+# System identifiers: SDK members and types  ->  purple
+"support.function" = "#AB64FF"
+"support.type"     = "#D0A8FF"
+"support.class"    = "#D0A8FF"
 
-# Numbers and other constants  →  peach
-"constant.numeric"  = "#fab387"
-"constant.language" = "#fab387"
-"constant.other"    = "#fab387"
+# Numbers / constants  ->  yellow (xcode.syntax.number)
+"constant.numeric"  = "#FFE76D"
+"constant.language" = "#FFE76D"
+"constant.other"    = "#FFE76D"
 
-# Preprocessor / includes  →  sky (operators)
-"meta.preprocessor"      = "#89dceb"
-"keyword.control.import" = "#89dceb"
-"keyword.other.using"    = "#89dceb"
+# Preprocessor / macros  ->  orange (xcode.syntax.preprocessor)
+"meta.preprocessor"      = "#FD8F3F"
+"keyword.control.import" = "#FD8F3F"
+"keyword.other.using"    = "#FD8F3F"
 
-# Variables  →  plain fg (Catppuccin names no variable colour)
-"variable"       = "#cdd6f4"
-"variable.other" = "#cdd6f4"
+# Attributes  ->  tan (xcode.syntax.attribute)
+"entity.other.attribute-name" = "#E09D65"
 
-# Tags  →  yellow (attributes)
-"entity.name.tag"            = "#cba6f7"
-"punctuation.definition.tag" = "#7f849c"
+# Tags  ->  cyan (xcode.syntax.declaration.other)
+"entity.name.tag"            = "#35B0D8"
+"punctuation.definition.tag" = "#8E8E8E"
 
-# Punctuation  →  overlay2
-"punctuation"           = "#9399b2"
-"punctuation.separator" = "#9399b2"
+# Punctuation  ->  muted
+"punctuation"           = "#8E8E8E"
+"punctuation.separator" = "#8E8E8E"
 
-# Diff markup  →  green / red / yellow
-"markup.inserted" = "#a6e3a1"
-"markup.deleted"  = "#f38ba8"
-"markup.changed"  = "#f9e2af"
+# Diff markup  ->  muted green/red, matching the row background tone
+"markup.inserted" = "#226039"
+"markup.deleted"  = "#8A2E34"
+"markup.changed"  = "#35B0D8"

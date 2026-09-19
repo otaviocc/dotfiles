@@ -1,189 +1,193 @@
-# Catppuccin Mocha — the palette this repo draws with
+# Default+ palette
 
-The single source of truth for every color in these dotfiles. Upstream is
-[catppuccin/palette](https://github.com/catppuccin/palette): the names below are
-Catppuccin's own, and the role each one plays is its
-[style guide](https://github.com/catppuccin/catppuccin/blob/main/docs/style-guide.md).
-Nothing here is invented — even the diff backgrounds come from an upstream port.
+**This file is the source of truth for every colour in this repo.**
 
-**Flavor: Mocha.** Catppuccin ships four (Latte, Frappé, Macchiato, Mocha).
-Mocha is the darkest: its background is `#1e1e2e` — R30 G30 B46, blue-violet
-rather than warm-neutral. Every neutral in the theme leans blue, which is the
-character of the theme and not something to correct.
+Default+ began as an Xcode Font & Color Theme. Its own source of truth is
+`xcode/Library/Developer/Xcode/UserData/FontAndColorThemes/Default+.xccolortheme`,
+tracked in the `xcode` package, and the upstream that every port is generated
+or copied from is `~/Developer/default-plus` (`palette.yaml` + `bin/build.py`).
 
-**Accent: `mauve` (`#cba6f7`).** Catppuccin parameterizes a single accent and
-mauve is its default — it is what the official nvim, lazygit, yazi and Sublime
-ports ship unless told otherwise, so choosing it means those ports drop in
-verbatim with no accent rewiring. Swapping it for `peach` (`#fab387`) or `blue`
-(`#89b4fa`) is a one-line change in the ports that parameterize it, and a
-find-and-replace in the hand-ported tools.
+To change a colour: change it in Xcode, run `bin/build.py` upstream, then
+re-copy the affected ports here. Do not edit a vendored file by hand.
+
+Xcode 27's `.xcworkspacecolortheme` recipe format is **not** a source. This
+targets Xcode 26 and the classic plist.
+
+## Syntax roles — read this first
+
+Default+ does not follow the usual terminal convention, and that is the point:
+
+- **comments are green** (`#2EA85B`), not grey
+- **strings are red** (`#FC4651`), not green
+- types, functions, variables and constants **you declare** share one teal
+  (`#56D0B3`); SDK members are purple (`#AB64FF`) and SDK types light purple
+  (`#D0A8FF`)
+
+The project-vs-system split is the distinction Xcode draws. Ports reproduce it
+through treesitter's `.builtin` captures and the LSP `defaultLibrary` modifier.
+A port that "corrects" green comments back to grey stops looking like Default+;
+that inversion is the whole signature of the theme.
 
 ## The palette
 
-`RGB` is the decimal form zsh's `LS_COLORS` needs (`38;2;r;g;b`). `256` is the
-nearest xterm-256 index, computed — see the warning under the table before using
-it for tig.
+`RGB` is decimal, for `LS_COLORS` (`38;2;r;g;b`). `256` is the nearest xterm
+index — a **starting point only**; tig's own header table is the authority for
+that file, because nearest-RGB collapses distinct roles onto the grey ramp.
 
-| Name | Hex | RGB | 256 |
-|---|---|---|---|
-| `base` | `#1e1e2e` | `30;30;46` | `color235` |
-| `mantle` | `#181825` | `24;24;37` | `color234` |
-| `crust` | `#11111b` | `17;17;27` | `color233` |
-| `surface0` | `#313244` | `49;50;68` | `color237` |
-| `surface1` | `#45475a` | `69;71;90` | `color239` |
-| `surface2` | `#585b70` | `88;91;112` | `color241` |
-| `overlay0` | `#6c7086` | `108;112;134` | `color243` |
-| `overlay1` | `#7f849c` | `127;132;156` | `color103` |
-| `overlay2` | `#9399b2` | `147;153;178` | `color103` |
-| `subtext0` | `#a6adc8` | `166;173;200` | `color146` |
-| `subtext1` | `#bac2de` | `186;194;222` | `color146` |
-| `text` | `#cdd6f4` | `205;214;244` | `color189` |
-| `rosewater` | `#f5e0dc` | `245;224;220` | `color224` |
-| `flamingo` | `#f2cdcd` | `242;205;205` | `color224` |
-| `pink` | `#f5c2e7` | `245;194;231` | `color218` |
-| `mauve` | `#cba6f7` | `203;166;247` | `color183` |
-| `red` | `#f38ba8` | `243;139;168` | `color211` |
-| `maroon` | `#eba0ac` | `235;160;172` | `color181` |
-| `peach` | `#fab387` | `250;179;135` | `color216` |
-| `yellow` | `#f9e2af` | `249;226;175` | `color223` |
-| `green` | `#a6e3a1` | `166;227;161` | `color151` |
-| `teal` | `#94e2d5` | `148;226;213` | `color116` |
-| `sky` | `#89dceb` | `137;220;235` | `color116` |
-| `sapphire` | `#74c7ec` | `116;199;236` | `color117` |
-| `blue` | `#89b4fa` | `137;180;250` | `color111` |
-| `lavender` | `#b4befe` | `180;190;254` | `color147` |
+| Name | Xcode key | Hex | RGB | 256 | Role |
+|---|---|---|---|---|---|
+| `background` | `DVTSourceTextBackground` | `#171717` | `23;23;23` | 233 | terminal and editor ground |
+| `foreground` | `xcode.syntax.plain` | `#FFFFFF` | `255;255;255` | 231 | body text |
+| `cursor` | `DVTSourceTextInsertionPointColor` | `#FFFFFF` | `255;255;255` | 231 | caret |
+| `selection_background` | `DVTSourceTextSelectionColor` | `#515B70` | `81;91;112` | 59 | selected region |
+| `current_line` | `DVTSourceTextCurrentLineHighlightColor` | `#343540` | `52;53;64` | 237 | cursor line, 50% alpha |
+| `invisibles` | `DVTSourceTextInvisiblesColor` | `#4C4C4C` | `76;76;76` | 239 | whitespace marks |
+| `muted` | = invisibles | `#4C4C4C` | `76;76;76` | 239 | borders, inactive chrome |
+| `muted_text` | `DVTScrollbarMarkerDiffColor` | `#8E8E8E` | `142;142;142` | 245 | secondary text |
+| `panel_background` | derived | `#111111` | `17;17;17` | 233 | panels, status bars |
+| `subtle` | derived | `#242424` | `36;36;36` | 235 | raised surface, hover |
 
-Two things to know about this palette:
+### Syntax
 
-- **The 256 column has collisions and is a starting point, not an answer.**
-  Nearest-RGB collapses `overlay1`/`overlay2` onto `color103`,
-  `subtext0`/`subtext1` onto `color146`, `teal`/`sky` onto `color116` and
-  `rosewater`/`flamingo` onto `color224`. tig is the only consumer and it needs
-  roles to stay *distinguishable* more than it needs them accurate, so
-  `tig/.config/tig/config` hand-picks around these. Its table is the authority
-  for tig; this one is the authority for everything else.
-- **Mocha has exactly one shade per hue.** Unlike the previous theme there is no
-  muted/saturated pair to draw a ramp from, so the three-step ramps below walk
-  between hues instead of between shades of one.
+| Name | Xcode key | Hex | RGB | 256 | Role |
+|---|---|---|---|---|---|
+| `plain` | `xcode.syntax.plain` | `#FFFFFF` | `255;255;255` | 231 | plain text, operators |
+| `comment` | `xcode.syntax.comment` | `#2EA85B` | `46;168;91` | 35 | comments, marks — **green** |
+| `string` | `xcode.syntax.string` | `#FC4651` | `252;70;81` | 203 | strings, regex — **red** |
+| `keyword` | `xcode.syntax.keyword` | `#F2248C` | `242;36;140` | 198 | keywords, storage |
+| `number` | `xcode.syntax.number` | `#FFE76D` | `255;231;109` | 221 | numbers, characters |
+| `macro` | `xcode.syntax.identifier.macro` | `#FD8F3F` | `253;143;63` | 209 | macros, preprocessor |
+| `attribute` | `xcode.syntax.attribute` | `#E09D65` | `224;157;101` | 179 | attributes, decorators |
+| `url` | `xcode.syntax.url` | `#4FA5FF` | `79;165;255` | 75 | links |
+| `declaration` | `xcode.syntax.declaration.other` | `#35B0D8` | `53;176;216` | 74 | declarations — the accent |
+| `declaration_type` | `xcode.syntax.declaration.type` | `#66DAFF` | `102;218;255` | 81 | type declarations |
+| `project_identifier` | `xcode.syntax.identifier.type` | `#56D0B3` | `86;208;179` | 79 | your types/functions/variables |
+| `system_member` | `xcode.syntax.identifier.function.system` | `#AB64FF` | `171;100;255` | 135 | SDK functions/variables |
+| `system_type` | `xcode.syntax.identifier.type.system` | `#D0A8FF` | `208;168;255` | 183 | SDK types/classes |
+| `markup_code` | `xcode.syntax.markup.code` | `#F2248C` | `242;36;140` | 198 | inline code — **corrected**, see below |
 
-## Semantic roles
+`markup_code` is the one value that does **not** match the Xcode file. Apple
+ships `#AA0D91` in that slot in both `Default (Dark)` and `Default (Light)` —
+it is the *light* theme's keyword magenta, left unchanged in the dark theme.
+On `#171717` it measures **2.71:1**, the only slot in Default+ failing WCAG AA.
+It is corrected to the dark keyword magenta, which is what the light theme's
+own value means: inline code renders in the keyword colour.
 
-| Role | Color |
-|---|---|
-| Editor / terminal background | `base` — Ghostty's built-in Catppuccin Mocha sets the terminal bg to `#1e1e2e`, so every vendored background must agree |
-| Panels, status bars | `mantle` — one step darker than content |
-| Darkest level | `crust` |
-| Text on an accent chip | `base` (style guide: "text on accents: Base") |
-| Selection, highlighted row | `surface0` |
-| Secondary panel, cherry-picked commit bg | `surface1` |
-| Borders, dividers | `surface2` |
-| Foreground text | `text` |
-| Dimmed / secondary text | `overlay1` |
-| Slightly brighter dim text | `overlay2` |
-| **Accent** — active border, current window, focus | `mauve` |
-| Added / staged / success | `green` |
-| Removed / error | `red` |
-| Modified / warning | `yellow` |
-| Links | `blue` |
-| Authors, refs, chunk headers | `lavender` |
+### Status
 
-Syntax slots are the style guide's own table, verbatim:
+| Name | Xcode key | Hex | RGB | 256 | Role |
+|---|---|---|---|---|---|
+| `error` | `DVTScrollbarMarkerErrorColor` | `#F74A4A` | `247;74;74` | 203 | errors, deletions |
+| `warning` | `DVTScrollbarMarkerWarningColor` | `#EFB759` | `239;183;89` | 215 | warnings, modifications |
+| `success` | `DVTConsoleDebuggerPromptTextColor` | `#41B645` | `65;182;69` | 71 | success, additions |
+| `info` | = declaration | `#35B0D8` | `53;176;216` | 74 | informational |
+| `runtime_issue` | `DVTScrollbarMarkerRuntimeIssueColor` | `#A482FF` | `164;130;255` | 141 | runtime issues |
+| `analyzer` | `DVTScrollbarMarkerAnalyzerColor` | `#675FFF` | `103;95;255` | 63 | analyzer findings |
+| `breakpoint` | `DVTScrollbarMarkerBreakpointColor` | `#4A4AF7` | `74;74;247` | 63 | breakpoints |
+| `neutral` | `DVTScrollbarMarkerDiffColor` | `#8E8E8E` | `142;142;142` | 245 | neutral diff marker |
 
-| Syntax role | Color |
-|---|---|
-| Keywords | `mauve` |
-| Strings | `green` |
-| Symbols, atoms, builtins | `red` |
-| Escape sequences, regex | `pink` |
-| Comments | `overlay2` |
-| Constants, numbers | `peach` |
-| Operators | `sky` |
-| Braces, delimiters, punctuation | `overlay2` |
-| Methods, functions | `blue` |
-| Parameters | `maroon` |
-| Classes, types, annotations, attributes | `yellow` |
-| Enum variants | `teal` |
-| Properties (JSON keys) | `blue` |
-| Macros | `rosewater` |
+## ANSI 0–15
 
-Note there is no dedicated variable color: variables take the plain `text`
-foreground.
+Xcode has no ANSI concept, so this ramp is **designed**, not transcribed — but
+every entry is a real Default+ colour, none invented. Ghostty, Claude Code's
+`dark-ansi` base and `LSCOLORS` all key off it.
+
+Normal and bright are genuinely distinct, so terminals must also set
+`bold-is-bright = false` (ghostty) / `UseBrightBold = false` (Apple Terminal),
+or bold changes hue as well as weight.
+
+| # | Slot | Hex | Source | Contrast on bg |
+|---|---|---|---|---|
+| 0 | black | `#4C4C4C` | `base.invisibles` | 2.09:1 *(background tone)* |
+| 1 | red | `#FC4651` | `syntax.string` | 5.24:1 |
+| 2 | green | `#2EA85B` | `syntax.comment` | 5.86:1 |
+| 3 | yellow | `#E09D65` | `syntax.attribute` | 7.84:1 |
+| 4 | blue | `#4FA5FF` | `syntax.url` | 6.96:1 |
+| 5 | magenta | `#F2248C` | `syntax.keyword` | 4.62:1 |
+| 6 | cyan | `#35B0D8` | `syntax.declaration` | 7.13:1 |
+| 7 | white | `#8E8E8E` | `base.muted_text` | 5.47:1 |
+| 8 | bright black | `#515B70` | `base.selection_background` | 2.63:1 *(background tone)* |
+| 9 | bright red | `#F74A4A` | `status.error` | 5.15:1 |
+| 10 | bright green | `#41B645` | `status.success` | 6.83:1 |
+| 11 | bright yellow | `#FFE76D` | `syntax.number` | 14.43:1 |
+| 12 | bright blue | `#66DAFF` | `syntax.declaration_type` | 11.13:1 |
+| 13 | bright magenta | `#AB64FF` | `syntax.system_member` | 5.12:1 |
+| 14 | bright cyan | `#56D0B3` | `syntax.project_identifier` | 9.45:1 |
+| 15 | bright white | `#FFFFFF` | `syntax.plain` | 17.93:1 |
+
+Every slot except 0 and 8 — which are background tones and never carry text —
+clears WCAG AA (4.5:1). Upstream's `bin/build.py --check` enforces this.
 
 ## Derived shades
 
-Catppuccin publishes no diff-background table — the style guide only says a
-selection is "Overlay 2 at 20–30% opacity", which a terminal cannot do. The
-four row and word backgrounds below are taken from
-[catppuccin/delta](https://github.com/catppuccin/delta), the one upstream port
-that resolves that guidance into opaque hex (✓).
+Default+ ships no diff table, so these follow one rule rather than taste: each
+is its source composited over `background` at a fixed opacity. Row = 20%,
+word-level highlight = 35%, muted accent = 50%. Upstream recomputes them in
+`--check`; do not hand-tune.
 
-Those four turn out to follow an exact formula: **a row is its color 20% into
-`base`, a word-level highlight is 35%.** That formula reproduces all four delta
-values to the last digit, so the remaining shades are extrapolated with it
-rather than invented from scratch.
+| Name | Hex | RGB | Rule |
+|---|---|---|---|
+| `diff_added_bg` | `#1C3425` | `28;52;37` | `syntax.comment` at 20% |
+| `diff_removed_bg` | `#452023` | `69;32;35` | `syntax.string` at 20% |
+| `diff_moved_added_bg` | `#1D363E` | `29;54;62` | `syntax.declaration` at 20% |
+| `diff_moved_removed_bg` | `#352645` | `53;38;69` | `syntax.system_member` at 20% |
+| `diff_added_content_bg` | `#1F4A2F` | `31;74;47` | `syntax.comment` at 35% |
+| `diff_removed_content_bg` | `#67272B` | `103;39;43` | `syntax.string` at 35% |
+| `context_content_bg` | `#2F2F2F` | `47;47;47` | `base.muted_text` at 20% |
+| `current_line_solid` | `#26262C` | `38;38;44` | `base.current_line` at 50% |
+| `accent_muted` | `#266478` | `38;100;120` | `syntax.declaration` at 50% |
+| `muted_green` | `#226039` | `34;96;57` | `syntax.comment` at 50% |
+| `muted_red` | `#8A2E34` | `138;46;52` | `syntax.string` at 50% |
+| `muted_yellow` | `#7C5A3E` | `124;90;62` | `syntax.attribute` at 50% |
+| `note_title_bg` | `#1D363E` | `29;54;62` | = `diff_moved_added_bg` |
 
-| Purpose | Source | Hex |
+### Shimmer
+
+Claude Code pairs each accent with a lighter "shimmer" twin for its spinner
+gradient. Rule: **the colour 40% of the way toward `foreground`**. Recorded
+here rather than left as orphan hexes inside the theme JSON.
+
+| Name | Hex | Rule |
 |---|---|---|
-| Added row background | `green` 20% into `base` | `#394545` ✓ |
-| Removed row background | `red` 20% into `base` | `#493447` ✓ |
-| Added word (intra-line) highlight | `green` 35% into `base` | `#4e6356` ✓ |
-| Removed word (intra-line) highlight | `red` 35% into `base` | `#694559` ✓ |
-| Moved-added row background | `blue` 20% into `base` | `#333c57` |
-| Moved-removed row background | `yellow` 20% into `base` | `#4a4548` |
-| Added gutter | `green` 22% into `base` | `#3c4947` |
-| Removed gutter | `red` 22% into `base` | `#4d3649` |
-| Accent, muted (note borders) | `mauve` 35% into `base` | `#5b4e74` |
-| Muted added sign / badge | `green` | `#a6e3a1` ✓ |
-| Muted removed sign / badge | `red` | `#f38ba8` ✓ |
-| Muted changed sign / badge | `yellow` | `#f9e2af` ✓ |
-
-Claude Code's theme also needs a lighter "shimmer" twin for seven colors. Those
-follow one rule too — **the color 40% into `text`** — so they are recorded here
-rather than left as orphan hexes in the theme file the way the last palette left
-them:
-
-| Shimmer of | Hex |
-|---|---|
-| `mauve` (also `rainbow_violet`) | `#ccb9f6` |
-| `pink` (also `permission`) | `#e5caec` |
-| `peach` (also `fastMode`, `rainbow_orange`) | `#e8c1b3` |
-| `red` | `#e4a9c6` |
-| `yellow` | `#e7ddcb` |
-| `green` | `#b6dec2` |
-| `blue` | `#a4c2f8` |
-| `lavender` | `#bec8fa` |
-
-Three-step ramps walk along real palette entries instead of blending. Because
-Mocha has one shade per hue, each step moves hue rather than saturation —
-cooler and paler at the bottom, warmer and more alarming at the top:
-
-| Ramp | cool → warm → hot |
-|---|---|
-| Added heat | `teal #94e2d5` → `green #a6e3a1` → `yellow #f9e2af` |
-| Removed heat | `flamingo #f2cdcd` → `maroon #eba0ac` → `red #f38ba8` |
-| Mixed heat | `sapphire #74c7ec` → `peach #fab387` → `red #f38ba8` |
-| Accent pulse | `lavender #b4befe` → `mauve #cba6f7` → `pink #f5c2e7` |
-| Track (behind any ramp) | `surface1 #45475a` |
+| `shimmer_blue` | `#86D0E8` | `syntax.declaration` 40% toward foreground |
+| `shimmer_magenta` | `#F77CBA` | `syntax.keyword` 40% toward foreground |
+| `shimmer_yellow` | `#FFF1A7` | `syntax.number` 40% toward foreground |
+| `shimmer_orange` | `#FEBC8C` | `syntax.macro` 40% toward foreground |
+| `shimmer_red` | `#FD9097` | `syntax.string` 40% toward foreground |
+| `shimmer_green` | `#82CB9D` | `syntax.comment` 40% toward foreground |
+| `shimmer_indigo` | `#95C9FF` | `syntax.url` 40% toward foreground |
+| `shimmer_violet` | `#CDA2FF` | `syntax.system_member` 40% toward foreground |
 
 ## Where the copies live
 
-| Tool | How it gets the palette |
-|---|---|
-| Ghostty | built-in — `theme = "Catppuccin Mocha"` |
-| Neovim | the `catppuccin/nvim` plugin — `flavour = "mocha"` |
-| herdr | built-in — `name = "catppuccin"` |
-| opencode | built-in — `"theme": "catppuccin-mocha"` |
-| bat | `bat/.config/bat/themes/catppuccin-mocha.tmTheme`, vendored from `catppuccin/bat` verbatim |
-| lazygit | `gui.theme` from `catppuccin/lazygit`, the `mocha/mauve` variant |
-| yazi | `yazi/.config/yazi/theme.toml`, vendored from `catppuccin/yazi` (`mocha-mauve`). Code previews reuse the bat vendored `.tmTheme` via `syntect_theme` |
-| zsh | `LS_COLORS` from `vivid generate catppuccin-mocha` |
-| Sublime Text | `sublime/.../User/catppuccin-mocha.sublime-color-scheme`, vendored from `catppuccin/sublime-text` verbatim |
-| tmux, tig, hunk, vigia | hand-ported inline — no upstream port this repo can consume |
-| holodeck | built-in — `"theme": "catppuccin-mocha"` |
-| vademecum | built-in — `base = "catppuccin-mocha"` |
-| Xcode | `xcode/Library/.../FontAndColorThemes/Catppuccin Mocha+.{xccolortheme,xcworkspacecolortheme}` — hand-ported, and **pre-compensated**: Xcode re-derives a theme rather than rendering it literally, so the stored values are `L -0.043, C x1.25` off the palette in order to *render* as it. See AGENTS.md |
-| Claude Code | theme: `claude/.claude/themes/catppuccin-mocha.json`; statusline: `claude/.claude/statusline.py` emits truecolor escapes for the hexes inline |
+Upstream is `~/Developer/default-plus`. Files marked *generated* are emitted by
+its `bin/build.py`; re-copy rather than editing either end by hand.
 
-The hand-ported four are the only places a value is transcribed by hand.
-**tmux's** official port is a TPM plugin and this repo runs no tmux plugin
-manager; **tig**, **hunk** and **vigia** have no Catppuccin port at all.
+| Tool | File | How it gets the palette |
+|---|---|---|
+| xcode | `xcode/…/FontAndColorThemes/Default+.xccolortheme` | the source of truth itself |
+| ghostty | `ghostty/.config/ghostty/themes/Default+` | vendored, *generated* |
+| tig | `tig/.config/tig/config` | vendored, *generated* — 256 indices, hand-picked |
+| lazygit | `lazygit/.config/lazygit/config.yml` | `theme:` block vendored, *generated* |
+| herdr | `herdr/.config/herdr/config.toml` | `[theme.custom]` vendored, *generated* |
+| zsh | `zsh/.config/zsh/ls_colors.zsh` | vivid's filetype DB, palette substituted by role |
+| zsh | `zsh/.zshrc` | prompt + `LSCOLORS`, inline |
+| hunk | `hunk/.config/hunk/config.toml` | `[custom_theme]` vendored |
+| vigia | `vigia/.config/vigia/theme` | vendored |
+| opencode | `opencode/.config/opencode/themes/default-plus.json` | vendored |
+| claude | `claude/.claude/themes/default-plus.json` | vendored |
+| claude | `claude/.claude/statusline.py` | 6 constants, inline |
+| nvim | `nvim/.config/nvim/colors/default-plus.lua` | vendored from `default-plus-nvim` |
+| bat | `bat/.config/bat/themes/default-plus.tmTheme` | hand-written here |
+| sublime | `sublime/…/User/default-plus.sublime-color-scheme` | hand-written here |
+| yazi | `yazi/.config/yazi/theme.toml` | hand-written here |
+| tmux | `tmux/.config/tmux/tmux.conf` | hand-written here, inline |
+| vademecum | `vademecum/.config/vademecum/theme.toml` | hand-written here, full 15-slot palette |
+| git | — | none; ANSI names only, no hex |
+| holodeck | `holodeck/.config/holodeck/config.json` | **none — see the gap below** |
+
+**holodeck is the one gap.** It selects a theme by name only, has no custom
+theme support, and silently falls back on an unknown name — an invalid theme
+still reports a clean run. It therefore stays on a built-in until a
+`default-plus` theme is added to holodeck itself. Do not set it to
+`"default-plus"` before then: that would look correct and render wrong.

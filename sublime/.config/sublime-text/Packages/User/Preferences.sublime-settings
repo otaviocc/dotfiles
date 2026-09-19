@@ -4,8 +4,8 @@
 	// status bar, panels).
 	"theme": "Adaptive.sublime-theme",
 
-	// Catppuccin Mocha, vendored verbatim from catppuccin/sublime-text.
-	"color_scheme": "Packages/User/catppuccin-mocha.sublime-color-scheme",
+	// Default+, vendored from this repo's palette.
+	"color_scheme": "Packages/User/default-plus.sublime-color-scheme",
 
 	// The scheme defines a line highlight; make it visible.
 	"highlight_line": true,

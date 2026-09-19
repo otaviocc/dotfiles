@@ -6,7 +6,7 @@ if [ -x /opt/homebrew/bin/brew ]; then
 fi
 
 # Prefer GNU ls over BSD /bin/ls. BSD ls cannot read LS_COLORS at all — it only
-# understands the 8-colour LSCOLORS string — so on stock macOS the Catppuccin
+# understands the 8-colour LSCOLORS string — so on stock macOS the Default+
 # palette would reach zsh's completion menu and every GNU tool, but not `ls`
 # itself, and directories would be a different colour in the two places. gls
 # (coreutils) reads the same LS_COLORS as Fedora, so both machines match.

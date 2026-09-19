@@ -1,21 +1,21 @@
 # bat configuration — one CLI argument per line.
 #
-# Catppuccin is not built into bat, so the theme is vendored as
-# themes/catppuccin-mocha.tmTheme — copied verbatim from catppuccin/bat, no
-# hand-porting. bat only picks a theme file up from a compiled cache, so after
-# a fresh `./install.sh bat` (or any edit to it) run:
+# Default+ is not built into bat, so the theme is vendored as
+# themes/default-plus.tmTheme. bat only picks a theme file up from a compiled
+# cache, so after a fresh `./install.sh bat` (or any edit to it) run:
 #
 #     bat cache --build
 #
-# `bat --list-themes` should then show `catppuccin-mocha`. Note bat names a
-# *user* theme after its filename, not the `name` key inside the plist (which
-# here is "Catppuccin Mocha"), and a wrong value is silent — bat falls back to
-# its built-in Monokai default and prints orange rather than erroring. Verify
-# after any rename.
+# `bat --list-themes` should then show `default-plus`. Note bat names a *user*
+# theme after its filename, not the `name` key inside the plist, and a wrong
+# value is silent — bat falls back to its built-in Monokai default and prints
+# orange rather than erroring. Verify after any rename.
 #
-# Palette: see docs/palette.md.
+# The file is hand-written against docs/palette.md; Default+ has no upstream
+# tmTheme to copy. Roles follow Xcode, so comments are green and strings are
+# red — that inversion is deliberate, see docs/palette.md.
 
---theme="catppuccin-mocha"
+--theme="default-plus"
 
 # Line numbers, git modification markers and a header per file, but no grid.
 --style="numbers,changes,header"

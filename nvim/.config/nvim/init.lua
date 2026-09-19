@@ -71,7 +71,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
 -- `vim.pack` records revisions in nvim-pack-lock.json, which is tracked in
 -- this repo. Never hand-edit that file; see `:h vim.pack-lockfile`.
 vim.pack.add({
-    { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
     { src = "https://github.com/nvim-lua/plenary.nvim" },
     { src = "https://github.com/echasnovski/mini.nvim" },
     -- Deliberately unpinned: the 0.1.8 tag predates Neovim 0.12 and calls
@@ -89,19 +88,16 @@ vim.pack.add({
 })
 
 -- Color scheme -------------------------------------------------------------
--- Mocha is the darkest flavour; see docs/palette.md, the source of truth for
--- every colour in this repo. Deliberately opaque, like every other tool here,
--- rather than transparent.
+-- Default+ is vendored, not a plugin: it began as an Xcode theme and has no
+-- upstream Neovim port to install. colors/default-plus.lua is copied from
+-- ~/Developer/default-plus-nvim; re-copy it rather than editing here. See
+-- docs/palette.md, the source of truth for every colour in this repo.
 --
--- The repo is packaged as `catppuccin/nvim`, so `name = "catppuccin"` above
--- pins the plugin directory to what `require("catppuccin")` expects — without
--- it vim.pack installs it as `nvim` and the require fails.
+-- Roles follow Xcode, so comments are GREEN and strings are RED. That is the
+-- theme's signature, not a mistake. Deliberately opaque, like every other
+-- tool here, rather than transparent.
 vim.o.background = "dark"
-require("catppuccin").setup({
-    flavour = "mocha",
-    background = { dark = "mocha" },
-})
-vim.cmd.colorscheme("catppuccin")
+vim.cmd.colorscheme("default-plus")
 
 -- mini.nvim ----------------------------------------------------------------
 -- One plugin, several independent modules. Set up before oil and telescope so

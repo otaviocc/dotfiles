@@ -1,0 +1,134 @@
+{
+    // Default+ for Sublime Text.
+    //
+    // Hand-written from the semantic roles in docs/palette.md; Default+ began
+    // as an Xcode theme and has no Sublime port upstream. Upstream for the
+    // palette itself is ~/Developer/default-plus (palette.yaml).
+    //
+    // Roles follow Xcode, which is NOT the usual convention: comments are
+    // GREEN and strings are RED. Identifiers you declare share one teal;
+    // SDK members are purple and SDK types light purple.
+    "name": "Default+",
+    "author": "Otavio Cordeiro",
+    "variables": {
+        "bg": "#171717",
+        "panel": "#111111",
+        "subtle": "#242424",
+        "current_line": "#26262C",
+        "selection": "#515B70",
+        "muted": "#4C4C4C",
+        "muted_text": "#8E8E8E",
+        "fg": "#FFFFFF",
+
+        "comment": "#2EA85B",
+        "string": "#FC4651",
+        "keyword": "#F2248C",
+        "number": "#FFE76D",
+        "macro": "#FD8F3F",
+        "attribute": "#E09D65",
+        "url": "#4FA5FF",
+        "declaration": "#35B0D8",
+        "declaration_type": "#66DAFF",
+        "project": "#56D0B3",
+        "system_member": "#AB64FF",
+        "system_type": "#D0A8FF",
+
+        "error": "#F74A4A",
+        "warning": "#EFB759",
+        "success": "#41B645",
+        "added": "#226039",
+        "removed": "#8A2E34"
+    },
+    "globals": {
+        "background": "var(bg)",
+        "foreground": "var(fg)",
+        "caret": "var(fg)",
+        "line_highlight": "var(current_line)",
+        "selection": "var(selection)",
+        "selection_border": "var(selection)",
+        "inactive_selection": "var(subtle)",
+        "misspelling": "var(error)",
+        "gutter": "var(bg)",
+        "gutter_foreground": "var(muted)",
+        "line_diff_added": "var(success)",
+        "line_diff_modified": "var(warning)",
+        "line_diff_deleted": "var(error)",
+        "invisibles": "var(muted)",
+        "guide": "var(subtle)",
+        "active_guide": "var(muted_text)",
+        "stack_guide": "var(muted)",
+        "find_highlight": "var(number)",
+        "find_highlight_foreground": "var(bg)",
+        "brackets_options": "underline",
+        "brackets_foreground": "var(muted_text)",
+        "bracket_contents_options": "underline",
+        "bracket_contents_foreground": "var(muted_text)",
+        "tags_options": "stippled_underline",
+        "tags_foreground": "var(declaration)",
+        "shadow": "var(panel)"
+    },
+    "rules": [
+        // Comments -> GREEN, the Default+ signature
+        { "name": "Comment", "scope": "comment, punctuation.definition.comment", "foreground": "var(comment)", "font_style": "italic" },
+        { "name": "Documentation comment", "scope": "comment.block.documentation", "foreground": "var(comment)", "font_style": "italic" },
+
+        // Strings -> RED
+        { "name": "String", "scope": "string", "foreground": "var(string)" },
+        { "name": "String punctuation", "scope": "punctuation.definition.string", "foreground": "var(string)" },
+        { "name": "Regular expression", "scope": "string.regexp, constant.regexp", "foreground": "var(string)" },
+        { "name": "String escape", "scope": "constant.character.escape", "foreground": "var(macro)" },
+        { "name": "Embedded punctuation", "scope": "punctuation.section.embedded, punctuation.definition.template-expression", "foreground": "var(fg)" },
+
+        // Keywords and storage
+        { "name": "Keyword", "scope": "keyword, keyword.control, keyword.other", "foreground": "var(keyword)" },
+        { "name": "Storage", "scope": "storage, storage.type, storage.modifier", "foreground": "var(keyword)" },
+        { "name": "Language constant", "scope": "constant.language, variable.language", "foreground": "var(keyword)" },
+        { "name": "Operator", "scope": "keyword.operator, punctuation.separator.operator", "foreground": "var(fg)" },
+
+        // Numbers and constants
+        { "name": "Number", "scope": "constant.numeric", "foreground": "var(number)" },
+        { "name": "Character", "scope": "constant.character", "foreground": "var(number)" },
+        { "name": "Other constant", "scope": "constant.other, variable.other.constant, variable.other.enummember", "foreground": "var(number)" },
+
+        // Project identifiers -> teal
+        { "name": "Function", "scope": "entity.name.function, meta.function-call, meta.method-call", "foreground": "var(project)" },
+        { "name": "Type / class", "scope": "entity.name.type, entity.name.class, entity.name.struct, entity.name.enum", "foreground": "var(project)" },
+        { "name": "Variable", "scope": "variable, variable.other, variable.parameter", "foreground": "var(project)" },
+        { "name": "Member", "scope": "variable.other.member, meta.property", "foreground": "var(project)" },
+
+        // System / SDK identifiers -> purple
+        { "name": "Support function", "scope": "support.function", "foreground": "var(system_member)" },
+        { "name": "Support constant", "scope": "support.constant", "foreground": "var(system_member)" },
+        { "name": "Support type / class", "scope": "support.type, support.class, support.other.namespace", "foreground": "var(system_type)" },
+        { "name": "Type parameter", "scope": "entity.name.type.parameter, meta.generic", "foreground": "var(declaration_type)" },
+        { "name": "Inherited class", "scope": "entity.other.inherited-class", "foreground": "var(declaration)" },
+
+        // Preprocessor, attributes, tags
+        { "name": "Preprocessor / macro", "scope": "meta.preprocessor, keyword.control.import, keyword.control.directive", "foreground": "var(macro)" },
+        { "name": "Attribute / decorator", "scope": "entity.other.attribute-name, meta.decorator, meta.annotation", "foreground": "var(attribute)" },
+        { "name": "Tag", "scope": "entity.name.tag", "foreground": "var(declaration)" },
+        { "name": "Tag punctuation", "scope": "punctuation.definition.tag", "foreground": "var(muted_text)" },
+        { "name": "Punctuation", "scope": "punctuation, punctuation.separator, punctuation.terminator, punctuation.accessor", "foreground": "var(muted_text)" },
+
+        // Diagnostics
+        { "name": "Link", "scope": "markup.underline.link, string.other.link, meta.link", "foreground": "var(url)", "font_style": "underline" },
+        { "name": "Invalid", "scope": "invalid, invalid.illegal", "foreground": "var(error)" },
+        { "name": "Deprecated", "scope": "invalid.deprecated", "foreground": "var(warning)" },
+
+        // Markup
+        { "name": "Markup heading", "scope": "markup.heading, entity.name.section", "foreground": "var(declaration)", "font_style": "bold" },
+        { "name": "Markup bold", "scope": "markup.bold", "foreground": "var(fg)", "font_style": "bold" },
+        { "name": "Markup italic", "scope": "markup.italic", "foreground": "var(fg)", "font_style": "italic" },
+        { "name": "Markup raw / code", "scope": "markup.raw, markup.inline.raw", "foreground": "var(keyword)" },
+        { "name": "Markup list", "scope": "markup.list, punctuation.definition.list_item", "foreground": "var(project)" },
+        { "name": "Markup quote", "scope": "markup.quote", "foreground": "var(muted_text)", "font_style": "italic" },
+        { "name": "Markup inserted", "scope": "markup.inserted", "foreground": "var(success)" },
+        { "name": "Markup deleted", "scope": "markup.deleted", "foreground": "var(error)" },
+        { "name": "Markup changed", "scope": "markup.changed", "foreground": "var(declaration)" },
+
+        // Data formats
+        { "name": "JSON key", "scope": "meta.mapping.key string, support.type.property-name", "foreground": "var(declaration)" },
+        { "name": "YAML anchor", "scope": "entity.name.other.anchor, variable.other.alias", "foreground": "var(system_member)" },
+        { "name": "Diff header", "scope": "meta.diff.header, meta.diff.range", "foreground": "var(number)" }
+    ]
+}

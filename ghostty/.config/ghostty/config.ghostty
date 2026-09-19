@@ -5,11 +5,12 @@
 # --default --docs | grep xdg_config_home` if a future Ghostty release on
 # either machine expects plain `config` instead — rename/symlink as needed).
 
-# Theme (built into Ghostty, see README "The Catppuccin Mocha theme")
-theme = "Catppuccin Mocha"
+# Theme. Unlike Kanagawa, Default+ is not built into Ghostty: it is vendored
+# at themes/Default+ in this package, which Ghostty reads by filename.
+theme = "Default+"
 bold-color = bright
-# surface2 — the divider is chrome, not signal, so it stays out of the accent.
-split-divider-color = #585b70
+# muted — the divider is chrome, not signal, so it stays out of the accent.
+split-divider-color = #4C4C4C
 
 # Font (unset: use each OS's default monospace font)
 font-size = 13

@@ -1,1 +1,54 @@
-base = "catppuccin-mocha"
+# vademecum — Default+.
+#
+# ~/.config/vademecum/theme.toml *is* vademecum's default theme; there is no
+# "default theme by name" setting. Unlike the previous palettes, vademecum
+# ships no Default+ built-in, so this cannot be the one-line `base = "..."`
+# it used to be — the full 15-slot palette is spelled out below.
+#
+# `base = "ansi"` is the foundation because ansi asserts nothing: every slot it
+# defines defers to the terminal, and ghostty already puts Default+ on those.
+# So anything vademecum derives outside these 15 slots still lands in-theme.
+# Everything the reader actually sees is overridden here regardless.
+#
+# Palette: docs/palette.md. Upstream: ~/Developer/default-plus (palette.yaml).
+#
+# TRAP: `syntax_theme` can only name one of vademecum's seven built-in syntect
+# themes — it takes no path, so unlike yazi it cannot reuse the bat package's
+# vendored default-plus.tmTheme. Fenced code blocks inside Markdown are
+# therefore NOT Default+; base16-ocean.dark is the least discordant of the
+# seven against this background. Everything outside a code fence is exact.
+
+base = "ansi"
+syntax_theme = "base16-ocean.dark"
+
+[palette]
+background           = "#171717"   # bg
+foreground           = "#FFFFFF"   # plain
+muted                = "#4C4C4C"   # invisibles — rules, borders
+muted_text           = "#8E8E8E"   # secondary text
+subtle               = "#242424"   # the code band, a shade off the ground
+cursor               = "#26262C"   # current_line flattened to 100%
+selection_background = "#515B70"   # Xcode's own selection
+selection_foreground = "#FFFFFF"   # plain
+error                = "#F74A4A"   # status.error
+success              = "#41B645"   # status.success
+warning              = "#EFB759"   # status.warning
+accent               = "#35B0D8"   # declaration — the accent across this repo
+chrome               = "#35B0D8"   # declaration
+highlight            = "#4FA5FF"   # url
+notice               = "#AB64FF"   # system_member
+
+# `subtle` is a real near-background tint rather than ANSI bright black, so
+# code gets its band. `inline_code` takes the keyword magenta, which is what
+# Xcode's own `markup.code` slot means — "inline code renders as a keyword".
+[elements.inline_code]
+fg = "#F2248C"
+bg = "subtle"
+
+[elements.code_block]
+fg = "#FFFFFF"
+bg = "subtle"
+
+[elements.code_block_lang]
+fg = "#8E8E8E"
+bg = "subtle"
