@@ -118,6 +118,23 @@ or bold changes hue as well as weight.
 Every slot except 0 and 8 — which are background tones and never carry text —
 clears WCAG AA (4.5:1). Upstream's `bin/build.py --check` enforces this.
 
+## The usage heat ramp
+
+`claude/.claude/statusline.py` colours each usage percentage by how much of the
+window is spent. Every band carries a colour, including the lowest — an earlier
+version left anything under 60% grey, which meant the numbers only became
+legible once they were already a problem.
+
+| Usage | Colour | Hex |
+|---|---|---|
+| < 60% | `status.success` | `#41B645` |
+| 60–79% | `syntax.number` | `#FFE76D` |
+| 80–94% | `status.warning` | `#EFB759` |
+| ≥ 95% | `status.error` | `#F74A4A` |
+
+The number is bold, its label is `base.muted_text`, and the reset countdown is
+`base.muted` — number, label, qualifier, in descending prominence.
+
 ## Derived shades
 
 Default+ ships no diff table, so these follow one rule rather than taste: each
@@ -176,7 +193,7 @@ its `bin/build.py`; re-copy rather than editing either end by hand.
 | vigia | `vigia/.config/vigia/theme` | vendored |
 | opencode | `opencode/.config/opencode/themes/default-plus.json` | vendored |
 | claude | `claude/.claude/themes/default-plus.json` | vendored |
-| claude | `claude/.claude/statusline.py` | 6 constants, inline |
+| claude | `claude/.claude/statusline.py` | 8 constants, inline; see the heat ramp above |
 | nvim | `nvim/.config/nvim/colors/default-plus.lua` | vendored from `default-plus-nvim` |
 | bat | `bat/.config/bat/themes/default-plus.tmTheme` | hand-written here |
 | sublime | `sublime/…/User/default-plus.sublime-color-scheme` | hand-written here |

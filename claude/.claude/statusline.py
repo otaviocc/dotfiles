@@ -20,6 +20,11 @@ Segments drop out silently when their input is missing:
 Colours are Default+ (docs/palette.md). Truecolor escapes only, so the output
 does not depend on how the terminal maps the ANSI slots.
 
+Each usage number is bold and carries a heat colour at every level -- green,
+yellow, amber, red -- so the three of them are what the eye lands on. Labels
+stay mid-grey and the reset countdowns dimmer still, which is the hierarchy:
+the number is the signal, the label names it, the countdown qualifies it.
+
 stdlib only; any unexpected input prints nothing and exits 0 so a bad payload
 can never wedge the TUI.
 """
@@ -30,13 +35,17 @@ import re
 import sys
 import time
 
-# Default+, from docs/palette.md.
-COMMENT = "#8E8E8E"  # muted_text   -- labels, dim text
-WHITESPACE = "#4C4C4C"  # muted        -- separators
-YELLOW = "#FFE76D"  # number       -- accent: model, branch
-VIOLET = "#56D0B3"  # project_id   -- directory (mirrors the zsh prompt)
-VCS_CHANGED = "#EFB759"  # warning      -- warning heat
-VCS_REMOVED = "#F74A4A"  # error        -- critical heat
+# Default+, from docs/palette.md. Named for the palette role each fills, not
+# for the hue -- the previous names were inherited from an older palette and
+# had drifted (`VIOLET` held a teal).
+MUTED = "#4C4C4C"  # muted        -- separators, countdowns
+MUTED_TEXT = "#8E8E8E"  # muted_text   -- labels
+NUMBER = "#FFE76D"  # number       -- model name
+PROJECT = "#56D0B3"  # project_id   -- directory (mirrors the zsh prompt)
+MACRO = "#FD8F3F"  # macro        -- branch
+SUCCESS = "#41B645"  # success      -- usage: plenty of headroom
+WARNING = "#EFB759"  # warning      -- usage: getting close
+ERROR = "#F74A4A"  # error        -- usage: nearly spent
 
 RESET = "\x1b[0m"
 _ESCAPE_RE = re.compile(r"\x1b\[[0-9;]*m")
@@ -51,14 +60,20 @@ def fg(hexcolor, text, bold=False):
 
 
 def heat(pct):
-    """Colour for a usage percentage -- the 'Mixed heat' ramp in palette.md."""
+    """Colour for a usage percentage -- the heat ramp in docs/palette.md.
+
+    Every band carries a colour, including the low one. An earlier version
+    returned the label grey below 60%, which meant that at ordinary usage the
+    whole right-hand side of the line was grey and there was nothing to scan
+    for: the numbers only became legible once they were already a problem.
+    """
     if pct >= 95:
-        return VCS_REMOVED
+        return ERROR
     if pct >= 80:
-        return VCS_CHANGED
+        return WARNING
     if pct >= 60:
-        return YELLOW
-    return COMMENT
+        return NUMBER
+    return SUCCESS
 
 
 def visible_len(text):
@@ -70,10 +85,10 @@ def seg_model(data):
     name = model.get("display_name")
     if not name:
         return None
-    out = fg(YELLOW, name, bold=True)
+    out = fg(NUMBER, name, bold=True)
     level = (data.get("effort") or {}).get("level")
     if level:
-        out += fg(COMMENT, f" · {level}")
+        out += fg(MUTED_TEXT, f" · {level}")
     return out
 
 
@@ -115,10 +130,10 @@ def seg_dir(data):
     if not current:
         return None
     name = os.path.basename(current.rstrip("/")) or current
-    out = fg(VIOLET, name)
+    out = fg(PROJECT, name)
     label = workspace.get("git_worktree") or _branch(current)
     if label:
-        out += " " + fg(YELLOW, label)
+        out += " " + fg(MACRO, label)
     return out
 
 
@@ -161,11 +176,11 @@ def seg_rate(data, key, label, resets=True):
     pct = _limit(window)
     if pct is None:
         return None
-    out = fg(COMMENT, f"{label} ") + fg(heat(pct), f"{pct:.0f}%")
+    out = fg(MUTED_TEXT, f"{label} ") + fg(heat(pct), f"{pct:.0f}%", bold=True)
     if resets:
         left = _countdown(window)
         if left:
-            out += fg(COMMENT, f" {left}")
+            out += fg(MUTED, f" {left}")
     return out
 
 
@@ -173,7 +188,7 @@ def seg_ctx(data):
     pct = (data.get("context_window") or {}).get("used_percentage")
     if pct is None:
         return None
-    return fg(COMMENT, "ctx ") + fg(heat(pct), f"{pct:.0f}%")
+    return fg(MUTED_TEXT, "ctx ") + fg(heat(pct), f"{pct:.0f}%", bold=True)
 
 
 def build(data, resets=True):
@@ -194,7 +209,7 @@ def main():
     if not segments:
         return
 
-    sep = fg(WHITESPACE, "  ·  ")
+    sep = fg(MUTED, "  ·  ")
 
     def render(segs):
         return sep.join(segs)
