@@ -200,6 +200,7 @@ its `bin/build.py`; re-copy rather than editing either end by hand.
 | yazi | `yazi/.config/yazi/theme.toml` | hand-written here |
 | tmux | `tmux/.config/tmux/tmux.conf` | hand-written here, inline |
 | vademecum | `vademecum/.config/vademecum/theme.toml` | hand-written here, full 15-slot palette |
+| rewind | `rewind/.config/rewind/theme.toml` | one line; rewind ships Default+ as a built-in |
 | git | — | none; ANSI names only, no hex |
 | holodeck | `holodeck/.config/holodeck/config.json` | **none — see the gap below** |
 

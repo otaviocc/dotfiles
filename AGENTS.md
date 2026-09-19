@@ -14,7 +14,7 @@ where the file lands under `$HOME` (`zsh/.zshrc` → `~/.zshrc`,
 `nvim/.config/nvim/init.lua` → `~/.config/nvim/init.lua`).
 
 Packages: `zsh git nvim tmux ghostty sublime lazygit tig yazi herdr opencode hunk vigia bat
-claude holodeck vademecum`, plus `xcode` (macOS only) and the
+claude holodeck vademecum rewind`, plus `xcode` (macOS only) and the
 OS-overlay packages `git-macos`/`git-linux` and `ghostty-macos`/`ghostty-linux`.
 
 ## Commands
@@ -199,6 +199,17 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   `~/Library/Preferences/com.apple.dt.Xcode.plist`, which is a stale shadow —
   editing the latter does nothing.
 
+- **rewind** — only `theme.toml` is tracked, and it is one line:
+  `base = "default-plus"`. rewind uses the same theme schema as vademecum —
+  the same 15 `[palette]` slots and the same `[elements.*]` tables, because
+  its built-ins were ported from vademecum's — but unlike vademecum it
+  **ships Default+ as a built-in**, so the base is all this file needs. Add a
+  `[palette]` or `[elements.*]` table below the `base` line only for slots you
+  want different from the built-in. Upstream is `~/Developer/rewind`
+  (`themes/default-plus.toml`); that repo's gate is `make check`, and a change
+  to a theme key updates its README in the same PR under a `docs:` commit.
+  Nothing else in `~/.config/rewind/` is written by the program — it reads
+  that directory and caches elsewhere — so the whole directory is safe to stow.
 - **vademecum** — the theme is the whole config; there is no "default theme by
   name" setting. `~/.config/vademecum/theme.toml` *is* the default theme.
   Under the previous palettes this was a single `base = "<built-in>"` line,

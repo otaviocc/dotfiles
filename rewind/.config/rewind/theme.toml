@@ -1,0 +1,14 @@
+# rewind — Default+.
+#
+# ~/.config/rewind/theme.toml *is* rewind's default theme; there is no
+# "default theme by name" setting. `base` names a built-in and the rest of the
+# file merges over that, so this one line is the whole config: rewind ships
+# Default+ as a built-in, and everything below the base is already correct.
+#
+# Add a [palette] or [elements.*] table below only for slots you actually want
+# different from the built-in. `rewind --theme default-plus` selects the same
+# theme per run without this file at all; the file exists to make it default.
+#
+# Palette: docs/palette.md. Upstream: ~/Developer/rewind (themes/default-plus.toml),
+# itself generated from ~/Developer/default-plus.
+base = "default-plus"
