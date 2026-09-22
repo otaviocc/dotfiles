@@ -15,6 +15,11 @@ __pycache__/
 !/claude/.claude/skills/
 !/claude/.claude/statusline.py
 
+# Claude Code syncs its built-in (Anthropic-provided) skills into
+# skills/synced/ at runtime; it's generated, not hand-written, so it's
+# excluded even though skills/ itself is tracked.
+/claude/.claude/skills/synced/
+
 # hunk writes runtime state next to its tracked config; only config.toml
 # belongs in the repo (same split as herdr and holodeck).
 /hunk/.config/hunk/state.json
