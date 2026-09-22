@@ -15,3 +15,30 @@ fi
 if [[ -d "/home/linuxbrew/.linuxbrew/bin/" ]]; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 fi
+
+# macOS-style `open` for Linux, backed by xdg-open.
+open() {
+  if ! command -v xdg-open >/dev/null 2>&1; then
+    echo "[Error] 'open' requires xdg-open (xdg-utils)" >&2
+    return 1
+  fi
+
+  if [ $# -eq 0 ]; then
+    nohup xdg-open . >/dev/null 2>&1 &
+    disown
+    return 0
+  fi
+
+  local item rc=0
+  for item in "$@"; do
+    if [ -e "$item" ] || [[ "$item" =~ ^[a-zA-Z][a-zA-Z0-9+.-]*:// ]]; then
+      nohup xdg-open "$item" >/dev/null 2>&1 &
+      disown
+    else
+      echo "[Error] 'open' target invalid or unreachable: $item" >&2
+      rc=1
+    fi
+  done
+
+  return $rc
+}
