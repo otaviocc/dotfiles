@@ -24,6 +24,14 @@ __pycache__/
 # belongs in the repo (same split as herdr and holodeck).
 /hunk/.config/hunk/state.json
 
+# herdr writes runtime state next to its tracked config; only config.toml
+# belongs in the repo (see AGENTS.md).
+/herdr/.config/herdr/session.json
+/herdr/.config/herdr/release-notes.json
+/herdr/.config/herdr/.plugins.lock
+/herdr/.config/herdr/*.log
+/herdr/.config/herdr/*.sock
+
 # Exceptions: these *.local files are pre-committed relative symlinks that
 # make up the OS-overlay packages (see README "Handling Fedora vs macOS
 # differences"), not machine-local runtime state.
