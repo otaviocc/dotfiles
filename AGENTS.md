@@ -202,7 +202,7 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
 - **rewind** — only `theme.toml` is tracked, and it is one line:
   `base = "default-plus"`. rewind uses the same theme schema as vademecum —
   the same 15 `[palette]` slots and the same `[elements.*]` tables, because
-  its built-ins were ported from vademecum's — but unlike vademecum it
+  its built-ins were ported from vademecum's — and, like vademecum, it
   **ships Default+ as a built-in**, so the base is all this file needs. Add a
   `[palette]` or `[elements.*]` table below the `base` line only for slots you
   want different from the built-in. Upstream is `~/Developer/rewind`
@@ -212,18 +212,17 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   that directory and caches elsewhere — so the whole directory is safe to stow.
 - **vademecum** — the theme is the whole config; there is no "default theme by
   name" setting. `~/.config/vademecum/theme.toml` *is* the default theme.
-  Under the previous palettes this was a single `base = "<built-in>"` line,
-  because vademecum shipped those themes. It ships no Default+, so the file
-  now spells out all 15 `[palette]` slots plus the three `code_block` elements.
-  `base = "ansi"` remains underneath because `ansi` asserts nothing — every
-  slot it defines defers to the terminal, which ghostty already themes — so
-  anything vademecum derives outside the 15 still lands in-theme. It validates
-  keys: an unknown one under `[palette]` is a hard error naming the key, which
-  is how the slot list was recovered. `--list-themes` and `--list-syntax-themes`
-  print what it knows. **`syntax_theme` takes a name, not a path**, so unlike
-  yazi it cannot reuse the bat package's tmTheme: fenced code blocks inside
-  Markdown are *not* Default+, and `base16-ocean.dark` is the least discordant
-  of its seven built-ins.
+  It now ships Default+ as a built-in (`--list-themes` lists it alongside
+  `catppuccin-mocha`, `kanagawa-dragon`, etc.), so the file is back to the
+  one-line `base = "default-plus"` form, same as `rewind`. Earlier palettes
+  needed the full 15 `[palette]` slots plus the three `code_block` elements
+  spelled out by hand because vademecum shipped no Default+ of its own yet;
+  that manual form is only needed again if you want to override a slot below
+  the `base` line. `--list-themes` and `--list-syntax-themes` print what it
+  knows. **`syntax_theme` takes a name, not a path**, so unlike yazi it cannot
+  reuse the bat package's tmTheme: fenced code blocks inside Markdown are
+  *not* Default+, and `base16-ocean.dark` is the least discordant of its
+  seven built-ins.
 
 ## Default+ theme
 
