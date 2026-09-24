@@ -30,6 +30,7 @@ claude   Claude Code theme + statusline + shared agent skills
 holodeck holodeck
 vademecum vademecum
 rewind   rewind (Claude Code history browser)
+lyrics   lyrics-sidecar (lyrics fetcher + tui)
 xcode    Xcode colour theme (macOS only)
 ```
 

@@ -1,0 +1,10 @@
+# lyrics — fetcher + `tui` teleprompter.
+#
+# Provider: lrcmux aggregates multiple sources (Genius, KuGou, LRCLIB, Musixmatch,
+# YouTube Music) and turns up lyrics LRCLIB alone sometimes misses.
+#
+# Theme: Default+, to match every other TUI in this repo.
+#
+# Full option/theme docs: ~/Developer/lyrics/README.md.
+[tui]
+theme = "default-plus"

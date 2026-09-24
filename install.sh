@@ -31,7 +31,7 @@ case "$OS" in
   *)      OS_SUFFIX="" ;;
 esac
 
-ALL_PACKAGES=(zsh git nvim tmux ghostty sublime lazygit tig yazi herdr opencode hunk vigia bat claude holodeck vademecum rewind)
+ALL_PACKAGES=(zsh git nvim tmux ghostty sublime lazygit tig yazi herdr opencode hunk vigia bat claude holodeck vademecum rewind lyrics)
 
 # Packages with no Linux counterpart at all. These are ordinary packages, not
 # the `*-macos` symlink overlays: `sublime` exists on both machines and only
