@@ -27,10 +27,27 @@ __pycache__/
 # herdr writes runtime state next to its tracked config; only config.toml
 # belongs in the repo (see AGENTS.md).
 /herdr/.config/herdr/session.json
+/herdr/.config/herdr/session-snapshots/
 /herdr/.config/herdr/release-notes.json
 /herdr/.config/herdr/.plugins.lock
 /herdr/.config/herdr/*.log
-/herdr/.config/herdr/*.sock
+/herdr/.config/herdr/*.sock*
+
+# opencode writes generated/vendored files next to its tracked config
+# (opencode.jsonc, themes/, tui.json); node_modules and the lockfiles come
+# from `opencode` itself bootstrapping its plugin dependencies, not from
+# anything hand-written here.
+/opencode/.config/opencode/node_modules/
+/opencode/.config/opencode/package.json
+/opencode/.config/opencode/package-lock.json
+/opencode/.config/opencode/bun.lock
+
+# herdr's opencode TUI integration; installed/overwritten by herdr itself,
+# not hand-written config (see AGENTS.md's herdr entry).
+/opencode/.config/opencode/herdr-opencode/
+/opencode/.config/opencode/herdr-tui-session.js
+/opencode/.config/opencode/tui.jsonc
+/opencode/.config/opencode/plugins/herdr-agent-state.js
 
 # Exceptions: these *.local files are pre-committed relative symlinks that
 # make up the OS-overlay packages (see README "Handling Fedora vs macOS
