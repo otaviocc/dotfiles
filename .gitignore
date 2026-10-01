@@ -9,9 +9,9 @@ __pycache__/
 # carries API tokens, and the rest of ~/.claude is session/runtime state.
 # Ignored rather than merely absent, so a stray `git add claude/` can't pull a
 # token into history. skills/ is shared with opencode, which also reads
-# ~/.claude/skills/, and also holds the tmux-agents plugin — Claude Code loads
-# any plugin under ~/.claude/skills/ without a settings.json entry, which is how
-# hooks get version-controlled despite settings.json being untracked.
+# ~/.claude/skills/, and is also where any future hooks-only plugin would go —
+# Claude Code loads plugins from there without a settings.json entry, which is
+# how hooks get version-controlled despite settings.json being untracked.
 /claude/.claude/*
 !/claude/.claude/themes/
 !/claude/.claude/skills/
