@@ -1,16 +1,10 @@
 #!/usr/bin/env bash
-# Usage: set-status.sh running|waiting|idle|clear|notify
-# Called from agent hooks. `notify` reads the Claude Code Notification JSON on stdin.
+# Usage: set-status.sh running|waiting|idle|clear
+# Called from agent hooks. For Claude Code that is the tmux-agents plugin in the
+# claude package, which maps each event to one of these words; other agents can
+# call this directly.
 [ -n "$TMUX_PANE" ] || exit 0
 s="$1"
-
-if [ "$s" = notify ]; then
-  payload=$(cat)
-  case "$payload" in
-    *idle_prompt*) s=idle ;;
-    *) s=waiting ;;
-  esac
-fi
 
 if [ "$s" = clear ]; then
   tmux set-option -p -u -t "$TMUX_PANE" @agent_status

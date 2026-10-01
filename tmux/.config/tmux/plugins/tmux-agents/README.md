@@ -11,8 +11,10 @@ view is a single `tmux list-panes` call.
     set -g status-right '#{agents_summary} %H:%M'
     run-shell ~/.config/tmux/plugins/tmux-agents/agents.tmux
 
-    scripts/install-hooks.sh --dry-run   # inspect, then run without the flag (Claude Code)
-    # settings.json is untracked (holds tokens), so run this once per machine
+Claude Code needs no setup: the `claude` package ships a hooks-only plugin
+(`claude/.claude/skills/tmux-agents/`) that Claude Code auto-loads from
+`~/.claude/skills/`, so `settings.json` — untracked, it holds tokens — is never
+touched.
 
 Other agents: call `scripts/set-status.sh running|waiting|idle|clear` from their hooks.
 

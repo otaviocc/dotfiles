@@ -6,6 +6,15 @@ Python script or, for the three video-library organizers, a call out to the
 `acervo` Rust binary. Most scripts use **only the stdlib** — no pip install
 needed. Exceptions are noted below.
 
+**Not every folder here is a skill.** `tmux-agents/` is a hooks-only Claude Code
+*plugin*: no `SKILL.md`, nothing loaded into context, just
+`.claude-plugin/plugin.json` plus `hooks/hooks.json`. It sits in this directory
+because `~/.claude/skills/` is where Claude Code auto-loads plugins from
+(`<name>@skills-dir`), and that is the only way to keep hooks in this repo —
+`settings.json`, where hooks would otherwise go, is untracked because it holds
+API tokens. opencode scans this directory for skills and ignores it. See its own
+README, and the `claude`/`skills` entries in the repo-root `AGENTS.md`.
+
 ## Skills in this repo
 
 | Skill | Implementation | Purpose |

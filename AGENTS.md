@@ -165,6 +165,18 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   by hand. The script is Python 3 stdlib-only, reads Claude Code's status JSON
   on stdin, and uses truecolor escapes from `docs/palette.md` directly, so it
   does not depend on how the terminal maps the ANSI slots.
+
+  **Hooks belong in a plugin, not in `settings.json`.** Claude Code auto-loads
+  any plugin directory under `~/.claude/skills/` as `<name>@skills-dir`, with no
+  `enabledPlugins` entry and no other `settings.json` change — which is the only
+  way to version-control hooks here, since `settings.json` is untracked. The one
+  plugin so far is `skills/tmux-agents/`, the producer half of the tmux package's
+  tmux-agents plugin. A hooks-only plugin wants just
+  `.claude-plugin/plugin.json` and `hooks/hooks.json`; **delete the `SKILL.md`
+  and the `"skills": ["./"]` key that `claude plugin init` scaffolds**, or the
+  plugin also registers a junk skill and stops being free. `claude plugin details
+  <name>` prints the component inventory and the token cost — a hooks-only
+  plugin reads `~0 tok`.
 - **skills** — personal agent skills live in the `claude` package at
   `claude/.claude/skills/`, stowed to `~/.claude/skills/`, which both Claude Code
   and opencode read natively. Skill-specific rules live in
@@ -172,6 +184,9 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   On the macOS machine `~/.config/opencode/skills/` still holds a few
   opencode-only skills this repo does not track (Supacode's own, and symlinks
   into `~/.agents/skills/`) — don't assume everything there is version-controlled.
+  Not everything in `claude/.claude/skills/` is a skill: `tmux-agents/` is a
+  hooks-only Claude Code plugin that lives there because that is the directory
+  Claude Code auto-loads plugins from. opencode ignores it.
 
 - **xcode** — macOS only, listed in `DARWIN_ONLY_PACKAGES`. Tracks exactly one
   file, `Default+.xccolortheme`, under
