@@ -7,6 +7,14 @@
     "permission": "#F2248C",
     "permissionShimmer": "#F77CBA",
     "remember": "#FFE76D",
+    "composerSidebarBackground": "#171717",
+
+    "text": "#FFFFFF",
+    "inactive": "#8E8E8E",
+    "success": "#2EA85B",
+    "warning": "#FFE76D",
+    "error": "#FC4651",
+    "merged": "#AB64FF",
 
     "planMode": "#35B0D8",
     "autoAccept": "#2EA85B",
