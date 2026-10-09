@@ -150,6 +150,18 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   absolute (26.x rejects relative ones and does not expand `~`, though it does
   expand `$HOME`), and a bad path silently falls back to yazi's built-in dark
   theme — same silent failure as bat's `--theme`.
+- **tmux** — `prefix+a` runs `plugins/tmux-agents/agents.py`, a
+  `display-menu` of every Claude Code and OpenCode pane. It is hookless by
+  design (the hook-based version was removed in `28c8256`), so it leans on
+  state the agents leave behind on their own. For Claude Code that is the
+  **undocumented** `~/.claude/sessions/<pid>.json` (fields used: `pid`,
+  `kind`, `tmux`, `status`, `name`, `nameSource`, `cwd`, `statusUpdatedAt`);
+  if the menu goes empty after a Claude upgrade, check that file's shape
+  first. The files outlive killed processes, which is why a record only counts
+  while its pid is alive and sits under the pane it names. OpenCode records no
+  status anywhere, so it is scraped from the pane: the strings are in
+  `OPENCODE_STATUS` (verified against 1.18.35), and the name is the newest
+  top-level session for that directory in `opencode.db`.
 - **herdr** — only `config.toml` is tracked. Logs, `session.json`,
   `release-notes.json` and `.plugins.lock` are runtime state; leave them out.
 - **holodeck** — only `config.json` is tracked. `url-history.json` next to it
