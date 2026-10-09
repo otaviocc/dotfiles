@@ -2,9 +2,16 @@
 """Claude Code statusline.
 
 Reads the status JSON from stdin (schema documented in Claude Code's
-`statusLine` help) and prints one line:
+`statusLine` help) and prints two lines, identity above numbers:
 
-    Opus 5 · high  ·  .dotfiles master  ·  5h 47% 2h13m  ·  wk 12% 3d4h  ·  ctx 71%
+    Opus 5 · high  ·  .dotfiles master
+    session: 47% 2h13m  ·  week: 12% 3d4h  ·  context: 71%
+
+Two lines rather than one because this runs inside tmux panes: a three-way
+split leaves ~70 columns, which is exactly where the old single line
+overflowed and started shedding the directory and the model. Each line is
+measured against `COLUMNS` on its own, so one line overflowing never costs
+the other anything.
 
 Each usage percentage carries a countdown to its window reset. Claude Code
 re-runs this on every message and tool call, but not on a timer, so a countdown
@@ -188,51 +195,59 @@ def seg_ctx(data):
     pct = (data.get("context_window") or {}).get("used_percentage")
     if pct is None:
         return None
-    return fg(MUTED_TEXT, "ctx ") + fg(heat(pct), f"{pct:.0f}%", bold=True)
+    return fg(MUTED_TEXT, "context: ") + fg(heat(pct), f"{pct:.0f}%", bold=True)
 
 
-def build(data, resets=True):
-    builders = [
-        seg_model,
-        seg_dir,
-        lambda d: seg_rate(d, "five_hour", "5h", resets),
-        lambda d: seg_rate(d, "seven_day", "wk", resets),
-        seg_ctx,
-    ]
-    return [s for s in (b(data) for b in builders) if s]
+def build_identity(data):
+    return [s for s in (seg_model(data), seg_dir(data)) if s]
+
+
+def build_usage(data, resets=True):
+    segments = (
+        seg_rate(data, "five_hour", "session:", resets),
+        seg_rate(data, "seven_day", "week:", resets),
+        seg_ctx(data),
+    )
+    return [s for s in segments if s]
 
 
 def main():
     data = json.load(sys.stdin)
-
-    segments = build(data)
-    if not segments:
-        return
 
     sep = fg(MUTED, "  ·  ")
 
     def render(segs):
         return sep.join(segs)
 
-    line = render(segments)
-
     try:
         columns = int(os.environ.get("COLUMNS", "0"))
     except ValueError:
         columns = 0
-    # Shed the reset countdowns, then dir+branch, then model, when the line
-    # overflows -- the usage numbers are the point.
-    if columns and visible_len(line) > columns:
-        segments = build(data, resets=False)
-        line = render(segments)
-    for drop in (seg_dir, seg_model):
-        if columns and visible_len(line) > columns and len(segments) > 1:
-            dropped = drop(data)
-            if dropped in segments:
-                segments.remove(dropped)
-                line = render(segments)
 
-    sys.stdout.write(line)
+    def overflows(line):
+        return bool(columns) and visible_len(line) > columns
+
+    # Line 1: identity. Shed dir+branch, then model, when it overflows.
+    identity = build_identity(data)
+    top = render(identity)
+    for drop in (seg_dir, seg_model):
+        if overflows(top) and len(identity) > 1:
+            dropped = drop(data)
+            if dropped in identity:
+                identity.remove(dropped)
+                top = render(identity)
+
+    # Line 2: usage. Shed only the reset countdowns -- the numbers are the
+    # point and are never dropped.
+    usage = build_usage(data)
+    bottom = render(usage)
+    if overflows(bottom):
+        bottom = render(build_usage(data, resets=False))
+
+    lines = [line for line in (top, bottom) if line]
+    if not lines:
+        return
+    sys.stdout.write("\n".join(lines))
 
 
 if __name__ == "__main__":
