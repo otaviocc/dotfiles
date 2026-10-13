@@ -40,6 +40,9 @@ setopt LIST_PACKED               # Compact completion lists
 setopt INTERACTIVE_COMMENTS      # Allow comments in interactive mode
 
 # --- Completion ----------------------------------------------------------
+# ~/.zfunc holds per-user completion scripts (e.g. `lyrics completions zsh > ~/.zfunc/_lyrics`).
+# Any `_name` file dropped there is picked up on the next shell; it must precede compinit.
+[[ -d ~/.zfunc ]] && fpath=(~/.zfunc $fpath)
 autoload -Uz compinit
 compinit
 zstyle ':completion:*' menu select
