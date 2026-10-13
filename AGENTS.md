@@ -328,10 +328,12 @@ LSP `defaultLibrary` modifier.
 - **`herdr config check` does not validate colours.** A typo'd hex reports
   "config: ok" and silently falls back. `herdr server reload-config` applies
   changes without a restart.
-- **Claude Code's theme carries no background overrides.** Default+ maps ANSI
-  bright-black to `#515B70`, a normal dark blue-grey, so the `dark-ansi` base
-  renders user messages correctly without them. If some future palette ever
-  shows light-on-light text, that is the knob. The seven `*Shimmer` values are
+- **Claude Code's message backgrounds are overridden.** Left alone, the
+  `dark-ansi` base paints user and `!` bash messages in ANSI bright-black
+  (`#515B70`, the selection colour), which reads as one huge selected block.
+  `userMessageBackground` and `bashMessageBackgroundColor` are pinned to
+  `subtle` `#242424` instead, with `context_content_bg` `#2F2F2F` as the
+  hover. The seven `*Shimmer` values are
   `colour 40% toward foreground` and are recorded in `docs/palette.md`.
 - **Xcode's `markup.code` slot is corrected, not copied.** Apple ships the light
   theme's magenta `#AA0D91` there in both stock dark and light themes; at
