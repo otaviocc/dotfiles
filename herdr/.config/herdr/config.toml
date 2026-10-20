@@ -142,6 +142,13 @@ toggle_sidebar = "prefix+b"
 # type = "pane"
 # command = "lazygit"
 
+# Local plugin at plugins/equalize; `herdr plugin link` it once per machine.
+[[keys.command]]
+key = "prefix+="
+type = "plugin_action"
+command = "otaviocc.equalize.equalize"
+description = "equalize panes in this tab"
+
 # Legacy indexed shortcut config is still parsed for compatibility.
 # Prefer switch_tab, switch_workspace, and focus_agent for new configs.
 # [keys.indexed]

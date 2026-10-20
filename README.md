@@ -21,7 +21,7 @@ sublime  Sublime Text (Default+ scheme, LSP-SourceKit)
 lazygit  lazygit
 tig      tig
 yazi     yazi
-herdr    herdr
+herdr    herdr + equalize plugin
 opencode OpenCode
 hunk     hunk
 vigia    vigia

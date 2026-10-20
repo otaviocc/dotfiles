@@ -1,0 +1,12 @@
+id = "otaviocc.equalize"
+name = "Equalize"
+version = "0.1.0"
+min_herdr_version = "0.9.5"
+description = "Make every pane in the current tab the same size"
+platforms = ["macos", "linux"]
+
+[[actions]]
+id = "equalize"
+title = "Equalize panes"
+contexts = ["workspace"]
+command = ["python3", "equalize.py"]

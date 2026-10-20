@@ -162,8 +162,19 @@ Do not confuse `~/.gitconfig.local.machine` (hand-made, untracked) with
   status anywhere, so it is scraped from the pane: the strings are in
   `OPENCODE_STATUS` (verified against 1.18.35), and the name is the newest
   top-level session for that directory in `opencode.db`.
-- **herdr** — only `config.toml` is tracked. Logs, `session.json`,
-  `release-notes.json` and `.plugins.lock` are runtime state; leave them out.
+- **herdr** — tracks `config.toml` and one local plugin,
+  `plugins/equalize/` (`prefix+=` makes every pane in the current tab the
+  same size). Logs, `session.json`, `release-notes.json`,
+  `.plugins.lock` and `plugins/config/` are runtime state; leave them out —
+  herdr creates `plugins/config/<id>` itself when a plugin is linked, which is
+  why the plugin sits *beside* it and is not the whole `plugins/` dir.
+  Stowing is not enough: run `herdr plugin link
+  ~/.config/herdr/plugins/equalize` once per machine (same per-machine step
+  as the Claude statusline), or the keybinding silently does nothing.
+  herdr cannot set a split ratio, only nudge one: `pane resize --amount` is a
+  ratio delta (clamped to 0.1..0.9) that moves the divider on *that pane's*
+  edge, which is why `equalize.py` shrinks from the second child rather than
+  the first.
 - **holodeck** — only `config.json` is tracked. `url-history.json` next to it
   is runtime state; leave it out. The file is strict JSON (serde_json), so it
   takes no comments — document choices here or in the README, not inline.

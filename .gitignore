@@ -34,6 +34,9 @@ __pycache__/
 /herdr/.config/herdr/.plugins.lock
 /herdr/.config/herdr/*.log
 /herdr/.config/herdr/*.sock*
+# herdr creates plugins/config/ for every linked plugin; only the plugin
+# sources next to it are tracked.
+/herdr/.config/herdr/plugins/config/
 
 # opencode writes generated/vendored files next to its tracked config
 # (opencode.jsonc, themes/, tui.json); node_modules and the lockfiles come
