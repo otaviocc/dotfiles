@@ -8,6 +8,9 @@
     "permissionShimmer": "#F77CBA",
     "remember": "#FFE76D",
     "composerSidebarBackground": "#171717",
+    "userMessageBackground": "#242424",
+    "userMessageBackgroundHover": "#2F2F2F",
+    "bashMessageBackgroundColor": "#242424",
 
     "text": "#FFFFFF",
     "inactive": "#8E8E8E",
